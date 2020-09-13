@@ -2,8 +2,6 @@
 
 A flutter plugin for the Inngage SDK
 
-## Getting Started
-
 ## Add the plugin to your project
 
 * Open the **pubspec.yaml**
