@@ -1,14 +1,18 @@
 # inngage_plugin
 
-A new Flutter plugin.
+A flutter plugin for the Inngage SDK
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+## Add the plugin to your project
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+* Open the **pubspec.yaml**
+* add to the dependencies section
+
+
+[Access here](https://inngage.readme.io/v1.0/docs/integração-flutter) to see the official documentation on the inngage website
+
+```yaml
+inngage_plugin:0.0.1
+```
+
