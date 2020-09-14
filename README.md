@@ -1,3 +1,5 @@
+[![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dev/packages/inngage_plugin) 
+
 # inngage_plugin
 
 A flutter plugin for the Inngage SDK
@@ -14,3 +16,38 @@ A flutter plugin for the Inngage SDK
 inngage_plugin:1.0.0
 ```
 
+
+## How to use
+
+```dart
+  final json = {
+    "nome": "test",
+    "dt_nascimento": "01/09/1970",
+    "genero": "M",
+    "cartao": "N",
+    "ultimo_abastecimento": "10/09/2018",
+    "total_abastecido": "290,00"
+  };
+
+  final inngageWebViewProperties = InngageWebViewProperties(
+    appBarColor: Colors.pink,
+    appBarText: Text(
+      'AppTitle',
+    ),
+    backgroundColor: Colors.white,
+    loaderColor: Colors.pink,
+    debuggingEnabled: true,
+    withJavascript: true,
+    withLocalStorage: true,
+    withZoom: true,
+  );
+await InngageSDK.subscribe(
+    appToken: 'AppToken',
+    friendlyIdentifier: 'user@email.com',
+    customFields: json,
+    navigatorKey: navigatorKey,
+    inngageWebViewProperties: inngageWebViewProperties,
+  );
+```
+
+Call `subscribe()` on a `InngageSDK` to request it.

@@ -29,8 +29,8 @@ void main() async {
     withZoom: true,
   );
   await InngageSDK.subscribe(
-    appToken: 'd4b70ee5214d469b5b8c8826436877a3',
-    friendlyIdentifier: 'peter@gmail.com',
+    appToken: 'MyAppToken',
+    friendlyIdentifier: 'user@gmail.com',
     customFields: json,
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,

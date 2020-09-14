@@ -5,10 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:inngage_plugin/util/flutter_native_dialog.dart';
+import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:package_info/package_info.dart';
-import 'package:inngage_plugin/data/api/inngage_api.dart';
-import 'package:inngage_plugin/data/model/subscription_request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InngageSDK extends ChangeNotifier {
