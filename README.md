@@ -2,7 +2,7 @@
 
 # inngage_plugin
 
-A flutter plugin for the Inngage SDK
+This SDK inf lutter aims to enable integration with the [Inngage](http://www.inngage.com.br)  platform
 
 ## Add the plugin to your project
 
