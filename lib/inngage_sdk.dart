@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:device_info_platform_interface/device_info_platform_interface.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -10,7 +9,6 @@ import 'package:inngage_plugin/util/flutter_native_dialog.dart';
 import 'package:package_info/package_info.dart';
 import 'package:inngage_plugin/data/api/inngage_api.dart';
 import 'package:inngage_plugin/data/model/subscription_request.dart';
-import 'package:meta/meta.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InngageSDK extends ChangeNotifier {
