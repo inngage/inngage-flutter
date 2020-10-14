@@ -179,28 +179,33 @@ class InngageSDK extends ChangeNotifier {
   }) async {
     print("openCommonNotification: $payload");
 
-    final data = payload['data'];
-    final notificationId = data['notId'];
+    final Map<String, dynamic> data = payload['data'];
+    if (data != null) {
+      var notificationId = '';
 
-    await _inngageNetwork.notification(
-      notid: notificationId ?? '',
-      appToken: appToken,
-    );
+      if (data.containsKey('notId')) {
+        notificationId = data['notId'];
+      }
+      await _inngageNetwork.notification(
+        notid: notificationId ?? '',
+        appToken: appToken,
+      );
 
-    final String type = data['type'];
-    final String url = data['url'];
+      final String type = data['type'] ?? '';
+      final String url = data['url'] ?? '';
 
-    final titleNotification = data['title'];
-    final messageNotification = data['message'];
+      final titleNotification = data['title'];
+      final messageNotification = data['message'];
 
-    if (type != null && url != null) {
-      type == 'deep'
-          ? _launchURL(url)
-          : _showCustomNotification(
-              messageNotification: messageNotification,
-              titleNotification: titleNotification,
-              url: url,
-            );
+      if (type != null && url != null) {
+        type == 'deep'
+            ? _launchURL(url)
+            : _showCustomNotification(
+                messageNotification: messageNotification,
+                titleNotification: titleNotification,
+                url: url,
+              );
+      }
     }
   }
 
