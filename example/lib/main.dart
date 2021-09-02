@@ -32,8 +32,22 @@ void main() async {
     appToken: 'MyAppToken',
     friendlyIdentifier: 'user@gmail.com',
     customFields: json,
+    phoneNumber: '11-959821612',
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
+  );
+  await InngageSDK.sendEventsendEvent(
+    eventName: 'MyEvent',
+    appToken: 'MyAppToken',
+    identifier: 'user@gmail.com',
+    eventValues: {
+      'location': '12312312312',
+    },
+  );
+  await InngageSDK.sendEventsendEvent(
+    eventName: 'MyOtherEventWithoutEventValues',
+    appToken: 'MyAppToken',
+    identifier: 'user@gmail.com',
   );
   runApp(MyApp());
 }

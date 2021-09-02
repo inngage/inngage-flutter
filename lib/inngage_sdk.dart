@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:device_info/device_info.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:package_info/package_info.dart';
@@ -15,9 +17,10 @@ class InngageSDK extends ChangeNotifier {
 
   static final InngageSDK _singleton = InngageSDK._internal();
 
-  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  static FirebaseApp? defaultApp;
   static DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   static String _identifier = '';
+  static String _phoneNumber = '';
   static Map<String, dynamic> _customFields = {};
   static InngageNetwork _inngageNetwork = InngageNetwork();
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
@@ -25,15 +28,16 @@ class InngageSDK extends ChangeNotifier {
       InngageWebViewProperties();
 
   static Future<void> subscribe({
-    @required String appToken,
-    @required GlobalKey<NavigatorState> navigatorKey,
+    required String appToken,
+    required GlobalKey<NavigatorState> navigatorKey,
     String friendlyIdentifier = '',
-    Map<String, dynamic> customFields,
-    InngageWebViewProperties inngageWebViewProperties,
+    String? phoneNumber,
+    Map<String, dynamic>? customFields,
+    InngageWebViewProperties? inngageWebViewProperties,
   }) async {
     try {
       //initialize firebase
-      await Firebase.initializeApp();
+      defaultApp = await Firebase.initializeApp();
     } catch (error) {
       print(error.toString());
     }
@@ -51,49 +55,69 @@ class InngageSDK extends ChangeNotifier {
     if (inngageWebViewProperties != null) {
       _inngageWebViewProperties = inngageWebViewProperties;
     }
+    //set inngage web view properties
+    if (phoneNumber != null) {
+      _phoneNumber = phoneNumber;
+    }
 
-    //firebase config notifications handlers
-    _firebaseMessaging.configure(
-      onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler,
-      onMessage: (Map<String, dynamic> payload) async {
-        _openCommonNotification(
-          payload: payload,
-          appToken: appToken,
-        );
-      },
-      onLaunch: (Map<String, dynamic> payload) async {
-        _openCommonNotification(
-          payload: payload,
-          appToken: appToken,
-        );
-      },
-      onResume: (Map<String, dynamic> payload) async {
-        _openCommonNotification(
-          payload: payload,
-          appToken: appToken,
-        );
-      },
+    //set customFields properties
+    if (customFields != null) {
+      _customFields = customFields;
+    }
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
     );
+
+    // Set the background messaging handler early on, as a named top-level function
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen((event) {
+      _openCommonNotification(
+        payload: event.data,
+        appToken: appToken,
+      );
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      _openCommonNotification(
+        payload: event.data,
+        appToken: appToken,
+      );
+    });
+    //firebase config notifications handlers
+    // _firebaseMessaging.configure(
+    //   onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler,
+    //   onMessage: (Map<String, dynamic> payload) async {},
+    //   onLaunch: (Map<String, dynamic> payload) async {
+
+    //   },
+    //   onResume: (Map<String, dynamic> payload) async {
+    //     _openCommonNotification(
+    //       payload: payload,
+    //       appToken: appToken,
+    //     );
+    //   },
+    // );
 
     //request permission to iOS device
     if (Platform.isIOS) {
-      _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(
-          sound: true,
-          badge: true,
-          alert: true,
-          provisional: false,
-        ),
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true, // Required to display a heads up notification
+        badge: true,
+        sound: true,
       );
     }
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
 
     //get device infos
-    String locale = await Devicelocale.currentLocale;
-    List languages = await Devicelocale.preferredLanguages;
+    String? locale = await Devicelocale.currentLocale;
+    List? languages = await Devicelocale.preferredLanguages;
     final deviceModel = await _getDeviceModel();
     final osDevice = await _getDeviceOS();
     final uuid = await _getUniqueId();
@@ -101,7 +125,7 @@ class InngageSDK extends ChangeNotifier {
     final appVersion = await _getVersionApp();
 
     _firebaseMessaging.getToken().then(
-      (String registration) async {
+      (String? registration) async {
         assert(registration != null);
         print(registration);
         final registerSubscriberRequest = RegisterSubscriberRequest(
@@ -112,9 +136,10 @@ class InngageSDK extends ChangeNotifier {
           appVersion: appVersion,
           deviceModel: deviceModel,
           sdk: '1',
+          phoneNumber: _phoneNumber,
           deviceManufacturer: manufacturer,
           identifier: _identifier,
-          osLanguage: languages[0] ?? '',
+          osLanguage: languages![0] ?? '',
           osLocale: locale,
           osVersion: osDevice,
           registration: registration,
@@ -133,17 +158,17 @@ class InngageSDK extends ChangeNotifier {
   }
 
   static void _showCustomNotification({
-    @required String titleNotification,
-    @required String messageNotification,
-    @required String url,
+    required String? titleNotification,
+    required String messageNotification,
+    required String url,
   }) async {
-    final result = await FlutterNativeDialog.showConfirmDialog(
+    final result = await (FlutterNativeDialog.showConfirmDialog(
       title: titleNotification,
       message: messageNotification + '\n' + 'podemos redirecionar $url ?',
-    );
+    ) as FutureOr<bool>);
 
     if (result) {
-      _navigatorKey.currentState.push(
+      _navigatorKey.currentState!.push(
         MaterialPageRoute(
           builder: (context) => WebviewScaffold(
             url: url,
@@ -173,15 +198,27 @@ class InngageSDK extends ChangeNotifier {
     }
   }
 
+  /// Define a top-level named handler which background/terminated messages will
+  /// call.
+  ///
+  /// To verify things are working, check out the native platform logs.
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    // If you're going to use other Firebase services in the background, such as Firestore,
+    // make sure you call `initializeApp` before using other Firebase services.
+    await Firebase.initializeApp();
+    print('Handling a background message ${message.messageId}');
+  }
+
   static void _openCommonNotification({
-    @required Map<String, dynamic> payload,
-    @required String appToken,
+    required Map<String, dynamic> payload,
+    required String appToken,
   }) async {
     print("openCommonNotification: $payload");
 
-    final Map<String, dynamic> data = payload['data'];
+    final Map<String, dynamic>? data = payload['data'];
     if (data != null) {
-      var notificationId = '';
+      String? notificationId = '';
 
       if (data.containsKey('notId')) {
         notificationId = data['notId'];
@@ -197,23 +234,14 @@ class InngageSDK extends ChangeNotifier {
       final titleNotification = data['title'];
       final messageNotification = data['message'];
 
-      if (type != null && url != null) {
-        type == 'deep'
-            ? _launchURL(url)
-            : _showCustomNotification(
-                messageNotification: messageNotification,
-                titleNotification: titleNotification,
-                url: url,
-              );
-      }
+      type == 'deep'
+          ? _launchURL(url)
+          : _showCustomNotification(
+              messageNotification: messageNotification,
+              titleNotification: titleNotification,
+              url: url,
+            );
     }
-  }
-
-  // Função de NÍVEL SUPERIOR ou ESTÁTICA para lidar com mensagens de fundo
-  static Future<dynamic> _backgroundMessageHandler(
-      Map<String, dynamic> message) {
-    print('AppPushs myBackgroundMessageHandler: $message');
-    return Future<void>.value();
   }
 
   static Future<String> _getVersionApp() async {
@@ -283,12 +311,22 @@ class InngageSDK extends ChangeNotifier {
     }
   }
 
-  static setIdentifier({@required String identifier}) async {
+  static setIdentifier({required String identifier}) async {
     _identifier = identifier;
   }
 
-  static setCustomFields({@required Map<String, dynamic> customFields}) {
-    if (customFields != null) _customFields = customFields;
+  static sendEventsendEvent({
+    required String eventName,
+    required String appToken,
+    required String identifier,
+    Map<String, dynamic> eventValues = const {},
+  }) async {
+    await _inngageNetwork.sendEvent(
+        eventName: eventName, appToken: appToken, identifier: identifier);
+  }
+
+  static setCustomFields({required Map<String, dynamic> customFields}) {
+    _customFields = customFields;
   }
 }
 
@@ -312,5 +350,5 @@ class InngageWebViewProperties {
   bool withLocalStorage;
   bool debuggingEnabled;
   bool withJavascript;
-  Widget customLoading;
+  Widget? customLoading;
 }

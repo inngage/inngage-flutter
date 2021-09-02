@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:meta/meta.dart';
-
 NotificationRequest notificationRequestFromJson(String str) =>
     NotificationRequest.fromJson(json.decode(str));
 
@@ -14,7 +12,7 @@ String notificationRequestToJson(NotificationRequest data) =>
 
 class NotificationRequest {
   NotificationRequest({
-    @required this.notificationRequest,
+    required this.notificationRequest,
   });
 
   Notification notificationRequest;
@@ -36,9 +34,9 @@ class Notification {
     this.notid,
   });
 
-  String id;
-  String appToken;
-  String notid;
+  String? id;
+  String? appToken;
+  String? notid;
 
   factory Notification.fromJson(Map<String, dynamic> json) => Notification(
         id: json["id"],

@@ -12,10 +12,10 @@ class SubscriptionRequest {
     this.registerSubscriberRequest,
   });
 
-  RegisterSubscriberRequest registerSubscriberRequest;
+  RegisterSubscriberRequest? registerSubscriberRequest;
 
   Map<String, dynamic> toJson() => {
-        "registerSubscriberRequest": registerSubscriberRequest.toJson(),
+        "registerSubscriberRequest": registerSubscriberRequest!.toJson(),
       };
 }
 
@@ -36,23 +36,25 @@ class RegisterSubscriberRequest {
     this.appUpdatedIn,
     this.uuid,
     this.customField,
+    this.phoneNumber,
   });
 
-  String appToken;
-  String identifier;
-  String registration;
-  String platform;
-  String sdk;
-  String deviceModel;
-  String deviceManufacturer;
-  String osLocale;
-  String osLanguage;
-  String osVersion;
-  String appVersion;
-  DateTime appInstalledIn;
-  DateTime appUpdatedIn;
-  String uuid;
-  Map<String, dynamic> customField;
+  String? appToken;
+  String? identifier;
+  String? registration;
+  String? platform;
+  String? sdk;
+  String? deviceModel;
+  String? deviceManufacturer;
+  String? osLocale;
+  String? osLanguage;
+  String? osVersion;
+  String? appVersion;
+  DateTime? appInstalledIn;
+  DateTime? appUpdatedIn;
+  String? uuid;
+  Map<String, dynamic>? customField;
+  String? phoneNumber;
 
   Map<String, dynamic> toJson() => {
         "app_token": appToken,
@@ -66,9 +68,10 @@ class RegisterSubscriberRequest {
         "os_language": osLanguage,
         "os_version": osVersion,
         "app_version": appVersion,
-        "app_installed_in": appInstalledIn.toIso8601String(),
-        "app_updated_in": appUpdatedIn.toIso8601String(),
+        "app_installed_in": appInstalledIn!.toIso8601String(),
+        "app_updated_in": appUpdatedIn!.toIso8601String(),
         "uuid": uuid,
         "custom_field": customField,
+        "phone_number": phoneNumber
       };
 }

@@ -10,5 +10,5 @@ class AppException implements Exception {
 }
 
 class InngageException extends AppException {
-  InngageException([String message]) : super(message, 'Inngage api exception');
+  InngageException([String? message]) : super(message, 'Inngage api exception');
 }
