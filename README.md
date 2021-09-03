@@ -13,7 +13,7 @@ This SDK inf lutter aims to enable integration with the [Inngage](http://www.inn
 [Access here](https://inngage.readme.io/v1.0/docs/integração-flutter) to see the official documentation on the inngage website
 
 ```yaml
-inngage_plugin:1.0.5
+inngage_plugin:1.1.0
 ```
 
 
@@ -49,15 +49,16 @@ await InngageSDK.subscribe(
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
   );
-  await InngageSDK.sendEventsendEvent(
+  await InngageSDK.sendEvent(
     eventName: 'MyEvent',
     appToken: 'MyAppToken',
     identifier: 'user@gmail.com',
+    registration: 'registration',
     eventValues: {
       'location': '12312312312',
     },
   );
-  await InngageSDK.sendEventsendEvent(
+  await InngageSDK.sendEvent(
     eventName: 'MyOtherEventWithoutEventValues',
     appToken: 'MyAppToken',
     identifier: 'user@gmail.com',
