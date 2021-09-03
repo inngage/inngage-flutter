@@ -28,12 +28,15 @@ class NewEventRequest {
   NewEventRequest({
     required this.appToken,
     required this.identifier,
+    required this.registration,
     required this.eventName,
     this.eventValues = const {},
   });
 
   String appToken;
   String identifier;
+  String registration;
+
   String eventName;
   Map<String, dynamic> eventValues;
 
@@ -43,6 +46,7 @@ class NewEventRequest {
         identifier: json["identifier"],
         eventName: json["event_name"],
         eventValues: json["event_values"],
+        registration: json["registration"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -50,5 +54,6 @@ class NewEventRequest {
         "identifier": identifier,
         "event_name": eventName,
         "event_values": eventValues,
+        "registration": registration,
       };
 }

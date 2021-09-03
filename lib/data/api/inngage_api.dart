@@ -17,6 +17,7 @@ abstract class InngageNetworkData {
     required String eventName,
     required String appToken,
     required String identifier,
+    required String registration,
     Map<String, dynamic> eventValues = const {},
   });
 }
@@ -75,11 +76,13 @@ class InngageNetwork implements InngageNetworkData {
     required String eventName,
     required String appToken,
     required String identifier,
+    required String registration,
     Map<String, dynamic> eventValues = const {},
   }) async {
     final eventRequest = NewEventRequest(
       appToken: appToken,
       identifier: identifier,
+      registration: registration,
       eventName: eventName,
       eventValues: eventValues,
     );

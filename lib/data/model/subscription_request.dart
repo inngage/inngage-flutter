@@ -72,6 +72,6 @@ class RegisterSubscriberRequest {
         "app_updated_in": appUpdatedIn!.toIso8601String(),
         "uuid": uuid,
         "custom_field": customField,
-        "phone_number": phoneNumber
+        "phone": phoneNumber
       };
 }

@@ -315,14 +315,26 @@ class InngageSDK extends ChangeNotifier {
     _identifier = identifier;
   }
 
-  static sendEventsendEvent({
+  static sendEvent({
     required String eventName,
     required String appToken,
-    required String identifier,
+    String? identifier,
+    String? registration,
     Map<String, dynamic> eventValues = const {},
   }) async {
+    if (identifier == null && registration == null) {
+      throw InngageException(
+        'Unfortunately it was not possible send an event,'
+        ' you need to declare the identifier or registration',
+      );
+    }
+
     await _inngageNetwork.sendEvent(
-        eventName: eventName, appToken: appToken, identifier: identifier);
+      eventName: eventName,
+      appToken: appToken,
+      identifier: identifier ?? '',
+      registration: registration ?? '',
+    );
   }
 
   static setCustomFields({required Map<String, dynamic> customFields}) {

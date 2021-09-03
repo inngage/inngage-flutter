@@ -36,7 +36,7 @@ void main() async {
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
   );
-  await InngageSDK.sendEventsendEvent(
+  await InngageSDK.sendEvent(
     eventName: 'MyEvent',
     appToken: 'MyAppToken',
     identifier: 'user@gmail.com',
@@ -44,7 +44,7 @@ void main() async {
       'location': '12312312312',
     },
   );
-  await InngageSDK.sendEventsendEvent(
+  await InngageSDK.sendEvent(
     eventName: 'MyOtherEventWithoutEventValues',
     appToken: 'MyAppToken',
     identifier: 'user@gmail.com',
