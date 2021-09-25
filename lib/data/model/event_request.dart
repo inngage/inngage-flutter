@@ -31,22 +31,30 @@ class NewEventRequest {
     required this.registration,
     required this.eventName,
     this.eventValues = const {},
+    this.conversionEvent = false,
+    this.conversionValue = 0,
+    this.conversionNotId = '',
   });
 
   String appToken;
   String identifier;
   String registration;
-
   String eventName;
+  bool conversionEvent;
+  double conversionValue;
+  String conversionNotId;
+
   Map<String, dynamic> eventValues;
 
-  factory NewEventRequest.fromJson(Map<String, dynamic> json) =>
-      NewEventRequest(
+  factory NewEventRequest.fromJson(Map<String, dynamic> json) => NewEventRequest(
         appToken: json["app_token"],
         identifier: json["identifier"],
         eventName: json["event_name"],
         eventValues: json["event_values"],
         registration: json["registration"],
+        conversionEvent: json["conversion_event"],
+        conversionNotId: json["conversion_value"],
+        conversionValue: json["conversion_notid"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -55,5 +63,8 @@ class NewEventRequest {
         "event_name": eventName,
         "event_values": eventValues,
         "registration": registration,
+        "conversion_event": conversionEvent,
+        "conversion_value": conversionValue,
+        "conversion_notid": conversionNotId,
       };
 }

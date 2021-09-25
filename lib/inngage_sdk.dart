@@ -21,11 +21,11 @@ class InngageSDK extends ChangeNotifier {
   static DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   static String _identifier = '';
   static String _phoneNumber = '';
+  static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
-  static InngageNetwork _inngageNetwork = InngageNetwork();
+  static InngageNetwork _inngageNetwork = InngageNetwork(keyAuthorization: _keyAuthorization);
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  static InngageWebViewProperties _inngageWebViewProperties =
-      InngageWebViewProperties();
+  static InngageWebViewProperties _inngageWebViewProperties = InngageWebViewProperties();
 
   static Future<void> subscribe({
     required String appToken,
@@ -90,25 +90,10 @@ class InngageSDK extends ChangeNotifier {
         appToken: appToken,
       );
     });
-    //firebase config notifications handlers
-    // _firebaseMessaging.configure(
-    //   onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler,
-    //   onMessage: (Map<String, dynamic> payload) async {},
-    //   onLaunch: (Map<String, dynamic> payload) async {
-
-    //   },
-    //   onResume: (Map<String, dynamic> payload) async {
-    //     _openCommonNotification(
-    //       payload: payload,
-    //       appToken: appToken,
-    //     );
-    //   },
-    // );
 
     //request permission to iOS device
     if (Platform.isIOS) {
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
+      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
         alert: true, // Required to display a heads up notification
         badge: true,
         sound: true,
@@ -149,7 +134,7 @@ class InngageSDK extends ChangeNotifier {
 
         //make request subscription to inngage backend
         await _inngageNetwork.subscription(
-          SubscriptionRequest(
+          subscription: SubscriptionRequest(
             registerSubscriberRequest: registerSubscriberRequest,
           ),
         );
@@ -202,8 +187,7 @@ class InngageSDK extends ChangeNotifier {
   /// call.
   ///
   /// To verify things are working, check out the native platform logs.
-  static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
@@ -311,16 +295,23 @@ class InngageSDK extends ChangeNotifier {
     }
   }
 
-  static setIdentifier({required String identifier}) async {
+  static void setIdentifier({required String identifier}) async {
     _identifier = identifier;
   }
 
-  static sendEvent({
+  static void setKeyAuthorization({required String keyAuthorization}) async {
+    _keyAuthorization = keyAuthorization;
+  }
+
+  static Future<void> sendEvent({
     required String eventName,
     required String appToken,
     String? identifier,
     String? registration,
     Map<String, dynamic> eventValues = const {},
+    bool conversionEvent = false,
+    double conversionValue = 0,
+    String conversionNotId = '',
   }) async {
     if (identifier == null && registration == null) {
       throw InngageException(
@@ -328,16 +319,21 @@ class InngageSDK extends ChangeNotifier {
         ' you need to declare the identifier or registration',
       );
     }
-
-    await _inngageNetwork.sendEvent(
-      eventName: eventName,
-      appToken: appToken,
-      identifier: identifier ?? '',
-      registration: registration ?? '',
+    return Future.microtask(
+      () async => await _inngageNetwork.sendEvent(
+        eventName: eventName,
+        appToken: appToken,
+        identifier: identifier ?? '',
+        registration: registration ?? '',
+        eventValues: eventValues,
+        conversionValue: conversionValue,
+        conversionNotId: conversionNotId,
+        conversionEvent: conversionEvent,
+      ),
     );
   }
 
-  static setCustomFields({required Map<String, dynamic> customFields}) {
+  static void setCustomFields({required Map<String, dynamic> customFields}) {
     _customFields = customFields;
   }
 }

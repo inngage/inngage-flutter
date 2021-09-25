@@ -8,7 +8,9 @@ import 'package:inngage_plugin/data/model/subscription_request.dart';
 import 'package:inngage_plugin/util/constants.dart';
 
 abstract class InngageNetworkData {
-  Future<void> subscription(SubscriptionRequest subscription);
+  Future<void> subscription({
+    required SubscriptionRequest subscription,
+  });
   Future<void> notification({
     required String notid,
     required String appToken,
@@ -23,16 +25,20 @@ abstract class InngageNetworkData {
 }
 
 class InngageNetwork implements InngageNetworkData {
-  InngageNetwork();
+  InngageNetwork({this.keyAuthorization = ''});
+  final String keyAuthorization;
 
   @override
-  Future<void> subscription(SubscriptionRequest subscription) async {
+  Future<void> subscription({
+    required SubscriptionRequest subscription,
+  }) async {
     final payload = subscriptionToJson(subscription);
     final resp = await http.post(
       Uri.parse(AppConstants.BASE_URL + '/subscription/'),
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         'Content-Type': 'application/json',
+        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
@@ -60,6 +66,7 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/notification/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
+        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
@@ -78,6 +85,9 @@ class InngageNetwork implements InngageNetworkData {
     required String identifier,
     required String registration,
     Map<String, dynamic> eventValues = const {},
+    bool conversionEvent = false,
+    double conversionValue = 0,
+    String conversionNotId = '',
   }) async {
     final eventRequest = NewEventRequest(
       appToken: appToken,
@@ -85,6 +95,9 @@ class InngageNetwork implements InngageNetworkData {
       registration: registration,
       eventName: eventName,
       eventValues: eventValues,
+      conversionEvent: conversionEvent,
+      conversionNotId: conversionNotId,
+      conversionValue: conversionValue,
     );
     final event = Event(newEventRequest: eventRequest);
 
@@ -94,6 +107,7 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/events/newEvent/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
+        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
