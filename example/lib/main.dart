@@ -29,7 +29,7 @@ void main() async {
     withZoom: true,
   );
   await InngageSDK.subscribe(
-    appToken: 'MyAppToken',
+    appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     friendlyIdentifier: 'user@gmail.com',
     customFields: json,
     phoneNumber: '11-959821612',
@@ -37,8 +37,8 @@ void main() async {
     inngageWebViewProperties: inngageWebViewProperties,
   );
   await InngageSDK.sendEvent(
-    eventName: 'MyEvent',
-    appToken: 'MyAppToken',
+    eventName: 'test',
+    appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     identifier: 'user@gmail.com',
     eventValues: {
       'location': '12312312312',
@@ -46,7 +46,7 @@ void main() async {
   );
   await InngageSDK.sendEvent(
     eventName: 'MyOtherEventWithoutEventValues',
-    appToken: 'MyAppToken',
+    appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     identifier: 'user@gmail.com',
   );
   runApp(MyApp());

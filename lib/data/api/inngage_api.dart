@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/data/model/event_request.dart';
@@ -42,7 +43,10 @@ class InngageNetwork implements InngageNetworkData {
       },
       body: payload,
     );
-
+    if (kDebugMode) {
+      print('INNGAGE PAYLOAD: $payload');
+      print('INNGAGE RESPONSE: ${resp.body}');
+    }
     if (resp.statusCode != 200) {
       throw InngageException('Unfortunately it was not possible to subscribe');
     }

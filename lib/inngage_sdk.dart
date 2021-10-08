@@ -80,13 +80,13 @@ class InngageSDK extends ChangeNotifier {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((event) {
       _openCommonNotification(
-        payload: event.data,
+        data: event.data,
         appToken: appToken,
       );
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       _openCommonNotification(
-        payload: event.data,
+        data: event.data,
         appToken: appToken,
       );
     });
@@ -195,37 +195,35 @@ class InngageSDK extends ChangeNotifier {
   }
 
   static void _openCommonNotification({
-    required Map<String, dynamic> payload,
+    required Map<String, dynamic> data,
     required String appToken,
   }) async {
-    print("openCommonNotification: $payload");
+    print("openCommonNotification: $data");
 
-    final Map<String, dynamic>? data = payload['data'];
-    if (data != null) {
-      String? notificationId = '';
+    //final Map<String, dynamic>? data = payload['data'];
+    String? notificationId = '';
 
-      if (data.containsKey('notId')) {
-        notificationId = data['notId'];
-      }
-      await _inngageNetwork.notification(
-        notid: notificationId ?? '',
-        appToken: appToken,
-      );
-
-      final String type = data['type'] ?? '';
-      final String url = data['url'] ?? '';
-
-      final titleNotification = data['title'];
-      final messageNotification = data['message'];
-
-      type == 'deep'
-          ? _launchURL(url)
-          : _showCustomNotification(
-              messageNotification: messageNotification,
-              titleNotification: titleNotification,
-              url: url,
-            );
+    if (data.containsKey('notId')) {
+      notificationId = data['notId'];
     }
+    await _inngageNetwork.notification(
+      notid: notificationId ?? '',
+      appToken: appToken,
+    );
+
+    final String type = data['type'] ?? '';
+    final String url = data['url'] ?? '';
+
+    final titleNotification = data['title'];
+    final messageNotification = data['message'];
+
+    type == 'deep'
+        ? _launchURL(url)
+        : _showCustomNotification(
+            messageNotification: messageNotification,
+            titleNotification: titleNotification,
+            url: url,
+          );
   }
 
   static Future<String> _getVersionApp() async {
