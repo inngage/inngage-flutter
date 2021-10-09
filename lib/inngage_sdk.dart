@@ -23,9 +23,11 @@ class InngageSDK extends ChangeNotifier {
   static String _phoneNumber = '';
   static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
-  static InngageNetwork _inngageNetwork = InngageNetwork(keyAuthorization: _keyAuthorization);
+  static InngageNetwork _inngageNetwork =
+      InngageNetwork(keyAuthorization: _keyAuthorization);
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  static InngageWebViewProperties _inngageWebViewProperties = InngageWebViewProperties();
+  static InngageWebViewProperties _inngageWebViewProperties =
+      InngageWebViewProperties();
 
   static Future<void> subscribe({
     required String appToken,
@@ -93,7 +95,8 @@ class InngageSDK extends ChangeNotifier {
 
     //request permission to iOS device
     if (Platform.isIOS) {
-      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
         alert: true, // Required to display a heads up notification
         badge: true,
         sound: true,
@@ -187,7 +190,8 @@ class InngageSDK extends ChangeNotifier {
   /// call.
   ///
   /// To verify things are working, check out the native platform logs.
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
@@ -301,7 +305,7 @@ class InngageSDK extends ChangeNotifier {
     _keyAuthorization = keyAuthorization;
   }
 
-  static Future<void> sendEvent({
+  static Future<bool> sendEvent({
     required String eventName,
     required String appToken,
     String? identifier,
@@ -317,18 +321,23 @@ class InngageSDK extends ChangeNotifier {
         ' you need to declare the identifier or registration',
       );
     }
-    return Future.microtask(
-      () async => await _inngageNetwork.sendEvent(
-        eventName: eventName,
-        appToken: appToken,
-        identifier: identifier ?? '',
-        registration: registration ?? '',
-        eventValues: eventValues,
-        conversionValue: conversionValue,
-        conversionNotId: conversionNotId,
-        conversionEvent: conversionEvent,
-      ),
-    );
+    try {
+      await Future.microtask(
+        () async => await _inngageNetwork.sendEvent(
+          eventName: eventName,
+          appToken: appToken,
+          identifier: identifier ?? '',
+          registration: registration ?? '',
+          eventValues: eventValues,
+          conversionValue: conversionValue,
+          conversionNotId: conversionNotId,
+          conversionEvent: conversionEvent,
+        ),
+      );
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   static void setCustomFields({required Map<String, dynamic> customFields}) {
