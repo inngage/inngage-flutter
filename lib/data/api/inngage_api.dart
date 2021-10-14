@@ -6,6 +6,7 @@ import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/data/model/event_request.dart';
 import 'package:inngage_plugin/data/model/notification_request.dart';
 import 'package:inngage_plugin/data/model/subscription_request.dart';
+import 'package:inngage_plugin/inngage_sdk.dart';
 import 'package:inngage_plugin/util/constants.dart';
 
 abstract class InngageNetworkData {
@@ -39,11 +40,12 @@ class InngageNetwork implements InngageNetworkData {
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         'Content-Type': 'application/json',
-        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
-    if (kDebugMode) {
+    if (InngageSDK.getDebugMode()) {
       print('INNGAGE PAYLOAD: $payload');
       print('INNGAGE RESPONSE: ${resp.body}');
     }
@@ -70,7 +72,8 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/notification/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
@@ -111,7 +114,8 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/events/newEvent/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );

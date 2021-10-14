@@ -37,6 +37,8 @@ void main() async {
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
   );
+  InngageSDK.setDebugMode(false);
+  InngageSDK.setUserPhone("67587787");
   await InngageSDK.sendEvent(
     eventName: 'test',
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',

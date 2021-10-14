@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
@@ -23,10 +24,14 @@ class InngageSDK extends ChangeNotifier {
   static String _phoneNumber = '';
   static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
-  static InngageNetwork _inngageNetwork = InngageNetwork(keyAuthorization: _keyAuthorization);
+  static InngageNetwork _inngageNetwork =
+      InngageNetwork(keyAuthorization: _keyAuthorization);
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  static InngageWebViewProperties _inngageWebViewProperties = InngageWebViewProperties();
+  static InngageWebViewProperties _inngageWebViewProperties =
+      InngageWebViewProperties();
+  static bool _debugMode = false;
 
+  static bool getDebugMode() => _debugMode;
   static Future<void> subscribe({
     required String appToken,
     required GlobalKey<NavigatorState> navigatorKey,
@@ -39,7 +44,9 @@ class InngageSDK extends ChangeNotifier {
       //initialize firebase
       defaultApp = await Firebase.initializeApp();
     } catch (error) {
-      print(error.toString());
+      if (getDebugMode()) {
+        print(error.toString());
+      }
     }
     //validation identifier
     if (friendlyIdentifier.isEmpty) {
@@ -93,7 +100,8 @@ class InngageSDK extends ChangeNotifier {
 
     //request permission to iOS device
     if (Platform.isIOS) {
-      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
         alert: true, // Required to display a heads up notification
         badge: true,
         sound: true,
@@ -112,7 +120,9 @@ class InngageSDK extends ChangeNotifier {
     _firebaseMessaging.getToken().then(
       (String? registration) async {
         assert(registration != null);
-        print(registration);
+        if (getDebugMode()) {
+          print(registration);
+        }
         final registerSubscriberRequest = RegisterSubscriberRequest(
           appInstalledIn: DateTime.now(),
           appToken: appToken,
@@ -150,9 +160,9 @@ class InngageSDK extends ChangeNotifier {
     final result = await (FlutterNativeDialog.showConfirmDialog(
       title: titleNotification,
       message: messageNotification + '\n' + 'podemos redirecionar $url ?',
-    ) as FutureOr<bool>);
+    ));
 
-    if (result) {
+    if (result ?? false) {
       _navigatorKey.currentState!.push(
         MaterialPageRoute(
           builder: (context) => WebviewScaffold(
@@ -187,18 +197,23 @@ class InngageSDK extends ChangeNotifier {
   /// call.
   ///
   /// To verify things are working, check out the native platform logs.
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
-    print('Handling a background message ${message.messageId}');
+    if (getDebugMode()) {
+      print('Handling a background message ${message.messageId}');
+    }
   }
 
   static void _openCommonNotification({
     required Map<String, dynamic> data,
     required String appToken,
   }) async {
-    print("openCommonNotification: $data");
+    if (getDebugMode()) {
+      print("openCommonNotification: $data");
+    }
 
     //final Map<String, dynamic>? data = payload['data'];
     String? notificationId = '';
@@ -339,6 +354,17 @@ class InngageSDK extends ChangeNotifier {
 
   static void setCustomFields({required Map<String, dynamic> customFields}) {
     _customFields = customFields;
+  }
+
+  static void setDebugMode(bool value) {
+    _debugMode = value;
+  }
+
+  static void setUserPhone(String number) {
+    _phoneNumber = number;
+    if (_debugMode) {
+      print("user phone number: $_phoneNumber");
+    }
   }
 }
 
