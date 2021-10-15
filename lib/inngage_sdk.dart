@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
@@ -24,11 +23,9 @@ class InngageSDK extends ChangeNotifier {
   static String _phoneNumber = '';
   static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
-  static InngageNetwork _inngageNetwork =
-      InngageNetwork(keyAuthorization: _keyAuthorization);
+  static InngageNetwork _inngageNetwork = InngageNetwork(keyAuthorization: _keyAuthorization);
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  static InngageWebViewProperties _inngageWebViewProperties =
-      InngageWebViewProperties();
+  static InngageWebViewProperties _inngageWebViewProperties = InngageWebViewProperties();
   static bool _debugMode = false;
 
   static bool getDebugMode() => _debugMode;
@@ -100,8 +97,7 @@ class InngageSDK extends ChangeNotifier {
 
     //request permission to iOS device
     if (Platform.isIOS) {
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
+      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
         alert: true, // Required to display a heads up notification
         badge: true,
         sound: true,
@@ -197,8 +193,7 @@ class InngageSDK extends ChangeNotifier {
   /// call.
   ///
   /// To verify things are working, check out the native platform logs.
-  static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
@@ -232,13 +227,23 @@ class InngageSDK extends ChangeNotifier {
     final titleNotification = data['title'];
     final messageNotification = data['message'];
 
-    type == 'deep'
-        ? _launchURL(url)
-        : _showCustomNotification(
-            messageNotification: messageNotification,
-            titleNotification: titleNotification,
-            url: url,
-          );
+    if (type.isEmpty) {
+      return;
+    }
+
+    switch (type) {
+      case 'deep':
+      case 'inapp':
+        _launchURL(url);
+        break;
+      default:
+        _showCustomNotification(
+          messageNotification: messageNotification,
+          titleNotification: titleNotification,
+          url: url,
+        );
+        break;
+    }
   }
 
   static Future<String> _getVersionApp() async {

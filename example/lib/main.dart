@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/inngage_sdk.dart';
+
 import 'my_app.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -37,7 +38,7 @@ void main() async {
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
   );
-  InngageSDK.setDebugMode(false);
+  InngageSDK.setDebugMode(true);
   InngageSDK.setUserPhone("67587787");
   await InngageSDK.sendEvent(
     eventName: 'test',

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/data/model/event_request.dart';
@@ -40,8 +39,7 @@ class InngageNetwork implements InngageNetworkData {
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         'Content-Type': 'application/json',
-        if (keyAuthorization.isNotEmpty)
-          'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
@@ -72,8 +70,7 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/notification/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        if (keyAuthorization.isNotEmpty)
-          'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
@@ -114,8 +111,7 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/events/newEvent/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        if (keyAuthorization.isNotEmpty)
-          'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
