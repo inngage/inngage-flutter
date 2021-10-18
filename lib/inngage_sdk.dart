@@ -21,6 +21,8 @@ class InngageSDK extends ChangeNotifier {
   static DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   static String _identifier = '';
   static String _phoneNumber = '';
+  static String _appToken = '';
+
   static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
   static InngageNetwork _inngageNetwork = InngageNetwork(keyAuthorization: _keyAuthorization);
@@ -51,7 +53,7 @@ class InngageSDK extends ChangeNotifier {
     } else {
       _identifier = friendlyIdentifier;
     }
-
+    _appToken = appToken;
     //set navigator key
     _navigatorKey = navigatorKey;
 
@@ -82,13 +84,20 @@ class InngageSDK extends ChangeNotifier {
 
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen((event) {
-      _openCommonNotification(
-        data: event.data,
-        appToken: appToken,
-      );
-    });
+    // FirebaseMessaging.onMessage.listen((event) {
+    //   if (getDebugMode()) {
+    //     print('onMessage ${event.data}');
+    //   }
+    //   _openCommonNotification(
+    //     data: event.data,
+    //     appToken: appToken,
+    //   );
+    // });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      if (getDebugMode()) {
+        print('onMessageOpenedApp ${event.from}');
+        print('onMessageOpenedApp ${event.messageType}');
+      }
       _openCommonNotification(
         data: event.data,
         appToken: appToken,
@@ -194,12 +203,13 @@ class InngageSDK extends ChangeNotifier {
   ///
   /// To verify things are working, check out the native platform logs.
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    // If you're going to use other Firebase services in the background, such as Firestore,
-    // make sure you call `initializeApp` before using other Firebase services.
-    await Firebase.initializeApp();
     if (getDebugMode()) {
-      print('Handling a background message ${message.messageId}');
+      print('_firebaseMessagingBackgroundHandler ${message.toString()}');
     }
+    _openCommonNotification(
+      data: message.data,
+      appToken: _appToken,
+    );
   }
 
   static void _openCommonNotification({
@@ -216,11 +226,12 @@ class InngageSDK extends ChangeNotifier {
     if (data.containsKey('notId')) {
       notificationId = data['notId'];
     }
-    await _inngageNetwork.notification(
-      notid: notificationId ?? '',
-      appToken: appToken,
+    Future.microtask(
+      () => _inngageNetwork.notification(
+        notid: notificationId ?? '',
+        appToken: appToken,
+      ),
     );
-
     final String type = data['type'] ?? '';
     final String url = data['url'] ?? '';
 
@@ -233,10 +244,9 @@ class InngageSDK extends ChangeNotifier {
 
     switch (type) {
       case 'deep':
-      case 'inapp':
         _launchURL(url);
-        break;
-      default:
+        return;
+      case 'inapp':
         _showCustomNotification(
           messageNotification: messageNotification,
           titleNotification: titleNotification,

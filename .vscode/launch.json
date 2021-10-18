@@ -13,7 +13,8 @@
             "name": "example",
             "cwd": "example",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "flutterMode": "profile"
         }
     ]
 }

@@ -78,6 +78,7 @@ PODS:
 DEPENDENCIES:
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - devicelocale (from `.symlinks/plugins/devicelocale/ios`)
+  - Firebase/Messaging
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
@@ -138,6 +139,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 3dffd8c48b531d21ec0ec153c22dc8e3a6223bc9
+PODFILE CHECKSUM: d7887671c89d6ff9f70937b6f14c9eb635fb2721
 
 COCOAPODS: 1.10.2
