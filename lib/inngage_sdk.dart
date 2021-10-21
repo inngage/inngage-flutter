@@ -162,33 +162,36 @@ class InngageSDK extends ChangeNotifier {
     required String messageNotification,
     required String url,
   }) async {
-    _navigatorKey.currentState!.push(
-      MaterialPageRoute(
-        builder: (context) => WebviewScaffold(
-          url: url,
-          appBar: new AppBar(
-            title: _inngageWebViewProperties.appBarText,
-          ),
-          withZoom: _inngageWebViewProperties.withZoom,
-          withLocalStorage: _inngageWebViewProperties.withLocalStorage,
-          hidden: true,
-          debuggingEnabled: _inngageWebViewProperties.debuggingEnabled,
-          withJavascript: _inngageWebViewProperties.withJavascript,
-          initialChild: Container(
-            color: _inngageWebViewProperties.backgroundColor,
-            child: Center(
-              child: _inngageWebViewProperties.customLoading != null
-                  ? _inngageWebViewProperties.customLoading
-                  : CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _inngageWebViewProperties.loaderColor,
+    final currentState = _navigatorKey.currentState;
+    if (currentState != null) {
+      currentState.push(
+        MaterialPageRoute(
+          builder: (context) => WebviewScaffold(
+            url: url,
+            appBar: AppBar(
+              title: _inngageWebViewProperties.appBarText,
+            ),
+            withZoom: _inngageWebViewProperties.withZoom,
+            withLocalStorage: _inngageWebViewProperties.withLocalStorage,
+            hidden: true,
+            debuggingEnabled: _inngageWebViewProperties.debuggingEnabled,
+            withJavascript: _inngageWebViewProperties.withJavascript,
+            initialChild: Container(
+              color: _inngageWebViewProperties.backgroundColor,
+              child: Center(
+                child: _inngageWebViewProperties.customLoading != null
+                    ? _inngageWebViewProperties.customLoading
+                    : CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          _inngageWebViewProperties.loaderColor,
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   /// Define a top-level named handler which background/terminated messages will

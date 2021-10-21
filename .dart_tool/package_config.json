@@ -63,7 +63,7 @@
     },
     {
       "name": "firebase_core",
-      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.6.0",
+      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.7.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -81,19 +81,19 @@
     },
     {
       "name": "firebase_messaging",
-      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-10.0.6",
+      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-10.0.8",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "firebase_messaging_platform_interface",
-      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_platform_interface-3.0.5",
+      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_platform_interface-3.0.6",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "firebase_messaging_web",
-      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_web-2.0.5",
+      "rootUri": "file:///Users/pedroculque/development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_web-2.0.6",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -272,7 +272,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-10-18T02:52:01.803599Z",
+  "generated": "2021-10-21T00:15:08.031319Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }
