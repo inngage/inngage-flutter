@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
+import 'package:logger/logger.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,7 +26,19 @@ class InngageSDK extends ChangeNotifier {
 
   static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
-  static InngageNetwork _inngageNetwork = InngageNetwork(keyAuthorization: _keyAuthorization);
+  static InngageNetwork _inngageNetwork = InngageNetwork(
+    keyAuthorization: _keyAuthorization,
+    logger: Logger(
+      printer: PrettyPrinter(
+        methodCount: 0,
+        errorMethodCount: 5,
+        lineLength: 20000,
+        colors: true,
+        printEmojis: true,
+        printTime: false,
+      ),
+    ),
+  );
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   static InngageWebViewProperties _inngageWebViewProperties = InngageWebViewProperties();
   static bool _debugMode = false;
@@ -322,6 +335,14 @@ class InngageSDK extends ChangeNotifier {
 
   static void setIdentifier({required String identifier}) async {
     _identifier = identifier;
+  }
+
+  static void addUserData({
+    required String identifier,
+    required Map<String, dynamic> customFields,
+  }) async {
+    _identifier = identifier;
+    _customFields = customFields;
   }
 
   static void setKeyAuthorization({required String keyAuthorization}) async {

@@ -62,7 +62,7 @@ class NewEventRequest {
         "identifier": identifier,
         "event_name": eventName,
         "event_values": eventValues,
-        "registration": registration,
+        if (registration.isNotEmpty) "registration": registration,
         "conversion_event": conversionEvent,
         "conversion_value": conversionValue,
         "conversion_notid": conversionNotId,

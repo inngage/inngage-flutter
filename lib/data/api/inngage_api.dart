@@ -7,6 +7,7 @@ import 'package:inngage_plugin/data/model/notification_request.dart';
 import 'package:inngage_plugin/data/model/subscription_request.dart';
 import 'package:inngage_plugin/inngage_sdk.dart';
 import 'package:inngage_plugin/util/constants.dart';
+import 'package:logger/logger.dart';
 
 abstract class InngageNetworkData {
   Future<void> subscription({
@@ -26,9 +27,12 @@ abstract class InngageNetworkData {
 }
 
 class InngageNetwork implements InngageNetworkData {
-  InngageNetwork({this.keyAuthorization = ''});
+  InngageNetwork({
+    required this.logger,
+    this.keyAuthorization = '',
+  });
   final String keyAuthorization;
-
+  final Logger logger;
   @override
   Future<void> subscription({
     required SubscriptionRequest subscription,
@@ -43,6 +47,11 @@ class InngageNetwork implements InngageNetworkData {
       },
       body: payload,
     );
+    if (InngageSDK.getDebugMode()) {
+      logger.i(resp.request);
+      logger.i(resp.body);
+    }
+
     if (InngageSDK.getDebugMode()) {
       print('INNGAGE PAYLOAD: $payload');
       print('INNGAGE RESPONSE: ${resp.body}');
@@ -115,6 +124,12 @@ class InngageNetwork implements InngageNetworkData {
       },
       body: payload,
     );
+    if (InngageSDK.getDebugMode()) {
+      logger.i(resp.request);
+      logger.i(payload);
+      logger.i(resp.body);
+    }
+
     if (resp.statusCode != 200) {
       throw InngageException(
         'Unfortunately it was not possible send an event',

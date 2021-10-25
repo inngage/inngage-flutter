@@ -41,7 +41,7 @@ void main() async {
   InngageSDK.setDebugMode(true);
   InngageSDK.setUserPhone("67587787");
   await InngageSDK.sendEvent(
-    eventName: 'test',
+    eventName: 'MyOtherEventWithoutEventValues',
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     identifier: 'user@gmail.com',
     eventValues: {
@@ -49,7 +49,7 @@ void main() async {
     },
   );
   await InngageSDK.sendEvent(
-    eventName: 'MyOtherEventWithoutEventValues',
+    eventName: 'send_test',
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     identifier: 'user@gmail.com',
   );
