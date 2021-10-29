@@ -42,8 +42,8 @@ android {
         applicationId "com.inngage_plugin_example"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 9
+        versionName '1.1.1'
     }
 
     buildTypes {

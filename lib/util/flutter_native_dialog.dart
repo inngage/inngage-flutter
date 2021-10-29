@@ -58,6 +58,6 @@ class FlutterNativeDialog {
 
   @visibleForTesting
   static void setMockCallHandler(Future<dynamic> handler(MethodCall call)) {
-    _channel.setMockMethodCallHandler(handler);
+    //_channel.setMockMethodCallHandler(handler);
   }
 }

@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:logger/logger.dart';
@@ -23,9 +26,13 @@ class InngageSDK extends ChangeNotifier {
   static String _identifier = '';
   static String _phoneNumber = '';
   static String _appToken = '';
-
+  static String _registration = '';
   static String _keyAuthorization = '';
   static Map<String, dynamic> _customFields = {};
+
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   static InngageNetwork _inngageNetwork = InngageNetwork(
     keyAuthorization: _keyAuthorization,
     logger: Logger(
@@ -40,7 +47,8 @@ class InngageSDK extends ChangeNotifier {
     ),
   );
   static GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  static InngageWebViewProperties _inngageWebViewProperties = InngageWebViewProperties();
+  static InngageWebViewProperties _inngageWebViewProperties =
+      InngageWebViewProperties();
   static bool _debugMode = false;
 
   static bool getDebugMode() => _debugMode;
@@ -84,7 +92,14 @@ class InngageSDK extends ChangeNotifier {
       _customFields = customFields;
     }
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
+    _firebaseMessaging.getInitialMessage().then((value) {
+      try {
+        _openCommonNotification(
+          data: value!.data,
+          appToken: _appToken,
+        );
+      } catch (e) {}
+    });
     await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -97,15 +112,63 @@ class InngageSDK extends ChangeNotifier {
 
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    // FirebaseMessaging.onMessage.listen((event) {
-    //   if (getDebugMode()) {
-    //     print('onMessage ${event.data}');
-    //   }
-    //   _openCommonNotification(
-    //     data: event.data,
-    //     appToken: appToken,
-    //   );
-    // });
+
+    if(Platform.isAndroid){
+        const AndroidInitializationSettings initializationSettingsAndroid =
+            AndroidInitializationSettings('launch_background');
+
+        final IOSInitializationSettings initializationSettingsIOS =
+            IOSInitializationSettings(
+                requestAlertPermission: false,
+                requestBadgePermission: false,
+                requestSoundPermission: false,
+                onDidReceiveLocalNotification: (
+                  int id,
+                  String? title,
+                  String? body,
+                  String? payload,
+                ) async {});
+
+        final InitializationSettings initializationSettings =
+            InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
+        await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+            onSelectNotification: (String? payload) async {
+          if (payload != null) {
+            debugPrint('notification payload: $payload');
+            _openCommonNotification(
+              data: json.decode(payload),
+              appToken: _appToken,
+            );
+          }
+        });
+    }
+    FirebaseMessaging.onMessage.listen((message) async {
+      if (getDebugMode()) {
+        print('onMessage ${message.data}');
+      }
+     if(Platform.isAndroid){
+        const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails(
+                'high_importance_channel', 'your channel name',
+                channelDescription: 'your channel description',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: 'ticker');
+        const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        final titleNotification = message.data['title'];
+        final messageNotification = message.data['message'];
+        await flutterLocalNotificationsPlugin.show(
+            0, titleNotification, messageNotification, platformChannelSpecifics,
+            payload: json.encode(message.data));
+
+
+     }
+    });
+
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       if (getDebugMode()) {
         print('onMessageOpenedApp ${event.from}');
@@ -119,7 +182,8 @@ class InngageSDK extends ChangeNotifier {
 
     //request permission to iOS device
     if (Platform.isIOS) {
-      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
         alert: true, // Required to display a heads up notification
         badge: true,
         sound: true,
@@ -211,14 +275,11 @@ class InngageSDK extends ChangeNotifier {
   /// call.
   ///
   /// To verify things are working, check out the native platform logs.
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     if (getDebugMode()) {
       print('_firebaseMessagingBackgroundHandler ${message.toString()}');
     }
-    _openCommonNotification(
-      data: message.data,
-      appToken: _appToken,
-    );
   }
 
   static void _openCommonNotification({
@@ -338,11 +399,13 @@ class InngageSDK extends ChangeNotifier {
   }
 
   static void addUserData({
-    required String identifier,
-    required Map<String, dynamic> customFields,
+     String? identifier,
+     String? register,
+     Map<String, dynamic>? customFields,
   }) async {
-    _identifier = identifier;
-    _customFields = customFields;
+    _identifier = identifier ?? "";
+    _registration = register ?? "";
+    _customFields = customFields ?? {};
   }
 
   static void setKeyAuthorization({required String keyAuthorization}) async {
