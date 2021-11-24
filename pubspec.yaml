@@ -1,6 +1,6 @@
 name: inngage_plugin
 description: The inngage plugin to flutter apps.
-version: 1.3.5
+version: 1.3.6
 homepage: https://inngage.com.br
 
 environment:
