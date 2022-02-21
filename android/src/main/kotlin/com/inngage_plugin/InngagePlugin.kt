@@ -1,48 +1,35 @@
 package com.inngage_plugin
 
-import android.app.Activity
-import android.app.AlertDialog
+import androidx.annotation.NonNull
+
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 
+/** InngagePlugin */
+class InngagePlugin: FlutterPlugin, MethodCallHandler {
+  /// The MethodChannel that will the communication between Flutter and native Android
+  ///
+  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+  /// when the Flutter Engine is detached from the Activity
+  private lateinit var channel : MethodChannel
 
-class InngagePlugin(val activity: Activity) : MethodCallHandler {
-  companion object {
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-      if (registrar.activity() != null) {
-        val channel = MethodChannel(registrar.messenger(), "flutter_native_dialog")
-        channel.setMethodCallHandler(InngagePlugin(registrar.activity()))
-      }
+  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "inngage_plugin")
+    channel.setMethodCallHandler(this)
+  }
+
+  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    if (call.method == "getPlatformVersion") {
+      result.success("Android ${android.os.Build.VERSION.RELEASE}")
+    } else {
+      result.notImplemented()
     }
   }
 
-  override fun onMethodCall(call: MethodCall, result: Result) {
-    if (!call.method.startsWith("dialog.")) {
-      result.notImplemented()
-      return
-    }
-
-    val builder = AlertDialog.Builder(activity,R.style.DialogBase)
-    builder
-      .setTitle(call.argument<String>("title"))
-      .setMessage(call.argument<String>("message"))
-      .setCancelable(false)
-
-    if (call.method == "dialog.alert") {
-      builder.setPositiveButton(call.argument<String>("positiveButtonText")) { _, _ -> result.success(true) }
-    }
-
-    if (call.method == "dialog.confirm") {
-      builder
-        .setPositiveButton(call.argument<String>("positiveButtonText")) { _, _ -> result.success(true) }
-        .setNegativeButton(call.argument<String>("negativeButtonText")) { _, _ -> result.success(false) }
-        .setCancelable(false)
-    }
-
-    builder.create().show()
+  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    channel.setMethodCallHandler(null)
   }
 }
