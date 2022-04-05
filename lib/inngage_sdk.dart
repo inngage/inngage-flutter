@@ -9,16 +9,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class InngageSDK extends ChangeNotifier {
   InngageSDK._internal();
   factory InngageSDK() => _singleton;
 
+  static bool _isInOpen = false;
   static final InngageSDK _singleton = InngageSDK._internal();
 
   static FirebaseApp? defaultApp;
@@ -33,7 +34,7 @@ class InngageSDK extends ChangeNotifier {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static InngageNetwork _inngageNetwork = InngageNetwork(
+  static final InngageNetwork _inngageNetwork = InngageNetwork(
     keyAuthorization: _keyAuthorization,
     logger: Logger(
       printer: PrettyPrinter(
@@ -60,6 +61,8 @@ class InngageSDK extends ChangeNotifier {
     Map<String, dynamic>? customFields,
     InngageWebViewProperties? inngageWebViewProperties,
   }) async {
+   
+
     try {
       //initialize firebase
       defaultApp = await Firebase.initializeApp();
@@ -95,9 +98,7 @@ class InngageSDK extends ChangeNotifier {
     _firebaseMessaging.getInitialMessage().then((value) {
       try {
         _openCommonNotification(
-          data: value!.data,
-          appToken: _appToken,
-        );
+            data: value!.data, appToken: _appToken, inBack: true);
       } catch (e) {}
     });
     await _firebaseMessaging.requestPermission(
@@ -113,43 +114,43 @@ class InngageSDK extends ChangeNotifier {
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    if(Platform.isAndroid){
-        const AndroidInitializationSettings initializationSettingsAndroid =
-            AndroidInitializationSettings('launch_background');
+    if (Platform.isAndroid) {
+      const AndroidInitializationSettings initializationSettingsAndroid =
+          AndroidInitializationSettings('launch_background');
 
-        final IOSInitializationSettings initializationSettingsIOS =
-            IOSInitializationSettings(
-                requestAlertPermission: false,
-                requestBadgePermission: false,
-                requestSoundPermission: false,
-                onDidReceiveLocalNotification: (
-                  int id,
-                  String? title,
-                  String? body,
-                  String? payload,
-                ) async {});
+      final IOSInitializationSettings initializationSettingsIOS =
+          IOSInitializationSettings(
+              requestAlertPermission: false,
+              requestBadgePermission: false,
+              requestSoundPermission: false,
+              onDidReceiveLocalNotification: (
+                int id,
+                String? title,
+                String? body,
+                String? payload,
+              ) async {});
 
-        final InitializationSettings initializationSettings =
-            InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS,
-        );
-        await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-            onSelectNotification: (String? payload) async {
-          if (payload != null) {
-            debugPrint('notification payload: $payload');
-            _openCommonNotification(
-              data: json.decode(payload),
-              appToken: _appToken,
-            );
-          }
-        });
+      final InitializationSettings initializationSettings =
+          InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+      );
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: (String? payload) async {
+        if (payload != null) {
+          debugPrint('notification payload: $payload');
+          _openCommonNotification(
+            data: json.decode(payload),
+            appToken: _appToken,
+          );
+        }
+      });
     }
     FirebaseMessaging.onMessage.listen((message) async {
       if (getDebugMode()) {
         print('onMessage ${message.data}');
       }
-     if(Platform.isAndroid){
+      if (Platform.isAndroid) {
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails(
                 'high_importance_channel', 'your channel name',
@@ -164,9 +165,7 @@ class InngageSDK extends ChangeNotifier {
         await flutterLocalNotificationsPlugin.show(
             0, titleNotification, messageNotification, platformChannelSpecifics,
             payload: json.encode(message.data));
-
-
-     }
+      }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
@@ -243,30 +242,20 @@ class InngageSDK extends ChangeNotifier {
     if (currentState != null) {
       currentState.push(
         MaterialPageRoute(
-          builder: (context) => WebviewScaffold(
-            url: url,
-            appBar: AppBar(
-              title: _inngageWebViewProperties.appBarText,
+            builder: (context) => Scaffold(
+                appBar: AppBar(
+                  title: _inngageWebViewProperties.appBarText,
+                ),
+                body: WebView(
+                  initialUrl: url,
+                  zoomEnabled:_inngageWebViewProperties.withZoom ,
+                  debuggingEnabled: _inngageWebViewProperties.debuggingEnabled,
+                  javascriptMode: _inngageWebViewProperties.withJavascript ? JavascriptMode.unrestricted : JavascriptMode.disabled,
+                  
+                ))
+           
+
             ),
-            withZoom: _inngageWebViewProperties.withZoom,
-            withLocalStorage: _inngageWebViewProperties.withLocalStorage,
-            hidden: true,
-            debuggingEnabled: _inngageWebViewProperties.debuggingEnabled,
-            withJavascript: _inngageWebViewProperties.withJavascript,
-            initialChild: Container(
-              color: _inngageWebViewProperties.backgroundColor,
-              child: Center(
-                child: _inngageWebViewProperties.customLoading != null
-                    ? _inngageWebViewProperties.customLoading
-                    : CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          _inngageWebViewProperties.loaderColor,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ),
       );
     }
   }
@@ -280,12 +269,24 @@ class InngageSDK extends ChangeNotifier {
     if (getDebugMode()) {
       print('_firebaseMessagingBackgroundHandler ${message.toString()}');
     }
+
+    try {
+      _openCommonNotification(
+        data: message.data,
+        appToken: _appToken,
+      );
+    } catch (e) {}
   }
 
-  static void _openCommonNotification({
-    required Map<String, dynamic> data,
-    required String appToken,
-  }) async {
+  static void _openCommonNotification(
+      {required Map<String, dynamic> data,
+      required String appToken,
+      bool inBack = false}) async {
+    if (_isInOpen) return;
+    _isInOpen = true;
+    Future.delayed(const Duration(seconds: 4))
+        .then((value) => _isInOpen = false);
+
     if (getDebugMode()) {
       print("openCommonNotification: $data");
     }
@@ -311,17 +312,26 @@ class InngageSDK extends ChangeNotifier {
     if (type.isEmpty) {
       return;
     }
-
     switch (type) {
       case 'deep':
         _launchURL(url);
         return;
       case 'inapp':
-        _showCustomNotification(
-          messageNotification: messageNotification,
-          titleNotification: titleNotification,
-          url: url,
-        );
+        if (inBack) {
+          Future.delayed(const Duration(seconds: 3))
+              .then((value) => _showCustomNotification(
+                    messageNotification: messageNotification,
+                    titleNotification: titleNotification,
+                    url: url,
+                  ));
+        } else {
+          _showCustomNotification(
+            messageNotification: messageNotification,
+            titleNotification: titleNotification,
+            url: url,
+          );
+        }
+
         break;
     }
   }
@@ -338,7 +348,7 @@ class InngageSDK extends ChangeNotifier {
   static void _launchURL(String url) async {
     final urlEncode = Uri.encodeFull(url);
     if (await canLaunch(urlEncode)) {
-      await launch(urlEncode);
+      await launch(urlEncode, forceWebView: false, forceSafariVC: false);
     } else {
       throw 'Could not launch $urlEncode';
     }
@@ -399,9 +409,9 @@ class InngageSDK extends ChangeNotifier {
   }
 
   static void addUserData({
-     String? identifier,
-     String? register,
-     Map<String, dynamic>? customFields,
+    String? identifier,
+    String? register,
+    Map<String, dynamic>? customFields,
   }) async {
     _identifier = identifier ?? "";
     _registration = register ?? "";

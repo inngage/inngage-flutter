@@ -1,6 +1,6 @@
 name: inngage_plugin
 description: The inngage plugin to flutter apps.
-version: 1.4.0
+version: 1.4.1
 homepage: https://inngage.com.br
 
 environment:
@@ -21,7 +21,8 @@ dependencies:
   # Launch external URLs
   url_launcher: ^6.0.20
   # webview
-  flutter_webview_plugin: ^0.4.0
+  #flutter_webview_plugin: 0.3.10+1
+  webview_flutter: ^3.0.1
   #Locale
   devicelocale: ^0.5.0
   #version
