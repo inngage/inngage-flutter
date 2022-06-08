@@ -1,35 +1,37 @@
 name: inngage_plugin
 description: The inngage plugin to flutter apps.
-version: 1.4.1
+version: 2.0.0
 homepage: https://inngage.com.br
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   flutter: ">=2.5.0"
 
 dependencies:
   flutter:
     sdk: flutter
   #Android and iOS getters to get platform-specific device information
-  device_info:
-    ^2.0.2
+  device_info: ^2.0.3
     #Firebase
-  firebase_core: ^1.12.0
-  firebase_messaging: ^11.2.6
+  firebase_core: ^1.17.0
+  firebase_messaging: ^11.4.0
+  firebase_in_app_messaging: ^0.6.0+14
   #localNotificaiton
-  flutter_local_notifications: ^9.3.2
+  flutter_local_notifications: ^9.5.3+1 
   # Launch external URLs
-  url_launcher: ^6.0.20
+  url_launcher: ^6.1.2
   # webview
   #flutter_webview_plugin: 0.3.10+1
-  webview_flutter: ^3.0.1
+  webview_flutter: ^3.0.4
   #Locale
-  devicelocale: ^0.5.0
+  devicelocale: ^0.5.2
   #version
   package_info: ^2.0.2
   meta: ^1.7.0
   http: ^0.13.4
   logger: ^1.1.0
+  flutter_image_slideshow: ^0.1.2
+  shared_preferences: ^2.0.15
 dev_dependencies:
   flutter_test:
     sdk: flutter

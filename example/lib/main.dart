@@ -33,7 +33,7 @@ void main() async {
   );
   await InngageSDK.subscribe(
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-    friendlyIdentifier: 'user01@gmail.com',
+    friendlyIdentifier: 'user23@gmail.com',
     customFields: json,
     phoneNumber: '11-959821612',
     navigatorKey: navigatorKey,
@@ -52,7 +52,7 @@ void main() async {
   await InngageSDK.sendEvent(
     eventName: 'send_test',
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-    identifier: 'user01@gmail.com',
+    identifier: 'user23@gmail.com',
   );
   runApp(MyApp());
 }

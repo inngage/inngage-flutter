@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "70542534310",
+    "firebase_url": "https://inngage-lab.firebaseio.com",
+    "project_id": "inngage-lab",
+    "storage_bucket": "inngage-lab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70542534310:android:c4847af80d62397f663667",
+        "android_client_info": {
+          "package_name": "com.ingage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9hMFGbi06-AED7MOonyjqmf5Sx1vv2_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70542534310-cm5ptslt098lgra1vpdsp4280hvt7s8f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.inngage.demo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70542534310:android:c588f6a7ddf14a21663667",
+        "android_client_info": {
+          "package_name": "com.inngage_plugin_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9hMFGbi06-AED7MOonyjqmf5Sx1vv2_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70542534310-cm5ptslt098lgra1vpdsp4280hvt7s8f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.inngage.demo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70542534310:android:2572b797c1902786663667",
+        "android_client_info": {
+          "package_name": "com.newingage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9hMFGbi06-AED7MOonyjqmf5Sx1vv2_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70542534310-cm5ptslt098lgra1vpdsp4280hvt7s8f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.inngage.demo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
