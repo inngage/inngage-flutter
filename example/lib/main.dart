@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:inngage_plugin/inngage_sdk.dart';
+import 'package:inngage_plugin/inngage_plugin.dart';
 
 import 'my_app.dart';
 
@@ -39,9 +39,9 @@ void main() async {
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
   );
-  InngageSDK.setDebugMode(true);
-  InngageSDK.setUserPhone("67587787");
-  await InngageSDK.sendEvent(
+  InngageEvent.setDebugMode(true);
+  InngageEvent.setUserPhone("67587787");
+  await InngageEvent.sendEvent(
     eventName: 'MyOtherEventWithoutEventValues',
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     identifier: 'user01@gmail.com',
@@ -49,7 +49,7 @@ void main() async {
       'location': '12312312312',
     },
   );
-  await InngageSDK.sendEvent(
+  await InngageEvent.sendEvent(
     eventName: 'send_test',
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     identifier: 'user23@gmail.com',

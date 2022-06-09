@@ -6,6 +6,7 @@ import 'package:inngage_plugin/data/model/event_request.dart';
 import 'package:inngage_plugin/data/model/notification_request.dart';
 import 'package:inngage_plugin/data/model/subscription_request.dart';
 import 'package:inngage_plugin/inngage_sdk.dart';
+import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:inngage_plugin/util/constants.dart';
 import 'package:logger/logger.dart';
 
@@ -47,12 +48,12 @@ class InngageNetwork implements InngageNetworkData {
       },
       body: payload,
     );
-    if (InngageSDK.getDebugMode()) {
+    if (InngageProperties.getDebugMode()) {
       logger.i(resp.request);
       logger.i(resp.body);
     }
 
-    if (InngageSDK.getDebugMode()) {
+    if (InngageProperties.getDebugMode()) {
       print('INNGAGE PAYLOAD: $payload');
       print('INNGAGE RESPONSE: ${resp.body}');
     }
@@ -124,7 +125,7 @@ class InngageNetwork implements InngageNetworkData {
       },
       body: payload,
     );
-    if (InngageSDK.getDebugMode()) {
+    if (InngageProperties.getDebugMode()) {
       logger.i(resp.request);
       logger.i(payload);
       logger.i(resp.body);

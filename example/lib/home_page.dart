@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
         child: FlatButton(
           onPressed: () async {
             try {
-              final result = await InngageSDK.sendEvent(
+              final result = await InngageEvent.sendEvent(
                 eventName: 'click me', appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e', identifier: 'dass@asdsa.com',
                 //identifier: 'appexample@gmail.com',
               );
