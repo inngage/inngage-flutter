@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inngage_plugin/inapp/inngage_inapp.dart';
 import 'main.dart';
 import 'home_page.dart';
 
@@ -11,6 +12,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(seconds: 2)).then((value) {
+      InngageInapp.show();
+    });
   }
 
   @override

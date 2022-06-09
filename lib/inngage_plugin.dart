@@ -15,4 +15,5 @@ export 'models/rich_content_model.dart';
 export 'util/hexcolor.dart';
 export 'util/utils.dart';
 export 'inngage_sdk.dart';
+export 'inapp/inngage_inapp.dart';
 

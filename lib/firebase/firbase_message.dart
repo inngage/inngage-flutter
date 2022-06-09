@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,27 +9,29 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inngage_plugin/data/model/subscription_request.dart';
 import 'package:inngage_plugin/dialogs/app_dialog.dart';
 import 'package:inngage_plugin/dialogs/notification.dart';
+import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:inngage_plugin/models/innapp_model.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:inngage_plugin/util/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../inapp/inngage_inapp.dart';
 
-class InngageFirebaseMessage{
-
-static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+class InngageFirebaseMessage {
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-
-
-  config()async{
-     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  config() async {
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     FirebaseInAppMessaging m = FirebaseInAppMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
       try {
         InngageNotification.openCommonNotification(
-            data: value!.data, appToken: InngageProperties.appToken, inBack: true);
+            data: value!.data,
+            appToken: InngageProperties.appToken,
+            inBack: true);
       } catch (e) {}
     });
+
     await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -120,6 +121,10 @@ static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         print('onMessageOpenedApp ${event.from}');
         print('onMessageOpenedApp ${event.messageType}');
       }
+      print('logx ${event.from}');
+      Future.delayed(Duration(seconds: 2)).then((value) {
+        InngageInapp.show();
+      });
       InngageNotification.openCommonNotification(
         data: event.data,
         appToken: InngageProperties.appToken,
@@ -178,13 +183,9 @@ static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         );
       },
     );
- 
- 
- 
-  } 
+  }
 
-
-    /// Define a top-level named handler which background/terminated messages will
+  /// Define a top-level named handler which background/terminated messages will
   /// call.
   ///
   /// To verify things are working, check out the native platform logs.
@@ -199,14 +200,10 @@ static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       inappMessage = data['inapp_message'];
 
       if (inappMessage) {
-        
-        final prefs = await SharedPreferences.getInstance();
         prefs.setString("inapp", message.data['additional_data']);
-        var inAppModel = InAppModel.fromJson(data);
-        InngageDialog.showInAppDialog(inAppModel);
       }
     } catch (e) {
-      print(e);
+      print('logx listen $e');
     }
     print('logx listen $inappMessage');
 
@@ -221,5 +218,4 @@ static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       );
     } catch (e) {}
   }
-
 }
