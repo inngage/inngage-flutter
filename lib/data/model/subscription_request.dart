@@ -37,6 +37,9 @@ class RegisterSubscriberRequest {
     this.uuid,
     this.customField,
     this.phoneNumber,
+    this.advertiserId,
+    this.androidId,
+    this.idfa
   });
 
   String? appToken;
@@ -55,8 +58,14 @@ class RegisterSubscriberRequest {
   String? uuid;
   Map<String, dynamic>? customField;
   String? phoneNumber;
+  String? idfa;
+  String? androidId;
+  String? advertiserId;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() {
+
+
+    return {
         "app_token": appToken,
         "identifier": identifier,
         "registration": registration,
@@ -72,6 +81,10 @@ class RegisterSubscriberRequest {
         "app_updated_in": appUpdatedIn!.toIso8601String(),
         "uuid": uuid,
         "custom_field": customField,
-        "phone": phoneNumber
+        "phone": phoneNumber,
+        "idfa": idfa,
+        "android_id": androidId,
+        "advertiser_id": advertiserId,
       };
+  }
 }

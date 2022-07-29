@@ -2,9 +2,11 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:flutter/services.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:advertising_id/advertising_id.dart';
 
 class InngageUtils{
   
@@ -56,6 +58,15 @@ class InngageUtils{
     }
   }
 
+
+  static Future<String> getAdvertisingId() async {
+     try {
+      return  await AdvertisingId.id(true) ?? "Unknown";
+    } on PlatformException {
+      return "Unknown";
+    }
+  }
+
   static Future<String> getUniqueId() async {
     if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await InngageProperties.deviceInfo.iosInfo;
@@ -65,6 +76,9 @@ class InngageUtils{
       return androidInfo.androidId;
     }
   }
+
+
+  
 
   static Future<String> getId() async {
     var deviceInfo = DeviceInfoPlugin();

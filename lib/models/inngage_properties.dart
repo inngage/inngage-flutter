@@ -15,8 +15,8 @@ class InngageProperties {
   static String keyAuthorization = '';
   static Map<String, dynamic> customFields = {};
   static bool debugMode = false;
-   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-     static InngageWebViewProperties inngageWebViewProperties =
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static InngageWebViewProperties inngageWebViewProperties =
       InngageWebViewProperties();
   static final InngageNetwork inngageNetwork = InngageNetwork(
     keyAuthorization: keyAuthorization,

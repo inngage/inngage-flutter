@@ -149,6 +149,9 @@ class InngageFirebaseMessage {
     final uuid = await InngageUtils.getUniqueId();
     final manufacturer = await InngageUtils.getDeviceManufacturer();
     final appVersion = await InngageUtils.getVersionApp();
+    final advertiserId = await InngageUtils.getAdvertisingId();
+    final androidId = await InngageUtils.getVersionApp();
+    final idfa = await InngageUtils.getAdvertisingId();
 
     _firebaseMessaging.getToken().then(
       (String? registration) async {
@@ -173,6 +176,9 @@ class InngageFirebaseMessage {
           registration: registration,
           uuid: uuid,
           platform: Platform.isAndroid ? 'Android' : 'iOS',
+          advertiserId:advertiserId,
+          androidId:androidId,
+          idfa:idfa
         );
 
         //make request subscription to inngage backend
