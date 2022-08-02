@@ -41,6 +41,7 @@ class InngageSDK extends ChangeNotifier {
       required GlobalKey<NavigatorState> navigatorKey,
       String friendlyIdentifier = '',
       String? phoneNumber,
+      String? email,
       Map<String, dynamic>? customFields,
       InngageWebViewProperties? inngageWebViewProperties,
       bool requestAdvertiserId = false}) async {
@@ -53,6 +54,7 @@ class InngageSDK extends ChangeNotifier {
       }
     }
     InngageUtils.requestAdvertiserId = requestAdvertiserId;
+  
     //validation identifier
     if (friendlyIdentifier.isEmpty) {
       InngageProperties.identifier = await InngageUtils.getId();

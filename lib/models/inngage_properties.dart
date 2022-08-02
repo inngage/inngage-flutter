@@ -10,6 +10,7 @@ class InngageProperties {
   static final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   static String identifier = '';
   static String phoneNumber = '';
+  static String email = '';
   static String appToken = '';
   static String registration = '';
   static String keyAuthorization = '';

@@ -150,7 +150,6 @@ class InngageFirebaseMessage {
     final manufacturer = await InngageUtils.getDeviceManufacturer();
     final appVersion = await InngageUtils.getVersionApp();
     final advertiserId = await InngageUtils.getAdvertisingId();
-    final androidId = await InngageUtils.getVersionApp();
     final idfa = await InngageUtils.getAdvertisingId();
 
     _firebaseMessaging.getToken().then(
@@ -168,6 +167,7 @@ class InngageFirebaseMessage {
           deviceModel: deviceModel,
           sdk: '1',
           phoneNumber: InngageProperties.phoneNumber,
+          email: InngageProperties.email,
           deviceManufacturer: manufacturer,
           identifier: InngageProperties.identifier,
           osLanguage: languages![0] ?? '',
@@ -177,7 +177,6 @@ class InngageFirebaseMessage {
           uuid: uuid,
           platform: Platform.isAndroid ? 'Android' : 'iOS',
           advertiserId:advertiserId,
-          androidId:androidId,
           idfa:idfa
         );
 
