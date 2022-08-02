@@ -13,7 +13,7 @@ This SDK inf lutter aims to enable integration with the [Inngage](http://www.inn
 [Access here](https://inngage.readme.io/v1.0/docs/integração-flutter) to see the official documentation on the inngage website
 
 ```yaml
-inngage_plugin:2.0.0
+inngage_plugin:2.1.2
 ```
 
 

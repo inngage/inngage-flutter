@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
@@ -8,8 +7,8 @@ import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:advertising_id/advertising_id.dart';
 
-class InngageUtils{
-  
+class InngageUtils {
+  static bool requestAdvertiserId = false;
 
   static Future<String> getVersionApp() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -34,7 +33,8 @@ class InngageUtils{
       IosDeviceInfo iosInfo = await InngageProperties.deviceInfo.iosInfo;
       return iosInfo.systemVersion;
     } else {
-      AndroidDeviceInfo androidInfo = await InngageProperties.deviceInfo.androidInfo;
+      AndroidDeviceInfo androidInfo =
+          await InngageProperties.deviceInfo.androidInfo;
       return androidInfo.version.release;
     }
   }
@@ -44,7 +44,8 @@ class InngageUtils{
       IosDeviceInfo iosInfo = await InngageProperties.deviceInfo.iosInfo;
       return iosInfo.utsname.machine;
     } else {
-      AndroidDeviceInfo androidInfo = await InngageProperties.deviceInfo.androidInfo;
+      AndroidDeviceInfo androidInfo =
+          await InngageProperties.deviceInfo.androidInfo;
       return androidInfo.model;
     }
   }
@@ -53,16 +54,20 @@ class InngageUtils{
     if (Platform.isIOS) {
       return 'Apple';
     } else {
-      AndroidDeviceInfo androidInfo = await InngageProperties.deviceInfo.androidInfo;
+      AndroidDeviceInfo androidInfo =
+          await InngageProperties.deviceInfo.androidInfo;
       return androidInfo.manufacturer;
     }
   }
 
-
   static Future<String> getAdvertisingId() async {
-     try {
-      return  await AdvertisingId.id(true) ?? "Unknown";
-    } on PlatformException {
+    if (requestAdvertiserId) {
+      try {
+        return await AdvertisingId.id(true) ?? "Unknown";
+      } on PlatformException {
+        return "Unknown";
+      }
+    } else {
       return "Unknown";
     }
   }
@@ -72,13 +77,11 @@ class InngageUtils{
       IosDeviceInfo iosInfo = await InngageProperties.deviceInfo.iosInfo;
       return iosInfo.identifierForVendor;
     } else {
-      AndroidDeviceInfo androidInfo = await InngageProperties.deviceInfo.androidInfo;
+      AndroidDeviceInfo androidInfo =
+          await InngageProperties.deviceInfo.androidInfo;
       return androidInfo.androidId;
     }
   }
-
-
-  
 
   static Future<String> getId() async {
     var deviceInfo = DeviceInfoPlugin();

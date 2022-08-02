@@ -33,23 +33,17 @@ class InngageSDK extends ChangeNotifier {
   static FirebaseApp? defaultApp;
   InngageProperties inngageProperties = InngageProperties();
 
-  
- 
-
-
-
-
   static var notificationController =
       StreamController<RemoteMessage>.broadcast();
 
-  static Future<void> subscribe({
-    required String appToken,
-    required GlobalKey<NavigatorState> navigatorKey,
-    String friendlyIdentifier = '',
-    String? phoneNumber,
-    Map<String, dynamic>? customFields,
-    InngageWebViewProperties? inngageWebViewProperties,
-  }) async {
+  static Future<void> subscribe(
+      {required String appToken,
+      required GlobalKey<NavigatorState> navigatorKey,
+      String friendlyIdentifier = '',
+      String? phoneNumber,
+      Map<String, dynamic>? customFields,
+      InngageWebViewProperties? inngageWebViewProperties,
+      bool requestAdvertiserId = false}) async {
     try {
       //initialize firebase
       defaultApp = await Firebase.initializeApp();
@@ -58,7 +52,7 @@ class InngageSDK extends ChangeNotifier {
         print(error.toString());
       }
     }
-
+    InngageUtils.requestAdvertiserId = requestAdvertiserId;
     //validation identifier
     if (friendlyIdentifier.isEmpty) {
       InngageProperties.identifier = await InngageUtils.getId();
@@ -96,8 +90,7 @@ class InngageSDK extends ChangeNotifier {
 
       if (inappMessage) {
         var inAppModel = InAppModel.fromJson(data);
-        InngageDialog.showInAppDialog(
-            inAppModel);
+        InngageDialog.showInAppDialog(inAppModel);
       }
     } catch (e) {
       print(e);

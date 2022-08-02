@@ -38,6 +38,7 @@ void main() async {
     phoneNumber: '11-959821612',
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
+    requestAdvertiserId: false
   );
   InngageEvent.setDebugMode(true);
   InngageEvent.setUserPhone("67587787");
