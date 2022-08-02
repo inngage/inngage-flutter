@@ -73,6 +73,9 @@ class InngageSDK extends ChangeNotifier {
     if (phoneNumber != null) {
       InngageProperties.phoneNumber = phoneNumber;
     }
+    if (email != null) {
+      InngageProperties.email = email;
+    }
 
     //set customFields properties
     if (customFields != null) {

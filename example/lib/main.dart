@@ -35,7 +35,7 @@ void main() async {
     appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
     friendlyIdentifier: 'user12@gmail.com',
     customFields: json,
-    phoneNumber: '11-959821612',
+    phoneNumber: '5511999999999',
     email: 'user12@gmail.com',
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
