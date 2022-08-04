@@ -44,10 +44,12 @@ class InngageNetwork implements InngageNetworkData {
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         'Content-Type': 'application/json',
-        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
+   
     if (InngageProperties.getDebugMode()) {
       logger.i(resp.request);
       logger.i(resp.body);
@@ -80,7 +82,8 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/notification/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
@@ -121,7 +124,8 @@ class InngageNetwork implements InngageNetworkData {
       Uri.parse(AppConstants.BASE_URL + '/events/newEvent/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        if (keyAuthorization.isNotEmpty) 'Authorization': 'key=$keyAuthorization'
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization'
       },
       body: payload,
     );
