@@ -6,19 +6,14 @@ import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:inngage_plugin/data/model/subscription_request.dart';
-import 'package:inngage_plugin/dialogs/app_dialog.dart';
-import 'package:inngage_plugin/dialogs/notification.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
-import 'package:inngage_plugin/models/innapp_model.dart';
-import 'package:inngage_plugin/models/inngage_properties.dart';
-import 'package:inngage_plugin/util/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../inapp/inngage_inapp.dart';
 
 class InngageFirebaseMessage {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  static void Function(dynamic data) firebaseListenCallback = (data){};
 
   config() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -44,7 +39,7 @@ class InngageFirebaseMessage {
 
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
+    
     if (Platform.isAndroid) {
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('launch_background');
@@ -159,26 +154,25 @@ class InngageFirebaseMessage {
           print("logx $registration");
         }
         final registerSubscriberRequest = RegisterSubscriberRequest(
-          appInstalledIn: DateTime.now(),
-          appToken: InngageProperties.appToken,
-          appUpdatedIn: DateTime.now(),
-          customField: InngageProperties.customFields,
-          appVersion: appVersion,
-          deviceModel: deviceModel,
-          sdk: '1',
-          phoneNumber: InngageProperties.phoneNumber,
-          email: InngageProperties.email,
-          deviceManufacturer: manufacturer,
-          identifier: InngageProperties.identifier,
-          osLanguage: languages![0] ?? '',
-          osLocale: locale,
-          osVersion: osDevice,
-          registration: registration,
-          uuid: uuid,
-          platform: Platform.isAndroid ? 'Android' : 'iOS',
-          advertiserId:advertiserId,
-          idfa:idfa
-        );
+            appInstalledIn: DateTime.now(),
+            appToken: InngageProperties.appToken,
+            appUpdatedIn: DateTime.now(),
+            customField: InngageProperties.customFields,
+            appVersion: appVersion,
+            deviceModel: deviceModel,
+            sdk: '1',
+            phoneNumber: InngageProperties.phoneNumber,
+            email: InngageProperties.email,
+            deviceManufacturer: manufacturer,
+            identifier: InngageProperties.identifier,
+            osLanguage: languages![0] ?? '',
+            osLocale: locale,
+            osVersion: osDevice,
+            registration: registration,
+            uuid: uuid,
+            platform: Platform.isAndroid ? 'Android' : 'iOS',
+            advertiserId: advertiserId,
+            idfa: idfa);
 
         //make request subscription to inngage backend
         await InngageProperties.inngageNetwork.subscription(
@@ -222,5 +216,13 @@ class InngageFirebaseMessage {
         appToken: InngageProperties.appToken,
       );
     } catch (e) {}
+
+    try {
+      
+        firebaseListenCallback(message.data);
+     
+    } catch (e) {
+      print('firebaseListenCallback error: $e');
+    }
   }
 }

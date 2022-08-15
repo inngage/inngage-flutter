@@ -1,28 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:device_info/device_info.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:inngage_plugin/dialogs/app_dialog.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
-import 'package:inngage_plugin/models/innapp_model.dart';
-import 'package:inngage_plugin/models/inngage_properties.dart';
-import 'package:inngage_plugin/models/inngage_web_view_properties_model.dart';
-import 'package:inngage_plugin/util/utils.dart';
-import 'package:logger/logger.dart';
-import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-import 'firebase/firbase_message.dart';
-import 'inapp/inapp_dialog.dart';
 
 class InngageSDK extends ChangeNotifier {
   InngageSDK._internal();
@@ -42,6 +25,7 @@ class InngageSDK extends ChangeNotifier {
       String friendlyIdentifier = '',
       String? phoneNumber,
       String? email,
+      Function? firebaseListenCallback,
       Map<String, dynamic>? customFields,
       InngageWebViewProperties? inngageWebViewProperties,
       bool requestAdvertiserId = false}) async {
@@ -54,7 +38,7 @@ class InngageSDK extends ChangeNotifier {
       }
     }
     InngageUtils.requestAdvertiserId = requestAdvertiserId;
-  
+
     //validation identifier
     if (friendlyIdentifier.isEmpty) {
       InngageProperties.identifier = await InngageUtils.getId();
@@ -84,6 +68,10 @@ class InngageSDK extends ChangeNotifier {
 
     //FIREBASE
     InngageFirebaseMessage inngageFirebaseMessage = InngageFirebaseMessage();
+    if(firebaseListenCallback != null){
+      InngageFirebaseMessage.firebaseListenCallback = firebaseListenCallback as void Function(dynamic r);
+    }
+    
     await inngageFirebaseMessage.config();
 
     try {

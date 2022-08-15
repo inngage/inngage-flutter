@@ -37,6 +37,7 @@ void main() async {
     customFields: json,
     phoneNumber: '5511999999999',
     email: 'teste007@gmail.com',
+    firebaseListenCallback: (data) => print(data['additional_data']),
     navigatorKey: navigatorKey,
     inngageWebViewProperties: inngageWebViewProperties,
     requestAdvertiserId: false
