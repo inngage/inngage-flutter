@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Plugin example app'),
       ),
       body: Center(
-        child: FlatButton(
+        child: ElevatedButton(
           onPressed: () async {
             try {
               final result = await InngageEvent.sendEvent(
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
             }
           },
           child: Text('Enviar evento'),
-          color: Colors.amber,
+          
         ),
       ),
     );

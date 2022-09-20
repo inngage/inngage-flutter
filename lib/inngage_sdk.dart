@@ -67,9 +67,9 @@ class InngageSDK extends ChangeNotifier {
     }
 
     //FIREBASE
-    InngageFirebaseMessage inngageFirebaseMessage = InngageFirebaseMessage();
+    InngageNotificationMessage inngageFirebaseMessage = InngageNotificationMessage();
     if(firebaseListenCallback != null){
-      InngageFirebaseMessage.firebaseListenCallback = firebaseListenCallback as void Function(dynamic r);
+      InngageNotificationMessage.firebaseListenCallback = firebaseListenCallback as void Function(dynamic r);
     }
     
     await inngageFirebaseMessage.config();

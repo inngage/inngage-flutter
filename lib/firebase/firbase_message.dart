@@ -8,12 +8,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class InngageFirebaseMessage {
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  // handle action
+}
+class InngageNotificationMessage {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static void Function(dynamic data) firebaseListenCallback = (data){};
+  static void Function(dynamic data) firebaseListenCallback = (data) {};
 
   config() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -39,13 +42,13 @@ class InngageFirebaseMessage {
 
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    
+
     if (Platform.isAndroid) {
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('launch_background');
 
-      final IOSInitializationSettings initializationSettingsIOS =
-          IOSInitializationSettings(
+      final DarwinInitializationSettings initializationSettingsDarwin =
+          DarwinInitializationSettings(
               requestAlertPermission: false,
               requestBadgePermission: false,
               requestSoundPermission: false,
@@ -59,18 +62,33 @@ class InngageFirebaseMessage {
       final InitializationSettings initializationSettings =
           InitializationSettings(
         android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS,
+        iOS: initializationSettingsDarwin,
       );
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: (String? payload) async {
-        if (payload != null) {
-          debugPrint('notification payload: $payload');
-          InngageNotification.openCommonNotification(
-            data: json.decode(payload),
-            appToken: InngageProperties.appToken,
-          );
-        }
-      });
+      await flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        onDidReceiveNotificationResponse:
+            (NotificationResponse notificationResponse) {
+          switch (notificationResponse.notificationResponseType) {
+            case NotificationResponseType.selectedNotification:
+              if (notificationResponse.payload != null) {
+                debugPrint(
+                    'notification payload: ${notificationResponse.payload}');
+                InngageNotification.openCommonNotification(
+                  data: json.decode(notificationResponse.payload ?? ""),
+                  appToken: InngageProperties.appToken,
+                );
+              }
+              break;
+            case NotificationResponseType.selectedNotificationAction:
+              break;
+          }
+        },
+        onDidReceiveBackgroundNotificationResponse:notificationTapBackground,
+
+        /*        onSelectNotification: (String? payload) async {
+       
+      } */
+      );
     }
     FirebaseMessaging.onMessage.listen((message) async {
       if (InngageProperties.getDebugMode()) {
@@ -218,9 +236,7 @@ class InngageFirebaseMessage {
     } catch (e) {}
 
     try {
-      
-        firebaseListenCallback(message.data);
-     
+      firebaseListenCallback(message.data);
     } catch (e) {
       print('firebaseListenCallback error: $e');
     }
