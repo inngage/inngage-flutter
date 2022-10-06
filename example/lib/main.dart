@@ -4,7 +4,6 @@ import 'package:inngage_plugin/inngage_plugin.dart';
 
 import 'my_app.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // it should be the first line in main method

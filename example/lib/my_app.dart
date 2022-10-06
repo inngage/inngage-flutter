@@ -12,7 +12,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   initSdk() async {
+
     final json = {
       "nome": "User 01",
       "dt_nascimento": "01/09/1970",
@@ -58,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     await InngageEvent.sendEvent(
       eventName: 'send_test',
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      identifier: 'teste007@gmail.com',
+      registration: 'teste007@gmail.com',
     );
 
     

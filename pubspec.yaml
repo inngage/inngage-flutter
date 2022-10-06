@@ -10,21 +10,27 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
   #Android and iOS getters to get platform-specific device information
   device_info: ^2.0.3
-    #Firebase
+  
+  #Firebase
   firebase_core: ^1.22.0
   firebase_messaging: ^13.0.2
   firebase_in_app_messaging: ^0.6.0+24
+
   #localNotificaiton
   flutter_local_notifications: ^11.0.0 
+
   # Launch external URLs
   url_launcher: ^6.1.5
+
   # webview
-  #flutter_webview_plugin: 0.3.10+1
   webview_flutter: ^3.0.4
+
   #Locale
   devicelocale: 0.5.0
+
   #version
   package_info: ^2.0.2
   advertising_id: ^2.3.0
@@ -33,6 +39,7 @@ dependencies:
   logger: ^1.1.0
   flutter_image_slideshow: ^0.1.2
   shared_preferences: ^2.0.15
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

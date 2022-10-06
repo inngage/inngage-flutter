@@ -43,7 +43,7 @@ class InngageNotificationMessage {
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    if (Platform.isAndroid) {
+   
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('launch_background');
 
@@ -89,7 +89,7 @@ class InngageNotificationMessage {
        
       } */
       );
-    }
+    
     FirebaseMessaging.onMessage.listen((message) async {
       if (InngageProperties.getDebugMode()) {
         print('onMessage ${message.data}');

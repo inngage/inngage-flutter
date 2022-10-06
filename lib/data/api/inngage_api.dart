@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/data/model/event_request.dart';
