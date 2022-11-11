@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:package_info/package_info.dart';
@@ -24,7 +25,7 @@ class InngageUtils {
     if (await canLaunch(urlEncode)) {
       await launch(urlEncode, forceWebView: false, forceSafariVC: false);
     } else {
-      throw 'Could not launch $urlEncode';
+      debugPrint('Could not launch $urlEncode');
     }
   }
 

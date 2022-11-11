@@ -34,7 +34,7 @@ class InngageSDK extends ChangeNotifier {
       defaultApp = await Firebase.initializeApp();
     } catch (error) {
       if (InngageProperties.getDebugMode()) {
-        print(error.toString());
+        debugPrint(error.toString());
       }
     }
     InngageUtils.requestAdvertiserId = requestAdvertiserId;
@@ -86,7 +86,7 @@ class InngageSDK extends ChangeNotifier {
         InngageDialog.showInAppDialog(inAppModel);
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 }

@@ -96,7 +96,7 @@ class InAppDialog extends StatelessWidget {
 
                       /// Called whenever the page in the center of the viewport changes.
                       onPageChanged: (value) {
-                        print('Page changed: $value');
+                        debugPrint('Page changed: $value');
                       },
 
                       /// Auto scroll interval.
@@ -238,7 +238,7 @@ class InAppDialog extends StatelessWidget {
     if (await canLaunch(urlEncode)) {
       await launch(urlEncode, forceWebView: false, forceSafariVC: false);
     } else {
-      throw 'Could not launch $urlEncode';
+      debugPrint( 'Could not launch $urlEncode');
     }
   }
 

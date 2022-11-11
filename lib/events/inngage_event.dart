@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:inngage_plugin/util/utils.dart';
@@ -14,7 +15,7 @@ class InngageEvent {
     String conversionNotId = '',
   }) async {
     if (identifier == null && registration == null) {
-      throw InngageException(
+      debugPrint(
         'Unfortunately it was not possible send an event,'
         ' you need to declare the identifier or registration',
       );
@@ -49,7 +50,7 @@ class InngageEvent {
   static void setUserPhone(String number) {
     InngageProperties.phoneNumber = number;
     if (InngageProperties.debugMode) {
-      print("user phone number: ${InngageProperties.phoneNumber}");
+      debugPrint("user phone number: ${InngageProperties.phoneNumber}");
     }
   }
 }

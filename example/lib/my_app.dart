@@ -1,4 +1,3 @@
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/inapp/inngage_inapp.dart';
@@ -64,7 +63,6 @@ class _MyAppState extends State<MyApp> {
       registration: 'teste007@gmail.com',
     );
 
-    
   }
 
   @override

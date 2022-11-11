@@ -15,7 +15,7 @@ class InngageNotification {
         .then((value) => InngageProperties.isInOpen = false);
 
     if (InngageProperties.getDebugMode()) {
-      print("openCommonNotification: $data");
+      debugPrint("openCommonNotification: $data");
     }
 
     //final Map<String, dynamic>? data = payload['data'];

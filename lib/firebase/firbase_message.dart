@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:devicelocale/devicelocale.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // handle action
 }
+
 class InngageNotificationMessage {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -20,7 +20,6 @@ class InngageNotificationMessage {
 
   config() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-    FirebaseInAppMessaging m = FirebaseInAppMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
       try {
         InngageNotification.openCommonNotification(
@@ -43,56 +42,55 @@ class InngageNotificationMessage {
     // Set the background messaging handler early on, as a named top-level function
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-   
-      const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('launch_background');
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('launch_background');
 
-      final DarwinInitializationSettings initializationSettingsDarwin =
-          DarwinInitializationSettings(
-              requestAlertPermission: false,
-              requestBadgePermission: false,
-              requestSoundPermission: false,
-              onDidReceiveLocalNotification: (
-                int id,
-                String? title,
-                String? body,
-                String? payload,
-              ) async {});
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+            requestAlertPermission: false,
+            requestBadgePermission: false,
+            requestSoundPermission: false,
+            onDidReceiveLocalNotification: (
+              int id,
+              String? title,
+              String? body,
+              String? payload,
+            ) async {});
 
-      final InitializationSettings initializationSettings =
-          InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsDarwin,
-      );
-      await flutterLocalNotificationsPlugin.initialize(
-        initializationSettings,
-        onDidReceiveNotificationResponse:
-            (NotificationResponse notificationResponse) {
-          switch (notificationResponse.notificationResponseType) {
-            case NotificationResponseType.selectedNotification:
-              if (notificationResponse.payload != null) {
-                debugPrint(
-                    'notification payload: ${notificationResponse.payload}');
-                InngageNotification.openCommonNotification(
-                  data: json.decode(notificationResponse.payload ?? ""),
-                  appToken: InngageProperties.appToken,
-                );
-              }
-              break;
-            case NotificationResponseType.selectedNotificationAction:
-              break;
-          }
-        },
-        onDidReceiveBackgroundNotificationResponse:notificationTapBackground,
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
+        switch (notificationResponse.notificationResponseType) {
+          case NotificationResponseType.selectedNotification:
+            if (notificationResponse.payload != null) {
+              debugPrint(
+                  'notification payload: ${notificationResponse.payload}');
+              InngageNotification.openCommonNotification(
+                data: json.decode(notificationResponse.payload ?? ""),
+                appToken: InngageProperties.appToken,
+              );
+            }
+            break;
+          case NotificationResponseType.selectedNotificationAction:
+            break;
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
 
-        /*        onSelectNotification: (String? payload) async {
+      /*        onSelectNotification: (String? payload) async {
        
       } */
-      );
-    
+    );
+
     FirebaseMessaging.onMessage.listen((message) async {
       if (InngageProperties.getDebugMode()) {
-        print('onMessage ${message.data}');
+        debugPrint('onMessage ${message.data}');
       }
 
       var inappMessage = false;
@@ -106,8 +104,10 @@ class InngageNotificationMessage {
         if (inappMessage) {
           InngageDialog.showInAppDialog(inAppModel);
         }
-      } catch (e) {}
-      print('logx listen $inappMessage');
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+      debugPrint('logx listen $inappMessage');
       if (inappMessage) {
       } else {
         if (Platform.isAndroid) {
@@ -131,10 +131,10 @@ class InngageNotificationMessage {
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       if (InngageProperties.getDebugMode()) {
-        print('onMessageOpenedApp ${event.from}');
-        print('onMessageOpenedApp ${event.messageType}');
+        debugPrint('onMessageOpenedApp ${event.from}');
+        debugPrint('onMessageOpenedApp ${event.messageType}');
       }
-      print('logx ${event.from}');
+      debugPrint('logx ${event.from}');
       Future.delayed(Duration(seconds: 2)).then((value) {
         InngageInapp.show();
       });
@@ -169,7 +169,7 @@ class InngageNotificationMessage {
       (String? registration) async {
         assert(registration != null);
         if (InngageProperties.getDebugMode()) {
-          print("logx $registration");
+          debugPrint("logx $registration");
         }
         final registerSubscriberRequest = RegisterSubscriberRequest(
             appInstalledIn: DateTime.now(),
@@ -178,7 +178,7 @@ class InngageNotificationMessage {
             customField: InngageProperties.customFields,
             appVersion: appVersion,
             deviceModel: deviceModel,
-            sdk: '1',
+            sdk: '2.0.5',
             phoneNumber: InngageProperties.phoneNumber,
             email: InngageProperties.email,
             deviceManufacturer: manufacturer,
@@ -220,12 +220,12 @@ class InngageNotificationMessage {
         prefs.setString("inapp", message.data['additional_data']);
       }
     } catch (e) {
-      print('logx listen $e');
+      debugPrint('logx listen $e');
     }
-    print('logx listen $inappMessage');
+    debugPrint('logx listen $inappMessage');
 
     if (InngageProperties.getDebugMode()) {
-      //print('_firebaseMessagingBackgroundHandler ${message.toString()}');
+      //debugPrint('_firebaseMessagingBackgroundHandler ${message.toString()}');
     }
 
     try {
@@ -238,7 +238,7 @@ class InngageNotificationMessage {
     try {
       firebaseListenCallback(message.data);
     } catch (e) {
-      print('firebaseListenCallback error: $e');
+      debugPrint('firebaseListenCallback error: $e');
     }
   }
 }
