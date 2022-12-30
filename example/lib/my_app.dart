@@ -42,6 +42,7 @@ class _MyAppState extends State<MyApp> {
       customFields: json,
       phoneNumber: '5511999999999',
       email: 'teste007@gmail.com',
+      blockDeepLink: true,
       firebaseListenCallback: (data) => print(data['additional_data']),
       navigatorKey: navigatorKey,
       inngageWebViewProperties: inngageWebViewProperties,

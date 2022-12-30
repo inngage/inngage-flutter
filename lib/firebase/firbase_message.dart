@@ -71,6 +71,13 @@ class InngageNotificationMessage {
             if (notificationResponse.payload != null) {
               debugPrint(
                   'notification payload: ${notificationResponse.payload}');
+
+              try {
+                var data = json.decode(notificationResponse.payload ?? "");
+                firebaseListenCallback(data);
+              } catch (e) {
+                debugPrint('firebaseListenCallback error: $e');
+              }
               InngageNotification.openCommonNotification(
                 data: json.decode(notificationResponse.payload ?? ""),
                 appToken: InngageProperties.appToken,
@@ -142,6 +149,11 @@ class InngageNotificationMessage {
         data: event.data,
         appToken: InngageProperties.appToken,
       );
+      try {
+        firebaseListenCallback(event.data);
+      } catch (e) {
+        debugPrint('firebaseListenCallback error: $e');
+      }
     });
 
     //request permission to iOS device
@@ -178,7 +190,7 @@ class InngageNotificationMessage {
             customField: InngageProperties.customFields,
             appVersion: appVersion,
             deviceModel: deviceModel,
-            sdk: '2.0.5',
+            sdk: '2.0.6',
             phoneNumber: InngageProperties.phoneNumber,
             email: InngageProperties.email,
             deviceManufacturer: manufacturer,

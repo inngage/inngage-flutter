@@ -25,6 +25,7 @@ class InngageSDK extends ChangeNotifier {
       String friendlyIdentifier = '',
       String? phoneNumber,
       String? email,
+      bool blockDeepLink = false,
       Function? firebaseListenCallback,
       Map<String, dynamic>? customFields,
       InngageWebViewProperties? inngageWebViewProperties,
@@ -46,6 +47,7 @@ class InngageSDK extends ChangeNotifier {
       InngageProperties.identifier = friendlyIdentifier;
     }
     InngageProperties.appToken = appToken;
+    InngageProperties.blockDeepLink = blockDeepLink;
     //set navigator key
     InngageProperties.navigatorKey = navigatorKey = navigatorKey;
 

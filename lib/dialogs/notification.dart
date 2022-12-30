@@ -41,7 +41,10 @@ class InngageNotification {
     }
     switch (type) {
       case 'deep':
-        InngageUtils.launchURL(url);
+      if(!InngageProperties.blockDeepLink){
+         InngageUtils.launchURL(url);
+      }
+       
         return;
       case 'inapp':
         if (inBack) {
