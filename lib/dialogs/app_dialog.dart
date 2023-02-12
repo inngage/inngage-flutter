@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inapp/inapp_dialog.dart';
 import 'package:inngage_plugin/models/innapp_model.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class InngageDialog {
   static showInAppDialog(
@@ -18,8 +18,8 @@ class InngageDialog {
                 inngageWebViewProperties: _inngageWebViewProperties,
                 navigatorKey: InngageProperties.navigatorKey);
           });
-      final prefs = await SharedPreferences.getInstance();
-      prefs.remove('inapp');
+      final storage =  FlutterSecureStorage();
+      await storage.delete(key:'inapp');
     } catch (e) {}
   }
 }

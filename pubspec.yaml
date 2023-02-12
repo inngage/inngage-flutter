@@ -1,6 +1,6 @@
 name: inngage_plugin
 description: The inngage plugin to flutter apps.
-version: 2.0.6
+version: 2.0.7
 homepage: https://inngage.com.br
 
 environment:
@@ -38,8 +38,7 @@ dependencies:
   http: ^0.13.4
   logger: ^1.1.0
   flutter_image_slideshow: ^0.1.2
-  shared_preferences: ^2.0.13
-
+  flutter_secure_storage: ^8.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

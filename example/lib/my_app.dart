@@ -10,8 +10,29 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive:
+        print('xxxxxxxx:appLifeCycleState inactive');
+        break;
+      case AppLifecycleState.resumed:
+        print('xxxxxxxx:appLifeCycleState resumed');
+          InngageInapp.show();
+       
+        break;
+      case AppLifecycleState.paused:
+        print('xxxxxxxx:appLifeCycleState paused');
+        break;
+      case AppLifecycleState.detached:
+        print('xxxxxxxx:appLifeCycleState detached');
+        break;
+    }
+  }
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   initSdk() async {
 
@@ -63,12 +84,13 @@ class _MyAppState extends State<MyApp> {
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
       registration: 'teste007@gmail.com',
     );
-
+    
   }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     initSdk();
     Future.delayed(const Duration(seconds: 2)).then((value) {
       InngageInapp.show();

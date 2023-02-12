@@ -4,8 +4,8 @@ import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
@@ -22,6 +22,7 @@ class InngageNotificationMessage {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
       try {
+       
         InngageNotification.openCommonNotification(
             data: value!.data,
             appToken: InngageProperties.appToken,
@@ -95,47 +96,7 @@ class InngageNotificationMessage {
       } */
     );
 
-    FirebaseMessaging.onMessage.listen((message) async {
-      if (InngageProperties.getDebugMode()) {
-        debugPrint('onMessage ${message.data}');
-      }
-
-      var inappMessage = false;
-      try {
-        var data = json.decode(message.data['additional_data']);
-
-        inappMessage = data['inapp_message'];
-
-        var inAppModel = InAppModel.fromJson(data);
-
-        if (inappMessage) {
-          InngageDialog.showInAppDialog(inAppModel);
-        }
-      } catch (e) {
-        debugPrint(e.toString());
-      }
-      debugPrint('logx listen $inappMessage');
-      if (inappMessage) {
-      } else {
-        if (Platform.isAndroid) {
-          const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
-                  'high_importance_channel', 'your channel name',
-                  channelDescription: 'your channel description',
-                  importance: Importance.max,
-                  priority: Priority.high,
-                  ticker: 'ticker');
-          const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
-          final titleNotification = message.data['title'];
-          final messageNotification = message.data['message'];
-          await flutterLocalNotificationsPlugin.show(0, titleNotification,
-              messageNotification, platformChannelSpecifics,
-              payload: json.encode(message.data));
-        }
-      }
-    });
-
+    onMessage();
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       if (InngageProperties.getDebugMode()) {
         debugPrint('onMessageOpenedApp ${event.from}');
@@ -214,6 +175,59 @@ class InngageNotificationMessage {
     );
   }
 
+  onMessage()async{
+      FirebaseMessaging.onMessage.listen((message) async {
+      if (InngageProperties.getDebugMode()) {
+        debugPrint('onMessage ${message.data}');
+      }
+
+      var inappMessage = false;
+      try {
+        var data = json.decode(message.data['additional_data']);
+
+        inappMessage = data['inapp_message'];
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+      debugPrint('logx listen $inappMessage');
+      if (inappMessage) {
+        try {
+final storage = new FlutterSecureStorage();
+          var data = json.decode(message.data['additional_data']);
+
+          inappMessage = data['inapp_message'];
+
+          if (inappMessage) {
+            storage.write(key:"inapp",value: message.data['additional_data']);
+          }
+
+          var inAppModel = InAppModel.fromJson(data);
+          InngageDialog.showInAppDialog(inAppModel);
+        } catch (e) {
+          debugPrint('logx listen $e');
+        }
+      } else {
+        if (Platform.isAndroid) {
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+              AndroidNotificationDetails(
+                  'high_importance_channel', 'your channel name',
+                  channelDescription: 'your channel description',
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  ticker: 'ticker');
+          const NotificationDetails platformChannelSpecifics =
+              NotificationDetails(android: androidPlatformChannelSpecifics);
+          final titleNotification = message.data['title'];
+          final messageNotification = message.data['message'];
+          await flutterLocalNotificationsPlugin.show(0, titleNotification,
+              messageNotification, platformChannelSpecifics,
+              payload: json.encode(message.data));
+        }
+      }
+    });
+
+  }
+
   /// Define a top-level named handler which background/terminated messages will
   /// call.
   ///
@@ -222,15 +236,14 @@ class InngageNotificationMessage {
       RemoteMessage message) async {
     var inappMessage = false;
     try {
-      final prefs = await SharedPreferences.getInstance();
 
       var data = json.decode(message.data['additional_data']);
 
       inappMessage = data['inapp_message'];
 
-      if (inappMessage) {
-        prefs.setString("inapp", message.data['additional_data']);
-      }
+    
+      final storage =  FlutterSecureStorage();
+      await storage.write(key: "inapp", value: message.data['additional_data']);
     } catch (e) {
       debugPrint('logx listen $e');
     }

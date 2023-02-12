@@ -1,17 +1,20 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/dialogs/app_dialog.dart';
 import 'package:inngage_plugin/models/innapp_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../firebase/firbase_message.dart';
 
 class InngageInapp {
   static show() async {
-    final prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString("inapp");
+    final storage =  FlutterSecureStorage();
 
+    String? data = await storage.read(key: "inapp");
     if (data != null) {
       try {
-        var xdata = json.decode(data);
+        var xdata = json.decode(data.toString());
 
         var inappMessage = xdata['inapp_message'];
 
@@ -20,6 +23,6 @@ class InngageInapp {
           InngageDialog.showInAppDialog(inAppModel);
         }
       } catch (e) {}
-    }
+    } 
   }
 }
