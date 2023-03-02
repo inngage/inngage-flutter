@@ -6,6 +6,8 @@ import 'package:inngage_plugin/util/hexcolor.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'inngage_inapp.dart';
+
 class InAppDialog extends StatelessWidget {
   InAppModel inAppModel;
   InngageWebViewProperties inngageWebViewProperties;
@@ -225,7 +227,12 @@ class InAppDialog extends StatelessWidget {
       case "":
         break;
       case "deep":
+      if(InngageInapp.blockDeepLink){
+        InngageInapp.deepLinkCallback(link);
+      }else{
         _deep(link);
+      }
+        
         break;
       case "inapp":
         _web(link);

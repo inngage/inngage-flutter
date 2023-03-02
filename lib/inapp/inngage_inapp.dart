@@ -8,6 +8,11 @@ import 'package:inngage_plugin/models/innapp_model.dart';
 import '../firebase/firbase_message.dart';
 
 class InngageInapp {
+
+  static bool blockDeepLink = false;
+  static Function deepLinkCallback = (){};
+
+
   static show() async {
     final storage =  FlutterSecureStorage();
 

@@ -63,6 +63,10 @@ class _MyAppState extends State<MyApp> {
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
       registration: 'teste007@gmail.com',
     );
+    InngageInapp.blockDeepLink = true;
+    InngageInapp.deepLinkCallback = (link){
+      print('link:' + link);
+    };
   }
 
   @override
