@@ -227,12 +227,12 @@ class InAppDialog extends StatelessWidget {
       case "":
         break;
       case "deep":
-      if(InngageInapp.blockDeepLink){
-        InngageInapp.deepLinkCallback(link);
-      }else{
-        _deep(link);
-      }
-        
+        if (InngageInapp.blockDeepLink) {
+          InngageInapp.deepLinkCallback(link);
+        } else {
+          _deep(link);
+        }
+
         break;
       case "inapp":
         _web(link);
@@ -245,7 +245,7 @@ class InAppDialog extends StatelessWidget {
     if (await canLaunch(urlEncode)) {
       await launch(urlEncode, forceWebView: false, forceSafariVC: false);
     } else {
-      debugPrint( 'Could not launch $urlEncode');
+      debugPrint('Could not launch $urlEncode');
     }
   }
 
@@ -264,21 +264,39 @@ class InAppDialog extends StatelessWidget {
     final currentState = _navigatorKey.currentState;
     if (currentState != null) {
       currentState.push(
-        MaterialPageRoute(
-            builder: (context) => Scaffold(
-                appBar: AppBar(
-                  title: _inngageWebViewProperties2.appBarText,
-                ),
-                body: WebView(
-                  initialUrl: url,
-                  zoomEnabled: _inngageWebViewProperties2.withZoom,
-                  debuggingEnabled: _inngageWebViewProperties2.debuggingEnabled,
-                  javascriptMode: _inngageWebViewProperties2.withJavascript
-                      ? JavascriptMode.unrestricted
-                      : JavascriptMode.disabled,
-                ))),
+        MaterialPageRoute(builder: (context) {
+          WebViewController controller = WebViewController()
+            ..setJavaScriptMode(_inngageWebViewProperties2.withJavascript
+                ? JavaScriptMode.unrestricted
+                : JavaScriptMode.disabled)
+            ..enableZoom(_inngageWebViewProperties2.withZoom)
+            ..setNavigationDelegate(
+              NavigationDelegate(
+                onProgress: (int progress) {
+                  // Update loading bar.
+                },
+                onPageStarted: (String url) {},
+                onPageFinished: (String url) {},
+                onWebResourceError: (WebResourceError error) {},
+                onNavigationRequest: (NavigationRequest request) {
+                  if (request.url.startsWith(url)) {
+                    return NavigationDecision.prevent;
+                  }
+                  return NavigationDecision.navigate;
+                },
+              ),
+            )
+            ..loadRequest(Uri.parse(url));
+
+          return Scaffold(
+              appBar: AppBar(
+                title: _inngageWebViewProperties2.appBarText,
+              ),
+              body: WebViewWidget(
+                controller: controller,
+              ));
+        }),
       );
     }
   }
 }
-

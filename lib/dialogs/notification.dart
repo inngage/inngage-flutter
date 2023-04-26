@@ -4,7 +4,6 @@ import 'package:inngage_plugin/util/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class InngageNotification {
-
   static void openCommonNotification(
       {required Map<String, dynamic> data,
       required String appToken,
@@ -41,10 +40,10 @@ class InngageNotification {
     }
     switch (type) {
       case 'deep':
-      if(!InngageProperties.blockDeepLink){
-         InngageUtils.launchURL(url);
-      }
-       
+        if (!InngageProperties.blockDeepLink) {
+          InngageUtils.launchURL(url);
+        }
+
         return;
       case 'inapp':
         if (inBack) {
@@ -74,19 +73,39 @@ class InngageNotification {
     final currentState = InngageProperties.navigatorKey.currentState;
     if (currentState != null) {
       currentState.push(
-        MaterialPageRoute(
-            builder: (context) => Scaffold(
-                appBar: AppBar(
-                  title: InngageProperties.inngageWebViewProperties.appBarText,
-                ),
-                body: WebView(
-                  initialUrl: url,
-                  zoomEnabled: InngageProperties.inngageWebViewProperties.withZoom,
-                  debuggingEnabled: InngageProperties.inngageWebViewProperties.debuggingEnabled,
-                  javascriptMode: InngageProperties.inngageWebViewProperties.withJavascript
-                      ? JavascriptMode.unrestricted
-                      : JavascriptMode.disabled,
-                ))),
+        MaterialPageRoute(builder: (context) {
+          WebViewController controller = WebViewController()
+            ..setJavaScriptMode(
+                InngageProperties.inngageWebViewProperties.withJavascript
+                    ? JavaScriptMode.unrestricted
+                    : JavaScriptMode.disabled)
+            ..enableZoom(InngageProperties.inngageWebViewProperties.withZoom)
+            ..setNavigationDelegate(
+              NavigationDelegate(
+                onProgress: (int progress) {
+                  // Update loading bar.
+                },
+                onPageStarted: (String url) {},
+                onPageFinished: (String url) {},
+                onWebResourceError: (WebResourceError error) {},
+                onNavigationRequest: (NavigationRequest request) {
+                  if (request.url.startsWith(url)) {
+                    return NavigationDecision.prevent;
+                  }
+                  return NavigationDecision.navigate;
+                },
+              ),
+            )
+            ..loadRequest(Uri.parse(url));
+
+          return Scaffold(
+              appBar: AppBar(
+                title: InngageProperties.inngageWebViewProperties.appBarText,
+              ),
+              body: WebViewWidget(
+                controller: controller,
+              ));
+        }),
       );
     }
   }
