@@ -208,7 +208,7 @@ final storage = new FlutterSecureStorage();
         }
       } else {
         if (Platform.isAndroid) {
-          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+           const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
                   'high_importance_channel', 'your channel name',
                   channelDescription: 'your channel description',
@@ -219,9 +219,12 @@ final storage = new FlutterSecureStorage();
               NotificationDetails(android: androidPlatformChannelSpecifics);
           final titleNotification = message.data['title'];
           final messageNotification = message.data['message'];
-          await flutterLocalNotificationsPlugin.show(0, titleNotification,
+          if(titleNotification.toString().isNotEmpty || messageNotification.toString().isNotEmpty){
+            await flutterLocalNotificationsPlugin.show(0, titleNotification,
               messageNotification, platformChannelSpecifics,
-              payload: json.encode(message.data));
+              payload: json.encode(message.data)); 
+          }
+          
         }
       }
     });
