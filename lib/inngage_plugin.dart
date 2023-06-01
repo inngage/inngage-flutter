@@ -16,4 +16,4 @@ export 'util/hexcolor.dart';
 export 'util/utils.dart';
 export 'inngage_sdk.dart';
 export 'inapp/inngage_inapp.dart';
-
+export 'inapp/inapp_widget.dart';
