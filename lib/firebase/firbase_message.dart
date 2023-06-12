@@ -217,9 +217,9 @@ final storage = new FlutterSecureStorage();
                   ticker: 'ticker');
           const NotificationDetails platformChannelSpecifics =
               NotificationDetails(android: androidPlatformChannelSpecifics);
-          final titleNotification = message.data['title'];
-          final messageNotification = message.data['message'];
-          if(titleNotification.toString().isNotEmpty || messageNotification.toString().isNotEmpty){
+          final titleNotification = message.data['title'] ?? "";
+          final messageNotification = message.data['message'] ?? "";
+          if(titleNotification.toString().isNotEmpty && messageNotification.toString().isNotEmpty){
             await flutterLocalNotificationsPlugin.show(0, titleNotification,
               messageNotification, platformChannelSpecifics,
               payload: json.encode(message.data)); 
