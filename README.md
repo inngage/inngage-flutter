@@ -13,7 +13,7 @@ This SDK inf lutter aims to enable integration with the [Inngage](http://www.inn
 [Access here](https://inngage.readme.io/v1.0/docs/integração-flutter) to see the official documentation on the inngage website
 
 ```yaml
-inngage_plugin:2.0.8+4
+inngage_plugin:2.0.9
 ```
 
 
@@ -53,6 +53,9 @@ inngage_plugin:2.0.8+4
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
     );
+     Future.delayed(const Duration(seconds: 5)).then((value){
+      InngageNotificationMessage.subscribe();
+    });
     InngageEvent.setDebugMode(true);
     InngageEvent.setUserPhone("phoneNumber");
     await InngageEvent.sendEvent(

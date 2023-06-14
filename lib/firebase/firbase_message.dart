@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -18,16 +19,22 @@ class InngageNotificationMessage {
 
   static void Function(dynamic data) firebaseListenCallback = (data) {};
 
-  config() async {
+static Future<void> subscribe()async{
+   await _config();
+}
+
+
+  static _config() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
       try {
-       
         InngageNotification.openCommonNotification(
             data: value!.data,
             appToken: InngageProperties.appToken,
             inBack: true);
-      } catch (e) {}
+      } catch (e) {
+        log(e.toString());
+      }
     });
 
     await _firebaseMessaging.requestPermission(
@@ -96,14 +103,14 @@ class InngageNotificationMessage {
       } */
     );
 
-    onMessage();
+    _onMessage();
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       if (InngageProperties.getDebugMode()) {
         debugPrint('onMessageOpenedApp ${event.from}');
         debugPrint('onMessageOpenedApp ${event.messageType}');
       }
       debugPrint('logx ${event.from}');
-      Future.delayed(Duration(seconds: 2)).then((value) {
+      Future.delayed(const Duration(seconds: 2)).then((value) {
         InngageInapp.show();
       });
       InngageNotification.openCommonNotification(
@@ -175,8 +182,8 @@ class InngageNotificationMessage {
     );
   }
 
-  onMessage()async{
-      FirebaseMessaging.onMessage.listen((message) async {
+  static _onMessage() async {
+    FirebaseMessaging.onMessage.listen((message) async {
       if (InngageProperties.getDebugMode()) {
         debugPrint('onMessage ${message.data}');
       }
@@ -192,13 +199,13 @@ class InngageNotificationMessage {
       debugPrint('logx listen $inappMessage');
       if (inappMessage) {
         try {
-final storage = new FlutterSecureStorage();
+          const storage =  FlutterSecureStorage();
           var data = json.decode(message.data['additional_data']);
 
           inappMessage = data['inapp_message'];
 
           if (inappMessage) {
-            storage.write(key:"inapp",value: message.data['additional_data']);
+            storage.write(key: "inapp", value: message.data['additional_data']);
           }
 
           var inAppModel = InAppModel.fromJson(data);
@@ -208,7 +215,7 @@ final storage = new FlutterSecureStorage();
         }
       } else {
         if (Platform.isAndroid) {
-           const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
                   'high_importance_channel', 'your channel name',
                   channelDescription: 'your channel description',
@@ -219,16 +226,15 @@ final storage = new FlutterSecureStorage();
               NotificationDetails(android: androidPlatformChannelSpecifics);
           final titleNotification = message.data['title'] ?? "";
           final messageNotification = message.data['message'] ?? "";
-          if(titleNotification.toString().isNotEmpty && messageNotification.toString().isNotEmpty){
+          if (titleNotification.toString().isNotEmpty &&
+              messageNotification.toString().isNotEmpty) {
             await flutterLocalNotificationsPlugin.show(0, titleNotification,
-              messageNotification, platformChannelSpecifics,
-              payload: json.encode(message.data)); 
+                messageNotification, platformChannelSpecifics,
+                payload: json.encode(message.data));
           }
-          
         }
       }
     });
-
   }
 
   /// Define a top-level named handler which background/terminated messages will
@@ -239,13 +245,11 @@ final storage = new FlutterSecureStorage();
       RemoteMessage message) async {
     var inappMessage = false;
     try {
-
       var data = json.decode(message.data['additional_data']);
 
       inappMessage = data['inapp_message'];
 
-    
-      final storage =  FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
       await storage.write(key: "inapp", value: message.data['additional_data']);
     } catch (e) {
       debugPrint('logx listen $e');
@@ -261,7 +265,9 @@ final storage = new FlutterSecureStorage();
         data: message.data,
         appToken: InngageProperties.appToken,
       );
-    } catch (e) {}
+    } catch (e) {
+      log(e.toString());
+    }
 
     try {
       firebaseListenCallback(message.data);

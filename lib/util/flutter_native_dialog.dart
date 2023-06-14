@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
-const MethodChannel _channel = const MethodChannel('flutter_native_dialog');
+const MethodChannel _channel =  MethodChannel('flutter_native_dialog');
 
 class FlutterNativeDialog {
-  static const String DEFAULT_POSITIVE_BUTTON_TEXT = "OK";
-  static const String DEFAULT_NEGATIVE_BUTTON_TEXT = "Cancel";
+  static const String defaultPositiveButtonText = "OK";
+  static const String defaultNegativeButtonText = "Cancel";
 
   /// Shows an alert dialog to the user
   ///
@@ -25,7 +25,7 @@ class FlutterNativeDialog {
         "title": title,
         "message": message,
         "positiveButtonText":
-            positiveButtonText ?? DEFAULT_POSITIVE_BUTTON_TEXT,
+            positiveButtonText ?? defaultPositiveButtonText,
       },
     );
   }
@@ -40,8 +40,8 @@ class FlutterNativeDialog {
   static Future<bool?> showConfirmDialog({
     String? title,
     String? message,
-    String positiveButtonText = DEFAULT_POSITIVE_BUTTON_TEXT,
-    String negativeButtonText = DEFAULT_NEGATIVE_BUTTON_TEXT,
+    String positiveButtonText = defaultPositiveButtonText,
+    String negativeButtonText = defaultNegativeButtonText,
     bool destructive = false,
   }) async {
     return await _channel.invokeMethod(
@@ -57,7 +57,7 @@ class FlutterNativeDialog {
   }
 
   @visibleForTesting
-  static void setMockCallHandler(Future<dynamic> handler(MethodCall call)) {
+  static void setMockCallHandler(Future<dynamic> Function(MethodCall call) handler) {
     //_channel.setMockMethodCallHandler(handler);
   }
 }

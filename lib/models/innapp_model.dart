@@ -50,7 +50,7 @@ class InAppModel {
     backgroundColor = json['background_color'];
     backgroundImg = json['background_img'];
     richContent = json['rich_content'] != null
-        ? new RichContent.fromJson(json['rich_content'])
+        ?  RichContent.fromJson(json['rich_content'])
         : null;
     btnLeftTxt = json['btn_left_txt'];
     btnLeftTxtColor = json['btn_left_txt_color'];
@@ -66,28 +66,28 @@ class InAppModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['inapp_message'] = this.inappMessage;
-    data['title'] = this.title;
-    data['title_font_color'] = this.titleFontColor;
-    data['body'] = this.body;
-    data['body_font_color'] = this.bodyFontColor;
-    data['background_color'] = this.backgroundColor;
-    data['background_img'] = this.backgroundImg;
-    if (this.richContent != null) {
-      data['rich_content'] = this.richContent!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['inapp_message'] = inappMessage;
+    data['title'] = title;
+    data['title_font_color'] = titleFontColor;
+    data['body'] = body;
+    data['body_font_color'] = bodyFontColor;
+    data['background_color'] = backgroundColor;
+    data['background_img'] = backgroundImg;
+    if (richContent != null) {
+      data['rich_content'] = richContent!.toJson();
     }
-    data['btn_left_txt'] = this.btnLeftTxt;
-    data['btn_left_txt_color'] = this.btnLeftTxtColor;
-    data['btn_left_bg_color'] = this.btnLeftBgColor;
-    data['btn_left_action_type'] = this.btnLeftActionType;
-    data['btn_left_action_link'] = this.btnLeftActionLink;
-    data['btn_right_txt'] = this.btnRightTxt;
-    data['btn_right_txt_color'] = this.btnRightTxtColor;
-    data['btn_right_bg_color'] = this.btnRightBgColor;
-    data['btn_right_action-type'] = this.btnRightActionType;
-    data['btn_right_action_link'] = this.btnRightActionLink;
-    data['dot_color'] = this.dotColor;
+    data['btn_left_txt'] = btnLeftTxt;
+    data['btn_left_txt_color'] = btnLeftTxtColor;
+    data['btn_left_bg_color'] = btnLeftBgColor;
+    data['btn_left_action_type'] = btnLeftActionType;
+    data['btn_left_action_link'] = btnLeftActionLink;
+    data['btn_right_txt'] = btnRightTxt;
+    data['btn_right_txt_color'] = btnRightTxtColor;
+    data['btn_right_bg_color'] = btnRightBgColor;
+    data['btn_right_action-type'] = btnRightActionType;
+    data['btn_right_action_link'] = btnRightActionLink;
+    data['dot_color'] = dotColor;
     return data;
   }
 }

@@ -1,12 +1,12 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:inngage_plugin/inapp/inapp_widget.dart';
-import 'package:inngage_plugin/inapp/inngage_inapp.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
-import 'main.dart';
 import 'home_page.dart';
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
 
     final inngageWebViewProperties = InngageWebViewProperties(
       appBarColor: Colors.pink,
-      appBarText: Text(
+      appBarText: const Text(
         'AppTitle',
       ),
       backgroundColor: Colors.white,
@@ -43,11 +43,14 @@ class _MyAppState extends State<MyApp> {
       phoneNumber: '5511999999999',
       email: 'teste007@gmail.com',
       blockDeepLink: true,
-      firebaseListenCallback: (data) => print(data['additional_data']),
+      firebaseListenCallback: (data) => log(data['additional_data']),
       navigatorKey: navigatorKey,
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
     );
+    Future.delayed(const Duration(seconds: 5)).then((value){
+      InngageNotificationMessage.subscribe();
+    });
     InngageEvent.setDebugMode(true);
     InngageEvent.setUserPhone("5511999999999");
     await InngageEvent.sendEvent(
@@ -65,7 +68,7 @@ class _MyAppState extends State<MyApp> {
     );
     InngageInapp.blockDeepLink = true;
     InngageInapp.deepLinkCallback = (link){
-      print('link:' + link);
+      log('link:' + link);
     };
   }
 
@@ -80,7 +83,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      home: InngageInAppWidget(child: HomePage()),
+      home: const InngageInAppWidget(child: HomePage()),
     );
   }
 }

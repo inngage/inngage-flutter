@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/data/model/event_request.dart';
 import 'package:inngage_plugin/data/model/notification_request.dart';
 import 'package:inngage_plugin/data/model/subscription_request.dart';
-import 'package:inngage_plugin/inngage_sdk.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:inngage_plugin/util/constants.dart';
 import 'package:logger/logger.dart';
@@ -40,7 +38,7 @@ class InngageNetwork implements InngageNetworkData {
   }) async {
     final payload = subscriptionToJson(subscription);
     final resp = await http.post(
-      Uri.parse(AppConstants.BASE_URL + '/subscription/'),
+      Uri.parse(AppConstants.baseUrl + '/subscription/'),
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         'Content-Type': 'application/json',
@@ -79,7 +77,7 @@ class InngageNetwork implements InngageNetworkData {
     );
     final payload = notificationRequestToJson(notificationRequest);
     final resp = await http.post(
-      Uri.parse(AppConstants.BASE_URL + '/notification/'),
+      Uri.parse(AppConstants.baseUrl + '/notification/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         if (keyAuthorization.isNotEmpty)
@@ -121,7 +119,7 @@ class InngageNetwork implements InngageNetworkData {
     final payload = eventToJson(event);
 
     final resp = await http.post(
-      Uri.parse(AppConstants.BASE_URL + '/events/newEvent/'),
+      Uri.parse(AppConstants.baseUrl + '/events/newEvent/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         if (keyAuthorization.isNotEmpty)

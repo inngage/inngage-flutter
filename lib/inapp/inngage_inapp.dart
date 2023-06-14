@@ -1,11 +1,9 @@
 import 'dart:convert';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:developer';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/dialogs/app_dialog.dart';
 import 'package:inngage_plugin/models/innapp_model.dart';
 
-import '../firebase/firbase_message.dart';
 
 class InngageInapp {
 
@@ -14,7 +12,7 @@ class InngageInapp {
 
 
   static show() async {
-    final storage =  FlutterSecureStorage();
+    const storage =  FlutterSecureStorage();
 
     String? data = await storage.read(key: "inapp");
     if (data != null) {
@@ -27,7 +25,9 @@ class InngageInapp {
           var inAppModel = InAppModel.fromJson(xdata);
           InngageDialog.showInAppDialog(inAppModel);
         }
-      } catch (e) {}
+      } catch (e) {
+        log(e.toString());
+      }
     } 
   }
 }

@@ -66,28 +66,9 @@ class InngageSDK extends ChangeNotifier {
     if (customFields != null) {
       InngageProperties.customFields = customFields;
     }
-
-    //FIREBASE
-    InngageNotificationMessage inngageFirebaseMessage = InngageNotificationMessage();
     if(firebaseListenCallback != null){
       InngageNotificationMessage.firebaseListenCallback = firebaseListenCallback as void Function(dynamic r);
     }
-    
-    await inngageFirebaseMessage.config();
-
-   /*  try {
-      final prefs = await SharedPreferences.getInstance();
-      var datax = prefs.getString('inapp');
-      var data = json.decode(datax!);
-
-      var inappMessage = data['inapp_message'];
-
-      if (inappMessage) {
-        var inAppModel = InAppModel.fromJson(data);
-        InngageDialog.showInAppDialog(inAppModel);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    } */
+   
   }
 }

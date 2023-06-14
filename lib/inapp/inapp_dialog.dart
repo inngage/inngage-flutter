@@ -8,6 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'inngage_inapp.dart';
 
+// ignore: must_be_immutable
 class InAppDialog extends StatelessWidget {
   InAppModel inAppModel;
   InngageWebViewProperties inngageWebViewProperties;

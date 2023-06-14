@@ -14,11 +14,11 @@ class RichContent {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['carousel'] = this.carousel;
-    data['img1'] = this.img1;
-    data['img2'] = this.img2;
-    data['img3'] = this.img3;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['carousel'] = carousel;
+    data['img1'] = img1;
+    data['img2'] = img2;
+    data['img3'] = img3;
     return data;
   }
 }

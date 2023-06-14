@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:inngage_plugin/data/exceptions/exceptions.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
-import 'package:inngage_plugin/util/utils.dart';
 
 class InngageEvent {
   static Future<bool> sendEvent({

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
-import 'package:inngage_plugin/inngage_sdk.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage();
+  const HomePage({super.key});
+
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -26,11 +26,13 @@ class _HomePageState extends State<HomePage> {
           onPressed: () async {
             try {
               final result = await InngageEvent.sendEvent(
-                eventName: 'click me', appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e', identifier: 'dass@asdsa.com',
+                eventName: 'click me',
+                appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
+                identifier: 'dass@asdsa.com',
                 //identifier: 'appexample@gmail.com',
               );
               if (result) {
-                final snackBar = SnackBar(
+                const snackBar =  SnackBar(
                   content: Text('Evento enviado com successo'),
                   backgroundColor: Colors.green,
                 );
@@ -38,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             } on InngageException catch (_) {
-              final snackBar = SnackBar(
+              const snackBar =  SnackBar(
                 content: Text('Houve um erro tente novamente'),
                 backgroundColor: Colors.red,
               );
@@ -46,8 +48,7 @@ class _HomePageState extends State<HomePage> {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
-          child: Text('Enviar evento'),
-          
+          child: const Text('Enviar evento'),
         ),
       ),
     );

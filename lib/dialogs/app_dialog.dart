@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inapp/inapp_dialog.dart';
@@ -18,8 +20,10 @@ class InngageDialog {
                 inngageWebViewProperties: _inngageWebViewProperties,
                 navigatorKey: InngageProperties.navigatorKey);
           });
-      final storage =  FlutterSecureStorage();
+      const storage =  FlutterSecureStorage();
       await storage.delete(key:'inapp');
-    } catch (e) {}
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
