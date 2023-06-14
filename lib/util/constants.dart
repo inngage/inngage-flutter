@@ -1,3 +1,3 @@
 class AppConstants {
-  static const BASE_URL = 'https://api.inngage.com.br/v1';
+  static const baseUrl = 'https://api.inngage.com.br/v1';
 }

@@ -6,7 +6,7 @@ description: Demonstrates how to use the inngage_plugin plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -18,36 +18,24 @@ dependencies:
   flutter:
     sdk: flutter
     #Firebase
-  firebase_core: ^1.17.0
-  firebase_messaging: ^11.4.0
-  firebase_in_app_messaging: ^0.6.0+14
-  inngage_plugin:
-    # When depending on this package from a real application you should use:
-    #   inngage_plugin: ^x.y.z
-    # See https://dart.dev/tools/pub/dependencies#version-constraints
-    # The example app is bundled with the plugin so we use a path dependency on
-    # the parent directory to use the current plugin's version.
-    path: ../
+ #Firebase
+  firebase_core: ^2.10.0
+  firebase_messaging: ^14.4.1
+  
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  #localNotificaiton
+  flutter_local_notifications: ^13.0.0 
+  inngage_plugin:
+    path: ../
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^1.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter.
 flutter:
 
   # The following line ensures that the Material Icons font is
