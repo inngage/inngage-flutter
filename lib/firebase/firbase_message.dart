@@ -22,8 +22,6 @@ class InngageNotificationMessage {
 static Future<void> subscribe()async{
    await _config();
 }
-
-
   static _config() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
@@ -158,7 +156,7 @@ static Future<void> subscribe()async{
             customField: InngageProperties.customFields,
             appVersion: appVersion,
             deviceModel: deviceModel,
-            sdk: '2.0.6',
+            sdk: '2.0.9',
             phoneNumber: InngageProperties.phoneNumber,
             email: InngageProperties.email,
             deviceManufacturer: manufacturer,
@@ -258,15 +256,6 @@ static Future<void> subscribe()async{
 
     if (InngageProperties.getDebugMode()) {
       //debugPrint('_firebaseMessagingBackgroundHandler ${message.toString()}');
-    }
-
-    try {
-      InngageNotification.openCommonNotification(
-        data: message.data,
-        appToken: InngageProperties.appToken,
-      );
-    } catch (e) {
-      log(e.toString());
     }
 
     try {
