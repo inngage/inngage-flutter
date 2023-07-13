@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:device_info/device_info.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:package_info/package_info.dart';
@@ -15,17 +13,15 @@ class InngageUtils {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     // String appName = packageInfo.appName;
     // String packageName = packageInfo.packageName;
-    //String version = packageInfo.version;
-    //String buildNumber = packageInfo.buildNumber;
+    // String version = packageInfo.version;
+    // String buildNumber = packageInfo.buildNumber;
     return packageInfo.version;
   }
 
   static void launchURL(String url) async {
-    final urlEncode = Uri.encodeFull(url);
-    if (await canLaunch(urlEncode)) {
-      await launch(urlEncode, forceWebView: false, forceSafariVC: false);
-    } else {
-      debugPrint('Could not launch $urlEncode');
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not lauch $_url');
     }
   }
 
@@ -101,12 +97,11 @@ class InngageUtils {
 
   static void addUserData({
     String? identifier,
-    String? register,
     Map<String, dynamic>? customFields,
-  }) async {
-    InngageProperties.identifier = identifier ?? "";
-    InngageProperties.registration = register ?? "";
-    InngageProperties.customFields = customFields ?? {};
+  }) {
+    InngageProperties.identifier = identifier ?? InngageProperties.identifier;
+    InngageProperties.customFields =
+        customFields ?? InngageProperties.customFields;
   }
 
   static void setKeyAuthorization({required String keyAuthorization}) async {

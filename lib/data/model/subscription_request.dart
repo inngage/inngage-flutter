@@ -36,6 +36,7 @@ class RegisterSubscriberRequest {
       this.appInstalledIn,
       this.appUpdatedIn,
       this.uuid,
+      this.attributionId,
       this.customField,
       this.phoneNumber,
       this.email,
@@ -56,6 +57,7 @@ class RegisterSubscriberRequest {
   DateTime? appInstalledIn;
   DateTime? appUpdatedIn;
   String? uuid;
+  String? attributionId;
   Map<String, dynamic>? customField;
   String? phoneNumber;
   String? email;
@@ -78,6 +80,7 @@ class RegisterSubscriberRequest {
       "app_installed_in": appInstalledIn!.toIso8601String(),
       "app_updated_in": appUpdatedIn!.toIso8601String(),
       "uuid": uuid,
+      "attribution_id": attributionId,
       "custom_field": customField,
       "phone": phoneNumber,
       "email": email,

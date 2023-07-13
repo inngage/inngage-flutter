@@ -19,9 +19,10 @@ class InngageNotificationMessage {
 
   static void Function(dynamic data) firebaseListenCallback = (data) {};
 
-static Future<void> subscribe()async{
-   await _config();
-}
+  static Future<void> subscribe() async {
+    await _config();
+  }
+
   static _config() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
@@ -142,7 +143,6 @@ static Future<void> subscribe()async{
     final appVersion = await InngageUtils.getVersionApp();
     final advertiserId = await InngageUtils.getAdvertisingId();
     final idfa = await InngageUtils.getAdvertisingId();
-
     _firebaseMessaging.getToken().then(
       (String? registration) async {
         assert(registration != null);
@@ -197,7 +197,7 @@ static Future<void> subscribe()async{
       debugPrint('logx listen $inappMessage');
       if (inappMessage) {
         try {
-          const storage =  FlutterSecureStorage();
+          const storage = FlutterSecureStorage();
           var data = json.decode(message.data['additional_data']);
 
           inappMessage = data['inapp_message'];

@@ -1,10 +1,10 @@
 name: inngage_plugin
-description: The inngage plugin to flutter apps.
-version: 2.0.9
+description: Inngage Plugin for Flutter applications for marketing campaign optimization using Push Notification and In App Messages channels.
+version: 2.0.10
 homepage: https://inngage.com.br
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ">=2.18.0 <4.0.0"
   flutter: ">=2.5.0"
 
 dependencies:
@@ -29,7 +29,7 @@ dependencies:
   webview_flutter: ^4.2.0
 
   #Locale
-  devicelocale: 0.5.0
+  devicelocale: ^0.5.0
 
   #version
   package_info: ^2.0.2

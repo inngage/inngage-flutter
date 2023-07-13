@@ -242,11 +242,9 @@ class InAppDialog extends StatelessWidget {
   }
 
   _deep(link) async {
-    final urlEncode = Uri.encodeFull(link);
-    if (await canLaunch(urlEncode)) {
-      await launch(urlEncode, forceWebView: false, forceSafariVC: false);
-    } else {
-      debugPrint('Could not launch $urlEncode');
+    final Uri _url = Uri.parse(link);
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not lauch $_url');
     }
   }
 

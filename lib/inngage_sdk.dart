@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +20,7 @@ class InngageSDK extends ChangeNotifier {
       {required String appToken,
       required GlobalKey<NavigatorState> navigatorKey,
       String friendlyIdentifier = '',
+      String? attributionId,
       String? phoneNumber,
       String? email,
       bool blockDeepLink = false,
@@ -66,9 +65,13 @@ class InngageSDK extends ChangeNotifier {
     if (customFields != null) {
       InngageProperties.customFields = customFields;
     }
-    if(firebaseListenCallback != null){
-      InngageNotificationMessage.firebaseListenCallback = firebaseListenCallback as void Function(dynamic r);
+    if (firebaseListenCallback != null) {
+      InngageNotificationMessage.firebaseListenCallback =
+          firebaseListenCallback as void Function(dynamic r);
     }
-   
+
+    if (attributionId != null) {
+      InngageProperties.attributionId = attributionId;
+    }
   }
 }

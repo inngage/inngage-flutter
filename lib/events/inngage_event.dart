@@ -51,4 +51,8 @@ class InngageEvent {
       debugPrint("user phone number: ${InngageProperties.phoneNumber}");
     }
   }
+
+  static void setAttributionId(String id) {
+    InngageProperties.attributionId = id;
+  }
 }

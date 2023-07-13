@@ -38,17 +38,27 @@ class _MyAppState extends State<MyApp> {
     );
     await InngageSDK.subscribe(
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      friendlyIdentifier: 'teste007@gmail.com',
+      friendlyIdentifier: 'user01@inngage.com.br',
       customFields: json,
       phoneNumber: '5511999999999',
-      email: 'teste007@gmail.com',
-      blockDeepLink: true,
+      email: 'user01@inngage.com.br',
+      blockDeepLink: false,
       firebaseListenCallback: (data) => log(data['additional_data']),
       navigatorKey: navigatorKey,
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
     );
-    Future.delayed(const Duration(seconds: 5)).then((value){
+    /*InngageUtils.addUserData(
+        identifier: 'user02@inngage.com.br',
+        customFields: {
+          "nome": "User 02",
+          "dt_nascimento": "02/10/1971",
+          "genero": "F",
+          "cartao": "NN",
+          "ultimo_abastecimento": "11/10/2019",
+          "total_abastecido": "300,00"
+        });*/
+    Future.delayed(const Duration(seconds: 5)).then((value) {
       InngageNotificationMessage.subscribe();
     });
     InngageEvent.setDebugMode(true);
@@ -56,7 +66,7 @@ class _MyAppState extends State<MyApp> {
     await InngageEvent.sendEvent(
       eventName: 'MyOtherEventWithoutEventValues',
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      identifier: 'teste007@gmail.com',
+      identifier: 'user03@inngage.com.br',
       eventValues: {
         'location': '12312312312',
       },
@@ -64,10 +74,10 @@ class _MyAppState extends State<MyApp> {
     await InngageEvent.sendEvent(
       eventName: 'send_test',
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      registration: 'teste007@gmail.com',
+      registration: 'user04@inngage.com.br',
     );
     InngageInapp.blockDeepLink = true;
-    InngageInapp.deepLinkCallback = (link){
+    InngageInapp.deepLinkCallback = (link) {
       log('link:' + link);
     };
   }

@@ -13,6 +13,7 @@ class InngageProperties {
   static String email = '';
   static String appToken = '';
   static String registration = '';
+  static String attributionId = '';
   static String keyAuthorization = '';
   static Map<String, dynamic> customFields = {};
   static bool debugMode = false;
