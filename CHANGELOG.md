@@ -2,6 +2,7 @@
 * chore: add ```attributionId``` on subscriber. 
 * chore: update some dependencies.
 * refactor: remove the ```registration``` parameter from the ```addUserData``` method. Value automatically filled.
+* fix: fixed notification icon not appearing in foreground.
 ## 2.0.9
 ## 2.0.8+4
 ## 2.0.8+3
