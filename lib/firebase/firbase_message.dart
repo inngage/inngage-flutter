@@ -27,8 +27,9 @@ class InngageNotificationMessage {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getInitialMessage().then((value) {
       try {
+        firebaseListenCallback(value!.data);
         InngageNotification.openCommonNotification(
-            data: value!.data,
+            data: value.data,
             appToken: InngageProperties.appToken,
             inBack: true);
       } catch (e) {
