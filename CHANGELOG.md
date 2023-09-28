@@ -1,3 +1,5 @@
+## 2.0.11 
+* fix: opening the deeplink through the ``firebaseListenCallback`` with the app closed.
 ## 2.0.10 
 * chore: add ```attributionId``` on subscriber. 
 * chore: update some dependencies.
