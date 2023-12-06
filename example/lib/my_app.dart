@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: navigatorKey,
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
+      requestGeoLocator: false,
     );
     /*InngageUtils.addUserData(
         identifier: 'user02@inngage.com.br',

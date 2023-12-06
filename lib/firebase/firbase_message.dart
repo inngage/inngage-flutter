@@ -151,25 +151,28 @@ class InngageNotificationMessage {
           debugPrint("logx $registration");
         }
         final registerSubscriberRequest = RegisterSubscriberRequest(
-            appInstalledIn: DateTime.now(),
-            appToken: InngageProperties.appToken,
-            appUpdatedIn: DateTime.now(),
-            customField: InngageProperties.customFields,
-            appVersion: appVersion,
-            deviceModel: deviceModel,
-            sdk: '2.0.9',
-            phoneNumber: InngageProperties.phoneNumber,
-            email: InngageProperties.email,
-            deviceManufacturer: manufacturer,
-            identifier: InngageProperties.identifier,
-            osLanguage: languages![0] ?? '',
-            osLocale: locale,
-            osVersion: osDevice,
-            registration: registration,
-            uuid: uuid,
-            platform: Platform.isAndroid ? 'Android' : 'iOS',
-            advertiserId: advertiserId,
-            idfa: idfa);
+          appInstalledIn: DateTime.now(),
+          appToken: InngageProperties.appToken,
+          appUpdatedIn: DateTime.now(),
+          customField: InngageProperties.customFields,
+          appVersion: appVersion,
+          deviceModel: deviceModel,
+          sdk: '2.0.9',
+          phoneNumber: InngageProperties.phoneNumber,
+          email: InngageProperties.email,
+          deviceManufacturer: manufacturer,
+          identifier: InngageProperties.identifier,
+          osLanguage: languages![0] ?? '',
+          osLocale: locale,
+          osVersion: osDevice,
+          registration: registration,
+          uuid: uuid,
+          platform: Platform.isAndroid ? 'Android' : 'iOS',
+          advertiserId: advertiserId,
+          idfa: idfa,
+          lat: InngageProperties.latitude,
+          long: InngageProperties.longitude,
+        );
 
         //make request subscription to inngage backend
         await InngageProperties.inngageNetwork.subscription(

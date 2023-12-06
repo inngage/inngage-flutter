@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:inngage_plugin/geolocator/geolocal.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 
 class InngageSDK extends ChangeNotifier {
@@ -16,21 +17,28 @@ class InngageSDK extends ChangeNotifier {
   static var notificationController =
       StreamController<RemoteMessage>.broadcast();
 
-  static Future<void> subscribe(
-      {required String appToken,
-      required GlobalKey<NavigatorState> navigatorKey,
-      String friendlyIdentifier = '',
-      String? attributionId,
-      String? phoneNumber,
-      String? email,
-      bool blockDeepLink = false,
-      Function? firebaseListenCallback,
-      Map<String, dynamic>? customFields,
-      InngageWebViewProperties? inngageWebViewProperties,
-      bool requestAdvertiserId = false}) async {
+  static Future<void> subscribe({
+    required String appToken,
+    required GlobalKey<NavigatorState> navigatorKey,
+    String friendlyIdentifier = '',
+    String? attributionId,
+    String? phoneNumber,
+    String? email,
+    bool blockDeepLink = false,
+    Function? firebaseListenCallback,
+    Map<String, dynamic>? customFields,
+    InngageWebViewProperties? inngageWebViewProperties,
+    bool requestAdvertiserId = false,
+    bool requestGeoLocator = false,
+  }) async {
     try {
       //initialize firebase
       defaultApp = await Firebase.initializeApp();
+      if (requestGeoLocator) {
+        var result = await GeoLocal.handlePermission();
+        InngageProperties.latitude = result.latitude.toString();
+        InngageProperties.longitude = result.longitude.toString();
+      }
     } catch (error) {
       if (InngageProperties.getDebugMode()) {
         debugPrint(error.toString());

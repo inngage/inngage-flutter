@@ -21,27 +21,30 @@ class SubscriptionRequest {
 }
 
 class RegisterSubscriberRequest {
-  RegisterSubscriberRequest(
-      {this.appToken,
-      this.identifier,
-      this.registration,
-      this.platform,
-      this.sdk,
-      this.deviceModel,
-      this.deviceManufacturer,
-      this.osLocale,
-      this.osLanguage,
-      this.osVersion,
-      this.appVersion,
-      this.appInstalledIn,
-      this.appUpdatedIn,
-      this.uuid,
-      this.attributionId,
-      this.customField,
-      this.phoneNumber,
-      this.email,
-      this.advertiserId,
-      this.idfa});
+  RegisterSubscriberRequest({
+    this.appToken,
+    this.identifier,
+    this.registration,
+    this.platform,
+    this.sdk,
+    this.deviceModel,
+    this.deviceManufacturer,
+    this.osLocale,
+    this.osLanguage,
+    this.osVersion,
+    this.appVersion,
+    this.appInstalledIn,
+    this.appUpdatedIn,
+    this.uuid,
+    this.attributionId,
+    this.customField,
+    this.phoneNumber,
+    this.email,
+    this.lat,
+    this.long,
+    this.advertiserId,
+    this.idfa,
+  });
 
   String? appToken;
   String? identifier;
@@ -61,6 +64,8 @@ class RegisterSubscriberRequest {
   Map<String, dynamic>? customField;
   String? phoneNumber;
   String? email;
+  String? lat;
+  String? long;
   String? idfa;
   String? advertiserId;
 
@@ -84,6 +89,8 @@ class RegisterSubscriberRequest {
       "custom_field": customField,
       "phone": phoneNumber,
       "email": email,
+      "lat": lat,
+      "long": long,
     };
     if (Platform.isIOS) {
       json["idfa"] = idfa;
