@@ -1,3 +1,7 @@
+## 3.0.0
+* feature: add geolocation support to subscribe function
+* chore: improvement of in-app design and performance
+* update: update some dependencies to support Dart 3.0
 ## 2.0.12 
 * chore: update http dependency.
 ## 2.0.11 
