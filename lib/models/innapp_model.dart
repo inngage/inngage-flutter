@@ -1,4 +1,5 @@
 import 'rich_content_model.dart';
+
 class InAppModel {
   bool? inappMessage;
   String? title;
@@ -7,6 +8,8 @@ class InAppModel {
   String? bodyFontColor;
   String? backgroundColor;
   String? backgroundImg;
+  String? bgImgActionType;
+  String? bgImgActionLink;
   RichContent? richContent;
   String? btnLeftTxt;
   String? btnLeftTxtColor;
@@ -28,6 +31,8 @@ class InAppModel {
       this.bodyFontColor,
       this.backgroundColor,
       this.backgroundImg,
+      this.bgImgActionType,
+      this.bgImgActionLink,
       this.richContent,
       this.btnLeftTxt,
       this.btnLeftTxtColor,
@@ -48,9 +53,11 @@ class InAppModel {
     body = json['body'];
     bodyFontColor = json['body_font_color'];
     backgroundColor = json['background_color'];
-    backgroundImg = json['background_img'];
+    backgroundImg = json['background_image'];
+    bgImgActionType = json['bg_img_action_type'];
+    bgImgActionLink = json['bg_img_action_link'];
     richContent = json['rich_content'] != null
-        ?  RichContent.fromJson(json['rich_content'])
+        ? RichContent.fromJson(json['rich_content'])
         : null;
     btnLeftTxt = json['btn_left_txt'];
     btnLeftTxtColor = json['btn_left_txt_color'];

@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: navigatorKey,
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
-      requestGeoLocator: false,
+      requestGeoLocator: true,
     );
     /*InngageUtils.addUserData(
         identifier: 'user02@inngage.com.br',
@@ -77,8 +77,8 @@ class _MyAppState extends State<MyApp> {
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
       registration: 'user04@inngage.com.br',
     );
-    InngageInapp.blockDeepLink = true;
-    InngageInapp.deepLinkCallback = (link) {
+    InngageInApp.blockDeepLink = true;
+    InngageInApp.deepLinkCallback = (link) {
       log('link:' + link);
     };
   }

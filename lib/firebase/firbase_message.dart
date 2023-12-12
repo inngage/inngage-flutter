@@ -111,7 +111,7 @@ class InngageNotificationMessage {
       }
       debugPrint('logx ${event.from}');
       Future.delayed(const Duration(seconds: 2)).then((value) {
-        InngageInapp.show();
+        InngageInApp.show();
       });
       InngageNotification.openCommonNotification(
         data: event.data,
@@ -202,15 +202,17 @@ class InngageNotificationMessage {
       if (inappMessage) {
         try {
           const storage = FlutterSecureStorage();
-          var data = json.decode(message.data['additional_data']);
+          var rawData = message.data['additional_data'];
+          var data = json.decode(rawData);
 
           inappMessage = data['inapp_message'];
 
           if (inappMessage) {
-            storage.write(key: "inapp", value: message.data['additional_data']);
+            storage.write(key: "inapp", value: rawData);
           }
 
           var inAppModel = InAppModel.fromJson(data);
+
           InngageDialog.showInAppDialog(inAppModel);
         } catch (e) {
           debugPrint('logx listen $e');
@@ -247,12 +249,13 @@ class InngageNotificationMessage {
       RemoteMessage message) async {
     var inappMessage = false;
     try {
-      var data = json.decode(message.data['additional_data']);
+      var rawData = message.data['additional_data'];
+      var data = json.decode(rawData);
 
       inappMessage = data['inapp_message'];
 
       const storage = FlutterSecureStorage();
-      await storage.write(key: "inapp", value: message.data['additional_data']);
+      await storage.write(key: "inapp", value: rawData);
     } catch (e) {
       debugPrint('logx listen $e');
     }

@@ -107,4 +107,8 @@ class InngageUtils {
   static void setKeyAuthorization({required String keyAuthorization}) async {
     InngageProperties.keyAuthorization = keyAuthorization;
   }
+
+  static bool isNullOrEmpty(String? text) {
+    return text == null || text.isEmpty;
+  }
 }

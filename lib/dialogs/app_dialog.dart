@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inapp/inapp_dialog.dart';
@@ -7,21 +6,24 @@ import 'package:inngage_plugin/models/innapp_model.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 
 class InngageDialog {
-  static showInAppDialog(
-      InAppModel inAppModel) async {
+  static showInAppDialog(InAppModel inAppModel) async {
+    const storage = FlutterSecureStorage();
+    final currentState = InngageProperties.navigatorKey.currentState;
     try {
-      final currentState = InngageProperties.navigatorKey.currentState;
-      final _inngageWebViewProperties = InngageProperties.inngageWebViewProperties;
-      showDialog(
-          context: currentState!.context,
-          builder: (_) {
-            return InAppDialog(
-                inAppModel: inAppModel,
-                inngageWebViewProperties: _inngageWebViewProperties,
-                navigatorKey: InngageProperties.navigatorKey);
+      if (Navigator.canPop(currentState!.context)) {
+        Navigator.pop(currentState.context);
+        await storage.delete(key: 'inapp');
+      }
+
+      final dialog = await showDialog(
+          context: currentState.context,
+          builder: (context) {
+            return InAppDialog(inAppModel: inAppModel);
           });
-      const storage =  FlutterSecureStorage();
-      await storage.delete(key:'inapp');
+
+      if (dialog == null) {
+        await storage.delete(key: 'inapp');
+      }
     } catch (e) {
       log(e.toString());
     }
