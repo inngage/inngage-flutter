@@ -17,6 +17,10 @@ class InngageSDK extends ChangeNotifier {
   static var notificationController =
       StreamController<RemoteMessage>.broadcast();
 
+  static void setDebugMode(bool value) {
+    InngageProperties.debugMode = value;
+  }
+
   static Future<void> subscribe({
     required String appToken,
     required GlobalKey<NavigatorState> navigatorKey,
