@@ -1,3 +1,6 @@
+## 3.1.0
+* chore: Added debug function for the SDK: ``InngageSDK.setDebugMode()``.
+* update: Updated dependencies to ``flutter_local_notifications`` version 16.3.3.
 ## 3.0.0
 * feature: add geolocation support to subscribe function
 * chore: improvement of in-app design and performance
