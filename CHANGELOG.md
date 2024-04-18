@@ -1,3 +1,5 @@
+## 3.1.1
+* update: remove unnecessary permission from AndroidManifest
 ## 3.1.0
 * chore: Added debug function for the SDK: ``InngageSDK.setDebugMode()``.
 * update: Updated dependencies to ``flutter_local_notifications`` version 16.3.3.
