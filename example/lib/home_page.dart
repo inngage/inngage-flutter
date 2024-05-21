@@ -4,7 +4,6 @@ import 'package:inngage_plugin/inngage_plugin.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -32,7 +31,7 @@ class _HomePageState extends State<HomePage> {
                 //identifier: 'appexample@gmail.com',
               );
               if (result) {
-                const snackBar =  SnackBar(
+                const snackBar = SnackBar(
                   content: Text('Evento enviado com successo'),
                   backgroundColor: Colors.green,
                 );
@@ -40,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             } on InngageException catch (_) {
-              const snackBar =  SnackBar(
+              const snackBar = SnackBar(
                 content: Text('Houve um erro tente novamente'),
                 backgroundColor: Colors.red,
               );

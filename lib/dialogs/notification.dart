@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
+import 'package:inngage_plugin/services/inngage_service.dart';
 import 'package:inngage_plugin/util/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -17,18 +18,19 @@ class InngageNotification {
       debugPrint("openCommonNotification: $data");
     }
 
-    //final Map<String, dynamic>? data = payload['data'];
     String? notificationId = '';
 
     if (data.containsKey('notId')) {
       notificationId = data['notId'];
     }
-    Future.microtask(
-      () => InngageProperties.inngageNetwork.notification(
-        notid: notificationId ?? '',
-        appToken: appToken,
-      ),
-    );
+
+    try {
+      await InngageService.registerNotification(
+          notId: notificationId!, appToken: appToken);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+
     final String type = data['type'] ?? '';
     final String url = data['url'] ?? '';
 

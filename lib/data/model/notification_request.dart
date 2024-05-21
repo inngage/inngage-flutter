@@ -31,12 +31,12 @@ class Notification {
   Notification({
     this.id,
     this.appToken,
-    this.notid,
+    this.notId,
   });
 
   String? id;
   String? appToken;
-  String? notid;
+  String? notId;
 
   factory Notification.fromJson(Map<String, dynamic> json) => Notification(
         id: json["id"],
@@ -46,6 +46,6 @@ class Notification {
   Map<String, dynamic> toJson() => {
         "id": id,
         "app_token": appToken,
-        "notid": notid,
+        "notid": notId,
       };
 }

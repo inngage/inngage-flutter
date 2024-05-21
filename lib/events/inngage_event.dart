@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
+import 'package:inngage_plugin/services/inngage_service.dart';
 
 class InngageEvent {
   static Future<bool> sendEvent({
@@ -19,17 +20,13 @@ class InngageEvent {
       );
     }
     try {
-      await Future.microtask(
-        () async => await InngageProperties.inngageNetwork.sendEvent(
-          eventName: eventName,
-          appToken: appToken,
-          identifier: identifier ?? '',
-          registration: registration ?? '',
-          eventValues: eventValues,
-          conversionValue: conversionValue,
-          conversionNotId: conversionNotId,
-          conversionEvent: conversionEvent,
-        ),
+      await InngageService.registerEvent(
+        InngageProperties.registration,
+        eventName,
+        eventValues,
+        conversionEvent,
+        conversionValue,
+        conversionNotId,
       );
     } catch (e) {
       return false;
