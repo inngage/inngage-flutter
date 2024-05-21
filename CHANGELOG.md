@@ -1,3 +1,6 @@
+## 3.2.0
+* update: improvement in notification handling
+* fix: notification status in closed app
 ## 3.1.1
 * update: remove unnecessary permission from AndroidManifest
 ## 3.1.0
