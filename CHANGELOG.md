@@ -1,3 +1,5 @@
+## 3.3.0
+* chore: update logger and flutter_secure_storage dependencies
 ## 3.2.0
 * update: improvement in notification handling
 * fix: notification status in closed app
