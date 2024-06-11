@@ -59,9 +59,7 @@ class _MyAppState extends State<MyApp> {
           "ultimo_abastecimento": "11/10/2019",
           "total_abastecido": "300,00"
         });*/
-    Future.delayed(const Duration(seconds: 5)).then((value) {
-      InngageNotificationMessage.subscribe();
-    });
+    await InngageNotificationMessage.subscribe();
     InngageEvent.setDebugMode(true);
     InngageEvent.setUserPhone("5511999999999");
     await InngageEvent.sendEvent(
