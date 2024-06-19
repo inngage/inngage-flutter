@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:package_info/package_info.dart';
@@ -19,9 +19,9 @@ class InngageUtils {
   }
 
   static void launchURL(String url) async {
-    final Uri _url = Uri.parse(url);
-    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not lauch $_url');
+    final Uri url0 = Uri.parse(url);
+    if (!await launchUrl(url0, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not lauch $url0');
     }
   }
 
@@ -72,11 +72,11 @@ class InngageUtils {
   static Future<String> getUniqueId() async {
     if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await InngageProperties.deviceInfo.iosInfo;
-      return iosInfo.identifierForVendor;
+      return iosInfo.identifierForVendor!;
     } else {
       AndroidDeviceInfo androidInfo =
           await InngageProperties.deviceInfo.androidInfo;
-      return androidInfo.androidId;
+      return androidInfo.id;
     }
   }
 
@@ -84,10 +84,10 @@ class InngageUtils {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+      return iosDeviceInfo.identifierForVendor!; // unique ID on iOS
     } else {
       AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-      return androidDeviceInfo.androidId; // unique ID on Android
+      return androidDeviceInfo.id; // unique ID on Android
     }
   }
 

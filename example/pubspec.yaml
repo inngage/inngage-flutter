@@ -19,14 +19,15 @@ dependencies:
     sdk: flutter
     #Firebase
  #Firebase
-  firebase_core: ^2.10.0
-  firebase_messaging: ^14.4.1
+  firebase_core: ^3.1.0
+  firebase_messaging: ^15.0.1
 
-  logger: ^2.0.2+1
-  flutter_secure_storage: ^9.0.0
+  logger: ^2.3.0
+  flutter_secure_storage: ^9.2.2
+  upgrader: ^9.0.0
 
   #localNotificaiton
-  flutter_local_notifications: ^16.3.3 
+  flutter_local_notifications: ^17.1.2 
   inngage_plugin:
     path: ../
   cupertino_icons: ^1.0.2

@@ -10,13 +10,13 @@ class CustomTextButton extends StatelessWidget {
   final String bgColor;
 
   const CustomTextButton({
-    Key? key,
+    super.key,
     this.text,
     this.actionLink,
     this.actionType,
     this.textColor = "#000",
     this.bgColor = "#FFF",
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +29,15 @@ class CustomTextButton extends StatelessWidget {
                   InngageActions.executeAction(actionType!, actionLink!);
                 }
               },
+              style: ButtonStyle(
+                backgroundColor:
+                    WidgetStateProperty.all(HexColor.fromHex(bgColor)),
+              ),
               child: Text(
                 text!,
                 style: TextStyle(
                   color: HexColor.fromHex(textColor),
                 ),
-              ),
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(HexColor.fromHex(bgColor)),
               ),
             ),
           )

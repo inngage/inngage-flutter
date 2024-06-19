@@ -8,9 +8,9 @@ class CustomImageSlideshow extends StatelessWidget {
   final InAppModel inAppModel;
 
   const CustomImageSlideshow({
-    Key? key,
+    super.key,
     required this.inAppModel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +28,19 @@ class CustomImageSlideshow extends StatelessWidget {
                   ? Colors.transparent
                   : HexColor.fromHex(inAppModel.backgroundColor ?? "#0000FF"),
               indicatorBackgroundColor: Colors.grey,
+
+              /// Called whenever the page in the center of the viewport changes.
+              onPageChanged: (value) {
+                debugPrint('Page changed: $value');
+              },
+
+              /// Auto scroll interval.
+              /// Do not auto scroll with null or 0.
+
+              /// Loops back to first slide.
+              isLoop: inAppModel.richContent!.img1 != null &&
+                  inAppModel.richContent!.img2 != null &&
+                  inAppModel.richContent!.img3 != null,
               children: [
                 if (inAppModel.richContent!.img1 != null)
                   ClipRRect(
@@ -80,19 +93,6 @@ class CustomImageSlideshow extends StatelessWidget {
                     ),
                   ),
               ],
-
-              /// Called whenever the page in the center of the viewport changes.
-              onPageChanged: (value) {
-                debugPrint('Page changed: $value');
-              },
-
-              /// Auto scroll interval.
-              /// Do not auto scroll with null or 0.
-
-              /// Loops back to first slide.
-              isLoop: inAppModel.richContent!.img1 != null &&
-                  inAppModel.richContent!.img2 != null &&
-                  inAppModel.richContent!.img3 != null,
             ),
           )
         : Container();

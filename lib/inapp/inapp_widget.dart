@@ -5,9 +5,9 @@ class InngageInAppWidget extends StatefulWidget {
   final Widget child;
 
   const InngageInAppWidget({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<InngageInAppWidget> createState() => _InngageInAppWidgetState();
@@ -27,6 +27,9 @@ class _InngageInAppWidgetState extends State<InngageInAppWidget>
       case AppLifecycleState.paused:
         break;
       case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.hidden:
+        // TODO: Handle this case.
         break;
     }
   }

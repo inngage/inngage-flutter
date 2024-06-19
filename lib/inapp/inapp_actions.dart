@@ -20,16 +20,16 @@ class InngageActions {
   }
 
   static void _deep(String link) async {
-    final Uri _url = Uri.parse(link);
-    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not launch $_url');
+    final Uri url = Uri.parse(link);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
     }
   }
 
   static void _web(String link) async {
-    final Uri _url = Uri.parse(link);
-    if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $_url');
+    final Uri url = Uri.parse(link);
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
     }
   }
 }

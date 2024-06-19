@@ -11,9 +11,9 @@ class DialogPoster extends StatefulWidget {
   final InAppModel inAppModel;
 
   const DialogPoster({
-    Key? key,
+    super.key,
     required this.inAppModel,
-  }) : super(key: key);
+  });
 
   @override
   State<DialogPoster> createState() => _DialogPosterState();

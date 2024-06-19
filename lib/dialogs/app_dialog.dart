@@ -14,15 +14,16 @@ class InngageDialog {
         Navigator.pop(currentState.context);
         await storage.delete(key: 'inapp');
       }
+      if (currentState.mounted) {
+        final dialog = await showDialog(
+            context: currentState.context,
+            builder: (context) {
+              return InAppDialog(inAppModel: inAppModel);
+            });
 
-      final dialog = await showDialog(
-          context: currentState.context,
-          builder: (context) {
-            return InAppDialog(inAppModel: inAppModel);
-          });
-
-      if (dialog == null) {
-        await storage.delete(key: 'inapp');
+        if (dialog == null) {
+          await storage.delete(key: 'inapp');
+        }
       }
     } catch (e) {
       log(e.toString());

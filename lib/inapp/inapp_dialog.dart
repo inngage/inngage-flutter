@@ -6,7 +6,7 @@ import 'package:inngage_plugin/inngage_plugin.dart';
 class InAppDialog extends StatelessWidget {
   InAppModel inAppModel;
 
-  InAppDialog({Key? key, required this.inAppModel}) : super(key: key);
+  InAppDialog({super.key, required this.inAppModel});
 
   @override
   Widget build(BuildContext context) {

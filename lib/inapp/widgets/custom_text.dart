@@ -8,12 +8,12 @@ class CustomText extends StatelessWidget {
   final bool isBold;
 
   const CustomText({
-    Key? key,
+    super.key,
     this.text,
     this.fontSize,
     this.fontColor,
     this.isBold = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
