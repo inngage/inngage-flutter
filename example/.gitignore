@@ -29,6 +29,7 @@
 .packages
 .pub-cache/
 .pub/
+lib/firebase_options.dart
 /build/
 
 # Web related
