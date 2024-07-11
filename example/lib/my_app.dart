@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+
 import 'package:inngage_plugin/inngage_plugin.dart';
+
 import 'home_page.dart';
 
 class MyApp extends StatefulWidget {
@@ -93,6 +96,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       navigatorKey: navigatorKey,
       home: const InngageInAppWidget(child: HomePage()),
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+      ],
     );
   }
 }

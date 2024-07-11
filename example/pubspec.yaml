@@ -20,6 +20,7 @@ dependencies:
     #Firebase
  #Firebase
   firebase_core: ^3.1.0
+  firebase_analytics: ^11.1.0
   firebase_messaging: ^15.0.1
 
   logger: ^2.3.0

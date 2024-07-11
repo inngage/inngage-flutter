@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
+import 'package:inngage_plugin/services/analytics_service.dart';
 import 'package:inngage_plugin/services/inngage_service.dart';
 import 'package:inngage_plugin/util/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -22,6 +23,17 @@ class InngageNotification {
 
     if (data.containsKey('notId')) {
       notificationId = data['notId'];
+    }
+
+    if (data.containsKey('inngageData')) {
+      String inngageDataString = data['inngageData'];
+      if (inngageDataString.contains('utm_source')) {
+        debugPrint('Capturando e enviando parâmetros do UTM');
+        final utmParameters =
+            InngageUtils.captureAndSendUTMParameters(inngageDataString);
+
+        await AnalyticsService().sendUTMParameters(utmParameters);
+      }
     }
 
     try {
