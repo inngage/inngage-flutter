@@ -1,3 +1,6 @@
+## 3.5.0
+* feature: sending UTM parameters to Google Analytics
+
 ## 3.4.0
 ### Dependency updates to the following versions:
 * firebase_core: 2.10.0 to 3.1.0.
