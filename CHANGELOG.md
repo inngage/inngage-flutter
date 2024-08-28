@@ -1,3 +1,6 @@
+## 3.5.1
+* fix: removing class causing error in Crash Analytics.
+
 ## 3.5.0
 * feature: sending UTM parameters to Google Analytics
 
