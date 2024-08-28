@@ -87,26 +87,16 @@ class InngageNetwork
 
       return;
     } on http.ClientException catch (e) {
-      _handleHttpException(e);
+      logger.e(e.message);
+      if (e.message.contains('Failed host lookup')) {
+        logger.e('Failed to resolve hostname. Check internet connection.');
+      } else {
+        logger.e('Client error occurred: ${e.message}');
+      }
     } catch (e) {
       logger.e('An unexpected error occurred: $e');
     }
   }
 
-  void _handleHttpException(http.ClientException e) {
-    logger.e(e.message);
-    if (e.message.contains('Failed host lookup')) {
-      throw CrashlyticsException(
-        'Failed to resolve hostname. Please check your internet connection and try again.',
-      );
-    } else {
-      throw CrashlyticsException('An error occurred: ${e.message}');
-    }
-  }
-}
-
-class CrashlyticsException implements Exception {
-  final String message;
-
-  CrashlyticsException(this.message);
+  void _handleHttpException(http.ClientException e) {}
 }
