@@ -1,3 +1,6 @@
+## 3.5.2
+* chore: removing deprecated dependencies. 
+
 ## 3.5.1
 * fix: removing class causing error in Crash Analytics.
 
