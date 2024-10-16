@@ -1,3 +1,10 @@
+## 3.6.0
+* feature: updated notification icon for foreground display.
+* feature: added support for email and phoneNumber in the ``addUserData`` method.
+* refactor: removed deprecated field and non-functional method.
+* refactor: revised handling of UTM data. 
+* update: ``device_local_plus`` to version 10.1.2, ``package_local_plus`` to version 8.0.2 and ``devicelocale`` to version 0.8.0.
+
 ## 3.5.2
 * chore: removing deprecated dependencies. 
 
