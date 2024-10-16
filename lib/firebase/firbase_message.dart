@@ -21,7 +21,7 @@ class InngageNotificationMessage {
 
   static void Function(dynamic data) firebaseListenCallback = (data) {};
 
-  static Future<void> subscribe() async {
+  static Future<void> subscribe({String? notificationIcon}) async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     await _requestPermission();
@@ -32,7 +32,7 @@ class InngageNotificationMessage {
     await receiveNotificationForeground();
     await receiveNotificationClosed();
 
-    await _config();
+    await _config(notificationIcon);
   }
 
   static Future<void> receiveNotificationForeground() async {
@@ -115,9 +115,10 @@ class InngageNotificationMessage {
     );
   }
 
-  static _config() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+  static _config(String? notificationIcon) async {
+    AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings(
+            notificationIcon ?? '@mipmap/ic_launcher');
 
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
