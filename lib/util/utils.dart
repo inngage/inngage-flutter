@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
@@ -56,15 +55,6 @@ class InngageUtils {
           await InngageProperties.deviceInfo.androidInfo;
       return androidInfo.manufacturer;
     }
-  }
-
-  static Map<String, String> captureAndSendUTMParameters(
-      String inngageDataString) {
-    Map<String, dynamic> inngageDataMap = jsonDecode(inngageDataString);
-    Map<String, String> utmParameters =
-        inngageDataMap.map((key, value) => MapEntry(key, value));
-
-    return utmParameters;
   }
 
   static Future<String> getAdvertisingId() async {

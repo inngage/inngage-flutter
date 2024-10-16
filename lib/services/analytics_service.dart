@@ -6,7 +6,12 @@ class AnalyticsService {
 
   Future<void> sendUTMParameters(Map<String, String> utmParameters) async {
     try {
-      debugPrint('UTM: $utmParameters');
+      if (utmParameters.isEmpty) {
+        debugPrint('Nenhum parâmetro UTM foi encontrado.');
+        return;
+      }
+
+      debugPrint('Enviando UTM Parameters: $utmParameters');
 
       await _analytics.logEvent(
         name: 'inngage_notification_click',
@@ -15,7 +20,7 @@ class AnalyticsService {
 
       debugPrint('Evento UTM Parameters enviado com sucesso.');
     } catch (e) {
-      debugPrint('Erro ao enviar evento UTM Parameters');
+      debugPrint('Erro ao enviar evento UTM Parameters: $e');
     }
   }
 }

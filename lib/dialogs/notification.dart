@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:inngage_plugin/services/analytics_service.dart';
@@ -25,16 +27,7 @@ class InngageNotification {
       notificationId = data['notId'];
     }
 
-    if (data.containsKey('inngageData')) {
-      String inngageDataString = data['inngageData'];
-      if (inngageDataString.contains('utm_source')) {
-        debugPrint('Capturando e enviando parâmetros do UTM');
-        final utmParameters =
-            InngageUtils.captureAndSendUTMParameters(inngageDataString);
-
-        await AnalyticsService().sendUTMParameters(utmParameters);
-      }
-    }
+    processUTMParameters(data);
 
     try {
       await InngageService.registerNotification(
@@ -76,6 +69,34 @@ class InngageNotification {
         }
 
         break;
+    }
+  }
+
+  static Future<void> processUTMParameters(Map<String, dynamic> data) async {
+    if (data.containsKey('inn_utm_source')) {
+      debugPrint('Capturando e enviando parâmetros do UTM');
+
+      final utmSource = data['inn_utm_source']?.toString();
+      final utmCampaign = data['inn_utm_campaign']?.toString();
+      final utmMedium = data['inn_utm_medium']?.toString();
+      final utmTerm = data['inn_utm_term']?.toString();
+
+      Map<String, String> utmData = {
+        if (utmSource != null && utmSource.isNotEmpty)
+          "inn_utm_source": utmSource,
+        if (utmCampaign != null && utmCampaign.isNotEmpty)
+          "inn_utm_campaign": utmCampaign,
+        if (utmMedium != null && utmMedium.isNotEmpty)
+          "inn_utm_medium": utmMedium,
+        if (utmTerm != null && utmTerm.isNotEmpty) "inn_utm_term": utmTerm
+      };
+
+      if (utmData.isNotEmpty) {
+        debugPrint('UTM Data: ${jsonEncode(utmData)}');
+        await AnalyticsService().sendUTMParameters(utmData);
+      } else {
+        debugPrint('Nenhum parâmetro UTM válido foi capturado.');
+      }
     }
   }
 
