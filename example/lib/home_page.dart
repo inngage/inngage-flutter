@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
                 eventName: 'click me',
                 appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
                 identifier: 'dass@asdsa.com',
-                //identifier: 'appexample@gmail.com',
               );
               if (result) {
                 const snackBar = SnackBar(

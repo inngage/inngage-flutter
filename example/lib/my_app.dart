@@ -1,10 +1,6 @@
 import 'dart:developer';
-
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-
 import 'package:inngage_plugin/inngage_plugin.dart';
-
 import 'home_page.dart';
 
 class MyApp extends StatefulWidget {
@@ -18,15 +14,6 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   initSdk() async {
-    final json = {
-      "nome": "User 01",
-      "dt_nascimento": "01/09/1970",
-      "genero": "M",
-      "cartao": "N",
-      "ultimo_abastecimento": "10/09/2018",
-      "total_abastecido": "290,00"
-    };
-
     final inngageWebViewProperties = InngageWebViewProperties(
       appBarColor: Colors.pink,
       appBarText: const Text(
@@ -42,7 +29,14 @@ class _MyAppState extends State<MyApp> {
     await InngageSDK.subscribe(
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
       friendlyIdentifier: 'user01@inngage.com.br',
-      customFields: json,
+      customFields: {
+        "nome": "User 01",
+        "dt_nascimento": "01/09/1970",
+        "genero": "M",
+        "cartao": "N",
+        "ultimo_abastecimento": "10/09/2018",
+        "total_abastecido": "290,00"
+      },
       phoneNumber: '5511999999999',
       email: 'user01@inngage.com.br',
       blockDeepLink: false,
@@ -52,16 +46,6 @@ class _MyAppState extends State<MyApp> {
       requestAdvertiserId: false,
       requestGeoLocator: true,
     );
-    /*InngageUtils.addUserData(
-        identifier: 'user02@inngage.com.br',
-        customFields: {
-          "nome": "User 02",
-          "dt_nascimento": "02/10/1971",
-          "genero": "F",
-          "cartao": "NN",
-          "ultimo_abastecimento": "11/10/2019",
-          "total_abastecido": "300,00"
-        });*/
     await InngageNotificationMessage.subscribe();
     InngageEvent.setDebugMode(true);
     InngageEvent.setUserPhone("5511999999999");
@@ -96,9 +80,6 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       navigatorKey: navigatorKey,
       home: const InngageInAppWidget(child: HomePage()),
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-      ],
     );
   }
 }
