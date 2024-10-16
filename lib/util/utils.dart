@@ -98,10 +98,15 @@ class InngageUtils {
   static void addUserData({
     String? identifier,
     Map<String, dynamic>? customFields,
+    String? email,
+    String? phoneNumber,
   }) {
     InngageProperties.identifier = identifier ?? InngageProperties.identifier;
     InngageProperties.customFields =
         customFields ?? InngageProperties.customFields;
+    InngageProperties.email = email ?? InngageProperties.email;
+    InngageProperties.phoneNumber =
+        phoneNumber ?? InngageProperties.phoneNumber;
   }
 
   static void setKeyAuthorization({required String keyAuthorization}) async {
