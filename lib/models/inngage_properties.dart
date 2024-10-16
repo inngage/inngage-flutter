@@ -32,7 +32,6 @@ class InngageProperties {
         lineLength: 20000,
         colors: true,
         printEmojis: true,
-        printTime: false,
       ),
     ),
   );

@@ -97,6 +97,4 @@ class InngageNetwork
       logger.e('An unexpected error occurred: $e');
     }
   }
-
-  void _handleHttpException(http.ClientException e) {}
 }
