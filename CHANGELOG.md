@@ -1,3 +1,6 @@
+## 3.6.1
+* feature: updated notification color for foreground display.
+
 ## 3.6.0
 * feature: updated notification icon for foreground display.
 * feature: added support for email and phoneNumber in the ``addUserData`` method.
