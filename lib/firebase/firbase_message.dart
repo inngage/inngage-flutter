@@ -21,7 +21,8 @@ class InngageNotificationMessage {
 
   static void Function(dynamic data) firebaseListenCallback = (data) {};
 
-  static Future<void> subscribe({String? notificationIcon}) async {
+  static Future<void> subscribe(
+      {String? notificationIcon, Color? backgroundIcon}) async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     await _requestPermission();
@@ -29,13 +30,14 @@ class InngageNotificationMessage {
     final fcmToken = await _firebaseMessaging.getToken();
     await InngageService.registerSubscriber(fcmToken);
 
-    await receiveNotificationForeground();
+    await receiveNotificationForeground(backgroundIcon);
     await receiveNotificationClosed();
 
     await _config(notificationIcon);
   }
 
-  static Future<void> receiveNotificationForeground() async {
+  static Future<void> receiveNotificationForeground(
+      Color? backgroundIcon) async {
     FirebaseMessaging.onMessage.listen((message) async {
       if (InngageProperties.getDebugMode()) {
         debugPrint('onMessage ${message.data}');
@@ -70,14 +72,15 @@ class InngageNotificationMessage {
         }
       } else {
         if (Platform.isAndroid) {
-          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
                   'high_importance_channel', 'your channel name',
                   channelDescription: 'your channel description',
                   importance: Importance.max,
                   priority: Priority.high,
-                  ticker: 'ticker');
-          const NotificationDetails platformChannelSpecifics =
+                  ticker: 'ticker',
+                  color: backgroundIcon ?? Colors.blue);
+          NotificationDetails platformChannelSpecifics =
               NotificationDetails(android: androidPlatformChannelSpecifics);
           final titleNotification = message.data['title'] ?? "";
           final messageNotification = message.data['message'] ?? "";
