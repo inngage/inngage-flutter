@@ -1,3 +1,6 @@
+## 3.6.2
+* fix: handle clicks on carousel images in the In App Message.
+
 ## 3.6.1
 * feature: updated notification color for foreground display.
 
