@@ -1,3 +1,6 @@
+## 3.6.3
+* fix: closing In App Message after clicked.
+
 ## 3.6.2
 * fix: handle clicks on carousel images in the In App Message.
 
