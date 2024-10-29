@@ -18,7 +18,7 @@ class InngageUtils {
     return packageInfo.version;
   }
 
-  static void launchURL(String url) async {
+  static Future<void> launchURL(String url) async {
     final Uri url0 = Uri.parse(url);
     if (!await launchUrl(url0, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not lauch $url0');

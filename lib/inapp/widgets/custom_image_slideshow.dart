@@ -14,87 +14,38 @@ class CustomImageSlideshow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var dots = 0;
-    if (inAppModel.richContent!.img1 != null) dots++;
-    if (inAppModel.richContent!.img2 != null) dots++;
-    if (inAppModel.richContent!.img3 != null) dots++;
+    final images = inAppModel.richContent?.images ?? [];
 
-    return inAppModel.richContent!.carousel!
-        ? SizedBox(
-            height: 250,
-            child: ImageSlideshow(
-              initialPage: 0,
-              indicatorColor: dots < 2
-                  ? Colors.transparent
-                  : HexColor.fromHex(inAppModel.backgroundColor ?? "#0000FF"),
-              indicatorBackgroundColor: Colors.grey,
+    if (images.isEmpty) return Container();
 
-              /// Called whenever the page in the center of the viewport changes.
-              onPageChanged: (value) {
-                debugPrint('Page changed: $value');
-              },
+    final indicatorColor = images.length < 2
+        ? Colors.transparent
+        : HexColor.fromHex(inAppModel.backgroundColor ?? "#0000FF");
 
-              /// Auto scroll interval.
-              /// Do not auto scroll with null or 0.
-
-              /// Loops back to first slide.
-              isLoop: inAppModel.richContent!.img1 != null &&
-                  inAppModel.richContent!.img2 != null &&
-                  inAppModel.richContent!.img3 != null,
-              children: [
-                if (inAppModel.richContent!.img1 != null)
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8)),
-                    child: Image.network(
-                      inAppModel.richContent!.img1!,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                if (inAppModel.richContent!.img2 != null)
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8)),
-                    child: Image.network(
-                      inAppModel.richContent!.img2!,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                if (inAppModel.richContent!.img3 != null)
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8)),
-                    child: Image.network(
-                      inAppModel.richContent!.img3!,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                if (inAppModel.richContent!.img4 != null)
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8)),
-                    child: Image.network(
-                      inAppModel.richContent!.img4!,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                if (inAppModel.richContent!.img5 != null)
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8)),
-                    child: Image.network(
-                      inAppModel.richContent!.img5!,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-              ],
+    return SizedBox(
+      height: 250,
+      child: ImageSlideshow(
+        initialPage: 0,
+        indicatorColor: indicatorColor,
+        indicatorBackgroundColor: Colors.grey,
+        onPageChanged: (value) => debugPrint('Page changed: $value'),
+        isLoop: images.length > 1,
+        children: images.map((imageData) {
+          return GestureDetector(
+            onTap: () async => await InngageUtils.launchURL(imageData.urlImg!),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              child: Image.network(
+                imageData.img ?? '',
+                fit: BoxFit.contain,
+              ),
             ),
-          )
-        : Container();
+          );
+        }).toList(),
+      ),
+    );
   }
 }
