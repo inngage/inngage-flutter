@@ -32,7 +32,10 @@ class CustomImageSlideshow extends StatelessWidget {
         isLoop: images.length > 1,
         children: images.map((imageData) {
           return GestureDetector(
-            onTap: () async => await InngageUtils.launchURL(imageData.urlImg!),
+            onTap: () async {
+              Navigator.pop(context);
+              await InngageUtils.launchURL(imageData.urlImg!);
+            },
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
