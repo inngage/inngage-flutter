@@ -5,6 +5,8 @@ import 'package:inngage_plugin/models/inngage_properties.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:advertising_id/advertising_id.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class InngageUtils {
   static bool requestAdvertiserId = false;
@@ -80,14 +82,24 @@ class InngageUtils {
     }
   }
 
+  static Future<String> _getUuid() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? uuid = prefs.getString('deviceUUID');
+
+    if (uuid == null) {
+      uuid = const Uuid().v4();
+      await prefs.setString('deviceUUID', uuid);
+    }
+    return uuid;
+  }
+
   static Future<String> getId() async {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.identifierForVendor!; // unique ID on iOS
+      return iosDeviceInfo.identifierForVendor ?? await _getUuid();
     } else {
-      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-      return androidDeviceInfo.id; // unique ID on Android
+      return await _getUuid();
     }
   }
 
