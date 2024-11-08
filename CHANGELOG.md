@@ -1,3 +1,7 @@
+## 3.6.4
+* chore: add dependencies: ``uuid`` and ``shared_preferences``. 
+* fix: Generating a unique UUID for user registration.
+
 ## 3.6.3
 * fix: closing In App Message after clicked.
 
