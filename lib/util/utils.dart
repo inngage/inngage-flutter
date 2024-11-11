@@ -71,17 +71,6 @@ class InngageUtils {
     }
   }
 
-  static Future<String> getUniqueId() async {
-    if (Platform.isIOS) {
-      IosDeviceInfo iosInfo = await InngageProperties.deviceInfo.iosInfo;
-      return iosInfo.identifierForVendor!;
-    } else {
-      AndroidDeviceInfo androidInfo =
-          await InngageProperties.deviceInfo.androidInfo;
-      return androidInfo.id;
-    }
-  }
-
   static Future<String> _getUuid() async {
     final prefs = await SharedPreferences.getInstance();
     String? uuid = prefs.getString('deviceUUID');
@@ -93,7 +82,7 @@ class InngageUtils {
     return uuid;
   }
 
-  static Future<String> getId() async {
+  static Future<String> getUniqueId() async {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;

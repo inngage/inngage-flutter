@@ -26,8 +26,8 @@ class _HomePageState extends State<HomePage> {
             try {
               final result = await InngageEvent.sendEvent(
                 eventName: 'click me',
-                appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-                identifier: 'dass@asdsa.com',
+                appToken: InngageProperties.appToken,
+                identifier: InngageProperties.identifier,
               );
               if (result) {
                 const snackBar = SnackBar(

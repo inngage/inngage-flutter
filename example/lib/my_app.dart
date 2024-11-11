@@ -16,9 +16,7 @@ class _MyAppState extends State<MyApp> {
   initSdk() async {
     final inngageWebViewProperties = InngageWebViewProperties(
       appBarColor: Colors.pink,
-      appBarText: const Text(
-        'AppTitle',
-      ),
+      appBarText: const Text('AppTitle'),
       backgroundColor: Colors.white,
       loaderColor: Colors.pink,
       debuggingEnabled: true,
@@ -28,7 +26,7 @@ class _MyAppState extends State<MyApp> {
     );
     await InngageSDK.subscribe(
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      friendlyIdentifier: 'user01@inngage.com.br',
+      friendlyIdentifier: "saulo.flutter@inngage.com.br",
       customFields: {
         "nome": "User 01",
         "dt_nascimento": "01/09/1970",
@@ -51,16 +49,16 @@ class _MyAppState extends State<MyApp> {
     InngageEvent.setUserPhone("5511999999999");
     await InngageEvent.sendEvent(
       eventName: 'MyOtherEventWithoutEventValues',
-      appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      identifier: 'user03@inngage.com.br',
+      appToken: InngageProperties.appToken,
+      identifier: InngageProperties.identifier,
       eventValues: {
         'location': '12312312312',
       },
     );
     await InngageEvent.sendEvent(
       eventName: 'send_test',
-      appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      registration: 'user04@inngage.com.br',
+      appToken: InngageProperties.appToken,
+      identifier: InngageProperties.identifier,
     );
     InngageInApp.blockDeepLink = true;
     InngageInApp.deepLinkCallback = (link) {

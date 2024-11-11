@@ -52,7 +52,7 @@ class InngageSDK extends ChangeNotifier {
 
     //validation identifier
     if (friendlyIdentifier.isEmpty) {
-      InngageProperties.identifier = await InngageUtils.getId();
+      InngageProperties.identifier = await InngageUtils.getUniqueId();
     } else {
       InngageProperties.identifier = friendlyIdentifier;
     }
