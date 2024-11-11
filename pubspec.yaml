@@ -1,6 +1,6 @@
 name: inngage_plugin
 description: Inngage Plugin for Flutter applications for marketing campaign optimization using Push Notification and In App Messages channels.
-version: 3.6.4
+version: 3.6.5
 homepage: https://inngage.com.br
 
 environment:

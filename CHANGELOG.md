@@ -1,3 +1,6 @@
+## 3.6.5
+* chore: include UUID in subscription request
+
 ## 3.6.4
 * chore: add dependencies: ``uuid`` and ``shared_preferences``. 
 * fix: Generating a unique UUID for user registration.
