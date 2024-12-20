@@ -97,11 +97,13 @@ class InngageUtils {
   }
 
   static void addUserData({
+    required String? appToken,
     String? identifier,
     Map<String, dynamic>? customFields,
     String? email,
     String? phoneNumber,
-  }) {
+  }) async {
+    InngageProperties.appToken = appToken ?? InngageProperties.appToken;
     InngageProperties.identifier = identifier ?? InngageProperties.identifier;
     InngageProperties.customFields =
         customFields ?? InngageProperties.customFields;

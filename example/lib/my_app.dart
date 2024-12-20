@@ -26,7 +26,6 @@ class _MyAppState extends State<MyApp> {
     );
     await InngageSDK.subscribe(
       appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
-      friendlyIdentifier: "saulo.flutter@inngage.com.br",
       customFields: {
         "nome": "User 01",
         "dt_nascimento": "01/09/1970",
@@ -44,7 +43,7 @@ class _MyAppState extends State<MyApp> {
       requestAdvertiserId: false,
       requestGeoLocator: true,
     );
-    await InngageNotificationMessage.subscribe();
+    await InngageNotificationMessage.subscribe(backgroundIcon: Colors.red);
     InngageEvent.setDebugMode(true);
     InngageEvent.setUserPhone("5511999999999");
     await InngageEvent.sendEvent(
