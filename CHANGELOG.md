@@ -1,4 +1,7 @@
 ## 3.6.5
+* fix: add ``appToken`` in ``addUserData``
+
+## 3.6.5
 * chore: include UUID in subscription request
 
 ## 3.6.4
