@@ -1,4 +1,4 @@
-## 3.6.5
+## 3.6.6
 * fix: add ``appToken`` in ``addUserData``
 
 ## 3.6.5
