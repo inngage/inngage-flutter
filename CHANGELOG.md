@@ -1,3 +1,6 @@
+## 3.6.7
+* fix: callback data firebase closed app
+
 ## 3.6.6
 * fix: add ``appToken`` in ``addUserData``
 
