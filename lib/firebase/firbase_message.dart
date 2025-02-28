@@ -73,12 +73,15 @@ class InngageNotificationMessage {
         if (Platform.isAndroid) {
           AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
-                  'high_importance_channel', 'your channel name',
-                  channelDescription: 'your channel description',
-                  importance: Importance.max,
-                  priority: Priority.high,
-                  ticker: 'ticker',
-                  color: backgroundIcon ?? Colors.blue);
+            'high_importance_channel',
+            'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+            color: backgroundIcon ?? Colors.blue,
+            styleInformation: const BigTextStyleInformation(''),
+          );
           NotificationDetails platformChannelSpecifics =
               NotificationDetails(android: androidPlatformChannelSpecifics);
           final titleNotification = message.data['title'] ?? "";
@@ -101,7 +104,7 @@ class InngageNotificationMessage {
           data: remoteMessage.data,
           appToken: InngageProperties.appToken,
           inBack: true);
-      firebaseListenCallback(remoteMessage);
+      firebaseListenCallback(remoteMessage.data);
     }
   }
 
@@ -201,6 +204,7 @@ class InngageNotificationMessage {
   static Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     var inappMessage = false;
+    debugPrint('${message.data}');
     try {
       var rawData = message.data['additional_data'];
       var data = json.decode(rawData);
