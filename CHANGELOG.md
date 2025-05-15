@@ -1,3 +1,6 @@
+## 3.6.8
+* refactor: separate Firebase logic into dedicated methods
+
 ## 3.6.7
 * fix: callback data firebase closed app
 

@@ -222,7 +222,7 @@ class InngageNotificationMessage {
 
   static Future<void> handlerNotificationBackground({remoteMessageData}) async {
     var inappMessage = false;
-    debugPrint('${message.data}');
+    debugPrint('$remoteMessageData');
     try {
       var rawData = remoteMessageData['additional_data'];
       var data = json.decode(rawData);
