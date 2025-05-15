@@ -1,0 +1,4 @@
+example/ios/Runner/GoogleService-Info.plist
+example/android/app/google-services.json
+example/lib/firebase_options.dart
+inngage_plugin.iml
