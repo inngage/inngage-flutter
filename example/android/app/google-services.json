@@ -3,7 +3,7 @@
     "project_number": "70542534310",
     "firebase_url": "https://inngage-lab.firebaseio.com",
     "project_id": "inngage-lab",
-    "storage_bucket": "inngage-lab.appspot.com"
+    "storage_bucket": "inngage-lab.firebasestorage.app"
   },
   "client": [
     {
@@ -83,6 +83,42 @@
         "mobilesdk_app_id": "1:70542534310:android:37370c4ea959312d663667",
         "android_client_info": {
           "package_name": "com.example.inngage_flutter_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9hMFGbi06-AED7MOonyjqmf5Sx1vv2_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70542534310-cm5ptslt098lgra1vpdsp4280hvt7s8f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.inngage.demo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70542534310:android:6998a725b06ccf1f663667",
+        "android_client_info": {
+          "package_name": "com.example.inngageionic"
         }
       },
       "oauth_client": [
@@ -415,6 +451,42 @@
         "mobilesdk_app_id": "1:70542534310:android:0b981b3817259a90663667",
         "android_client_info": {
           "package_name": "com.poc_inngage_sdk_react"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9hMFGbi06-AED7MOonyjqmf5Sx1vv2_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70542534310-3hsdtf7l2rrc06kjsighpivva1b5tccr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70542534310-cm5ptslt098lgra1vpdsp4280hvt7s8f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.inngage.demo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70542534310:android:4a9ce117264d4ecf663667",
+        "android_client_info": {
+          "package_name": "com.saulomoura.inngageexpo"
         }
       },
       "oauth_client": [

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'home_page.dart';
@@ -13,7 +14,83 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  initSdk() async {
+  void initFirebaseHandlers() async {
+    final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
+
+    FirebaseMessaging.onBackgroundMessage(_handlerCustomNotificationBackground);
+
+    InngageEvent.setDebugMode(true);
+
+    await InngageSDK.subscribe(
+      appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
+      customFields: {
+        "nome": "User 01",
+        "dt_nascimento": "01/09/1970",
+        "genero": "M",
+        "cartao": "N",
+        "ultimo_abastecimento": "10/09/2018",
+        "total_abastecido": "290,00"
+      },
+      friendlyIdentifier: "moura.bsaulo@gmail.com",
+      phoneNumber: '5511999999999',
+      email: 'user01@inngage.com.br',
+      blockDeepLink: false,
+      firebaseListenCallback: (data) => log(data['additional_data']),
+      navigatorKey: navigatorKey,
+      requestAdvertiserId: false,
+      requestGeoLocator: true,
+      initFirebase: false,
+    );
+
+    _firebaseMessaging.requestPermission();
+
+    final fcmToken = await _firebaseMessaging.getToken();
+
+    InngageNotificationMessage.registerSubscriber(fcmToken: fcmToken!);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message){
+      final messageData = message.data;
+      final hasInngageData = messageData.containsKey("inngageData") || messageData["provider"] == "inngage";
+
+      if(hasInngageData){
+        InngageNotificationMessage.handlerNotificationForeground(remoteMessageData: messageData);
+      } else {
+        _handlerCustomNotificationForeground(message);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      final messageData = message.data;
+      final hasInngageData = messageData.containsKey("inngageData") || messageData["provider"] == "inngage";
+
+      if(hasInngageData){
+        InngageNotificationMessage.handlerNotificationClick(remoteMessage: message);
+      } else {
+        _handlerCustomNotificationClick(message);
+      }
+    });
+
+    _firebaseMessaging.getInitialMessage().then((remoteMessage) {
+      InngageNotificationMessage.handlerNotificationClosed(remoteMessage);
+    }).catchError((error){
+      debugPrint("Error no getInitialMessage: $error");
+    });
+  }
+
+  Future<void> _handlerCustomNotificationBackground(RemoteMessage message) async {
+    await InngageNotificationMessage.handlerNotificationBackground(remoteMessageData: message.data);
+  }
+
+  void _handlerCustomNotificationForeground(RemoteMessage message){
+    debugPrint("Title: ${message.notification!.title} and Body: ${message.notification!.body}");
+  }
+
+  void _handlerCustomNotificationClick(RemoteMessage message){
+    debugPrint("Title: ${message.notification!.title} and Body: ${message.notification!.body}");
+  }
+
+  void initSdk() async {
     final inngageWebViewProperties = InngageWebViewProperties(
       appBarColor: Colors.pink,
       appBarText: const Text('AppTitle'),
@@ -34,6 +111,7 @@ class _MyAppState extends State<MyApp> {
         "ultimo_abastecimento": "10/09/2018",
         "total_abastecido": "290,00"
       },
+      friendlyIdentifier: "moura.bsaulo@gmail.com",
       phoneNumber: '5511999999999',
       email: 'user01@inngage.com.br',
       blockDeepLink: false,
@@ -42,6 +120,7 @@ class _MyAppState extends State<MyApp> {
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
       requestGeoLocator: true,
+      initFirebase: false,
     );
     await InngageNotificationMessage.subscribe(backgroundIcon: Colors.red);
     InngageEvent.setDebugMode(true);
@@ -69,7 +148,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    initSdk();
+    initFirebaseHandlers();
+    // initSdk();
   }
 
   @override
