@@ -61,3 +61,8 @@ flutter:
         pluginClass: InngagePlugin
       ios:
         pluginClass: InngagePlugin
+
+false_secrets:
+  - example/ios/Runner/GoogleService-Info.plist
+  - example/android/app/google-services.json
+  - example/lib/firebase_options.dart
