@@ -34,10 +34,14 @@ class InngageSDK extends ChangeNotifier {
     InngageWebViewProperties? inngageWebViewProperties,
     bool requestAdvertiserId = false,
     bool requestGeoLocator = false,
+    bool initFirebase = true,
   }) async {
     try {
       //initialize firebase
-      defaultApp = await Firebase.initializeApp();
+      if(initFirebase) {
+        defaultApp = await Firebase.initializeApp();
+      }
+
       if (requestGeoLocator) {
         var result = await GeoLocal.handlePermission();
         InngageProperties.latitude = result.latitude.toString();

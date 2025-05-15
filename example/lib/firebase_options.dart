@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '70542534310',
     projectId: 'inngage-lab',
     databaseURL: 'https://inngage-lab.firebaseio.com',
-    storageBucket: 'inngage-lab.appspot.com',
+    storageBucket: 'inngage-lab.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -64,9 +64,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '70542534310',
     projectId: 'inngage-lab',
     databaseURL: 'https://inngage-lab.firebaseio.com',
-    storageBucket: 'inngage-lab.appspot.com',
+    storageBucket: 'inngage-lab.firebasestorage.app',
     androidClientId: '70542534310-evbm1omdqlgugvrh6sn32m6phj86hc8h.apps.googleusercontent.com',
     iosClientId: '70542534310-cm5ptslt098lgra1vpdsp4280hvt7s8f.apps.googleusercontent.com',
     iosBundleId: 'br.com.inngage.demo',
   );
+
 }

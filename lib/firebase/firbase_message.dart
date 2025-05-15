@@ -27,7 +27,7 @@ class InngageNotificationMessage {
     await _requestPermission();
 
     final fcmToken = await _firebaseMessaging.getToken();
-    await InngageService.registerSubscriber(fcmToken);
+    await registerSubscriber(fcmToken: fcmToken!);
 
     await receiveNotificationForeground(backgroundIcon);
     await receiveNotificationClosed();
@@ -35,16 +35,29 @@ class InngageNotificationMessage {
     await _config(notificationIcon);
   }
 
+  static Future<void> registerSubscriber({required String fcmToken}) async {
+    try{
+      await InngageService.registerSubscriber(fcmToken);
+    } catch(e){
+      debugPrint("Error on register subscriber: ${e.toString()}");
+    }
+  }
+
   static Future<void> receiveNotificationForeground(
       Color? backgroundIcon) async {
     FirebaseMessaging.onMessage.listen((message) async {
-      if (InngageProperties.getDebugMode()) {
-        debugPrint('onMessage ${message.data}');
+      handlerNotificationForeground(remoteMessageData: message.data, backgroundIcon: backgroundIcon);
+    });
+  }
+
+  static Future<void> handlerNotificationForeground({remoteMessageData, backgroundIcon}) async {
+    if (InngageProperties.getDebugMode()) {
+        debugPrint('onMessage $remoteMessageData');
       }
 
       var inappMessage = false;
       try {
-        var data = json.decode(message.data['additional_data']);
+        var data = json.decode(remoteMessageData['additional_data']);
 
         inappMessage = data['inapp_message'];
       } catch (e) {
@@ -54,7 +67,7 @@ class InngageNotificationMessage {
       if (inappMessage) {
         try {
           const storage = FlutterSecureStorage();
-          var rawData = message.data['additional_data'];
+          var rawData = remoteMessageData['additional_data'];
           var data = json.decode(rawData);
 
           inappMessage = data['inapp_message'];
@@ -84,21 +97,24 @@ class InngageNotificationMessage {
           );
           NotificationDetails platformChannelSpecifics =
               NotificationDetails(android: androidPlatformChannelSpecifics);
-          final titleNotification = message.data['title'] ?? "";
-          final messageNotification = message.data['message'] ?? "";
+          final titleNotification = remoteMessageData['title'] ?? "";
+          final messageNotification = remoteMessageData['message'] ?? "";
           if (titleNotification.toString().isNotEmpty &&
               messageNotification.toString().isNotEmpty) {
             await flutterLocalNotificationsPlugin.show(0, titleNotification,
                 messageNotification, platformChannelSpecifics,
-                payload: json.encode(message.data));
+                payload: json.encode(remoteMessageData));
           }
         }
       }
-    });
   }
 
   static Future<void> receiveNotificationClosed() async {
     RemoteMessage? remoteMessage = await _firebaseMessaging.getInitialMessage();
+    handlerNotificationClosed(remoteMessage);
+  }
+
+  static void handlerNotificationClosed(RemoteMessage? remoteMessage) {
     if (remoteMessage != null) {
       InngageNotification.openCommonNotification(
           data: remoteMessage.data,
@@ -125,17 +141,11 @@ class InngageNotificationMessage {
         AndroidInitializationSettings(
             notificationIcon ?? '@mipmap/ic_launcher');
 
-    final DarwinInitializationSettings initializationSettingsDarwin =
+    const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
             requestAlertPermission: false,
             requestBadgePermission: false,
-            requestSoundPermission: false,
-            onDidReceiveLocalNotification: (
-              int id,
-              String? title,
-              String? body,
-              String? payload,
-            ) async {});
+            requestSoundPermission: false);
 
     final InitializationSettings initializationSettings =
         InitializationSettings(
@@ -170,24 +180,8 @@ class InngageNotificationMessage {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      if (InngageProperties.getDebugMode()) {
-        debugPrint('onMessageOpenedApp ${event.from}');
-        debugPrint('onMessageOpenedApp ${event.messageType}');
-      }
-      debugPrint('logx ${event.from}');
-      Future.delayed(const Duration(seconds: 2)).then((value) {
-        InngageInApp.show();
-      });
-      InngageNotification.openCommonNotification(
-        data: event.data,
-        appToken: InngageProperties.appToken,
-      );
-      try {
-        firebaseListenCallback(event.data);
-      } catch (e) {
-        debugPrint('firebaseListenCallback error: $e');
-      }
+    FirebaseMessaging.onMessageOpenedApp.listen((remoteMessage) {
+      handlerNotificationClick(remoteMessage: remoteMessage);
     });
 
     //request permission to iOS device
@@ -201,12 +195,36 @@ class InngageNotificationMessage {
     }
   }
 
+  static Future<void> handlerNotificationClick({required RemoteMessage remoteMessage}) async {
+    if (InngageProperties.getDebugMode()) {
+        debugPrint('onMessageOpenedApp ${remoteMessage.from}');
+        debugPrint('onMessageOpenedApp ${remoteMessage.messageType}');
+      }
+      debugPrint('logx ${remoteMessage.from}');
+      Future.delayed(const Duration(seconds: 2)).then((value) {
+        InngageInApp.show();
+      });
+      InngageNotification.openCommonNotification(
+        data: remoteMessage.data,
+        appToken: InngageProperties.appToken,
+      );
+      try {
+        firebaseListenCallback(remoteMessage.data);
+      } catch (e) {
+        debugPrint('firebaseListenCallback error: $e');
+      }
+  }
+
   static Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
+    await handlerNotificationBackground(remoteMessageData: message.data);
+  }
+
+  static Future<void> handlerNotificationBackground({remoteMessageData}) async {
     var inappMessage = false;
     debugPrint('${message.data}');
     try {
-      var rawData = message.data['additional_data'];
+      var rawData = remoteMessageData['additional_data'];
       var data = json.decode(rawData);
 
       inappMessage = data['inapp_message'];
@@ -219,9 +237,10 @@ class InngageNotificationMessage {
     debugPrint('logx listen $inappMessage');
 
     try {
-      firebaseListenCallback(message.data);
+      firebaseListenCallback(remoteMessageData);
     } catch (e) {
       debugPrint('firebaseListenCallback error: $e');
     }
+  
   }
 }
