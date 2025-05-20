@@ -71,10 +71,19 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    _firebaseMessaging.getInitialMessage().then((remoteMessage) {
-      InngageNotificationMessage.handlerNotificationClosed(remoteMessage);
-    }).catchError((error){
-      debugPrint("Error no getInitialMessage: $error");
+    FirebaseMessaging.instance.getInitialMessage().then((remoteMessage) {
+      if (remoteMessage == null) return;
+
+      final messageData = remoteMessage.data;
+      final hasInngageData = messageData.containsKey("inngageData") || messageData["provider"] == "inngage";
+
+      if (hasInngageData) {
+        InngageNotificationMessage.handlerNotificationClosed(remoteMessage);
+      } else {
+        _handlerCustomNotificationClick(remoteMessage);
+      }
+    }).catchError((error) {
+      debugPrint("Error on getInitialMessage: $error");
     });
   }
 
