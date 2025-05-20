@@ -1,3 +1,6 @@
+## 3.6.9
+* fix: fixed build issue by explicitly defining the `namespace` in the module-level `build.gradle`, as required by Android Gradle Plugin 7.0+.
+
 ## 3.6.8
 * refactor: separate Firebase logic into dedicated methods
 
