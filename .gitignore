@@ -10,7 +10,6 @@
 .svn/
 
 # IntelliJ related
-*.iml
 *.ipr
 *.iws
 .idea/
@@ -27,4 +26,3 @@
 .dart_tool/
 .packages
 build/
-example/android/app/google-services.json
