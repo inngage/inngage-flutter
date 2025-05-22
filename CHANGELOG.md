@@ -1,3 +1,6 @@
+## 3.6.10
+* fix: add namespace on plugin.
+
 ## 3.6.9
 * fix: fixed build issue by explicitly defining the `namespace` in the module-level `build.gradle`, as required by Android Gradle Plugin 7.0+.
 
