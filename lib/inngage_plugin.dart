@@ -14,6 +14,7 @@ export 'models/inngage_web_view_properties_model.dart';
 export 'models/rich_content_model.dart';
 export 'util/hexcolor.dart';
 export 'util/utils.dart';
+export 'util/remote_message.dart';
 export 'inngage_sdk.dart';
 export 'inapp/inngage_inapp.dart';
 export 'inapp/inapp_widget.dart';
