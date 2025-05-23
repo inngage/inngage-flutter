@@ -1,3 +1,6 @@
+## 3.6.11
+* chore: added `hasInngageData` extension getter for `RemoteMessage`.
+
 ## 3.6.10
 * fix: add namespace on plugin.
 
