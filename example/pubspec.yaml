@@ -1,5 +1,6 @@
 name: inngage_plugin_example
 description: Demonstrates how to use the inngage_plugin plugin.
+version: 1.0.0
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -29,6 +30,7 @@ dependencies:
 
   #localNotificaiton
   flutter_local_notifications: ^18.0.1
+  #inngage_plugin: ^3.7.0
   inngage_plugin:
     path: ../
   cupertino_icons: ^1.0.2

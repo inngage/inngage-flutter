@@ -1,7 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
-import 'package:inngage_plugin/services/inngage_service.dart';
+
+import '../shared/inngage_properties.dart';
 
 Future<void> requestPermissions() async {
   await FirebaseMessaging.instance.requestPermission(
@@ -15,7 +16,7 @@ Future<void> registerFCMToken() async {
   final token = await FirebaseMessaging.instance.getToken();
   if (token != null) {
     try {
-      await InngageService.registerSubscriber(token);
+      await InngageSDK.registerSubscriber(token);
     } catch (e) {
       debugPrint('registerFCMToken error: $e');
     }

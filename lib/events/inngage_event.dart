@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:inngage_plugin/models/inngage_properties.dart';
-import 'package:inngage_plugin/services/inngage_service.dart';
+import '../inngage_plugin.dart';
 
 class InngageEvent {
   static Future<bool> sendEvent({
@@ -20,14 +19,10 @@ class InngageEvent {
       );
     }
     try {
-      await InngageService.registerEvent(
-        InngageProperties.registration,
-        eventName,
-        eventValues,
-        conversionEvent,
-        conversionValue,
-        conversionNotId,
-      );
+      await InngageSDK.registerEvent(
+          registration: InngageProperties.registration,
+          eventName: eventName,
+          eventValues: eventValues);
     } catch (e) {
       return false;
     }

@@ -16,26 +16,38 @@ class InngageNotificationMessage {
     await requestPermissions();
     await registerFCMToken();
 
+    configureLocalNotifications();
+
     FirebaseMessaging.onMessage.listen((message) {
-      handleForegroundNotification(
-        data: message.data,
+      InngageHandlersNotification.handleForegroundNotification(
+        remoteMessage: message,
         backgroundColor: backgroundIcon,
-        onData: onNotificationClick,
       );
     });
 
     final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      openNotification(initialMessage.data, inBack: true);
-      onNotificationClick(initialMessage.data);
+      InngageHandlersNotification.handleTerminatedNotification(
+          remoteMessage: initialMessage,
+          onNotificationClick: onNotificationClick);
     }
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      debugPrint('Mensagem recebida em onMessageOpenedApp: ${message.data}');
       openNotification(message.data);
       onNotificationClick(message.data);
     });
+  }
 
-    await configureLocalNotifications(
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    await InngageHandlersNotification.handleBackgroundNotification(
+        message.data);
+  }
+
+  static Future<void> configureLocalNotifications(
+      {String? notificationIcon}) async {
+    await InngageConfigureLocalNotifications.configureLocalNotifications(
       onPayload: (payload) {
         try {
           final data = Map<String, dynamic>.from(json.decode(payload));
@@ -47,9 +59,5 @@ class InngageNotificationMessage {
       },
       notificationIcon: notificationIcon,
     );
-  }
-
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    await handleBackgroundNotification(message.data);
   }
 }
