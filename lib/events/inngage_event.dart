@@ -8,9 +8,9 @@ class InngageEvent {
     String? identifier,
     String? registration,
     Map<String, dynamic> eventValues = const {},
-    bool conversionEvent = false,
-    double conversionValue = 0,
-    String conversionNotId = '',
+    bool? conversionEvent,
+    double? conversionValue,
+    String? conversionNotId,
   }) async {
     if (identifier == null && registration == null) {
       debugPrint(
@@ -22,7 +22,10 @@ class InngageEvent {
       await InngageSDK.registerEvent(
           registration: InngageProperties.registration,
           eventName: eventName,
-          eventValues: eventValues);
+          eventValues: eventValues,
+          conversionEvent: conversionEvent,
+          conversionNotId: conversionNotId,
+          conversionValue: conversionValue);
     } catch (e) {
       return false;
     }

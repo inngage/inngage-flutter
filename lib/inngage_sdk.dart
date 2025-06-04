@@ -134,17 +134,17 @@ class InngageSDK extends ChangeNotifier {
     required String registration,
     required String eventName,
     required Map<String, dynamic> eventValues,
-    bool conversionEvent = false,
-    double conversionValue = 0.0,
-    String conversionNotId = '',
+    bool? conversionEvent,
+    double? conversionValue,
+    String? conversionNotId,
   }) async {
     await InngageProperties.inngageService.registerEvent(
       registration,
       eventName,
       eventValues,
-      conversionEvent,
-      conversionValue,
-      conversionNotId,
+      conversionEvent ?? false,
+      conversionValue ?? 0,
+      conversionNotId ?? '',
     );
   }
 }
