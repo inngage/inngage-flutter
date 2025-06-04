@@ -1,7 +1,10 @@
+## 3.7.1
+* fix: Ensure conversion event parameters are properly registered.
+
 ## 3.7.0
 * feat: Added new notification handlers for increased flexibility with Firebase Messaging.
 * refactor: SDK reorganized and functions renamed for better readability and alignment with other Inngage SDKs.
-* fix: ixed push notification reception and click tracking on iOS (foreground and when app is closed).
+* fix: Fixed push notification reception and click tracking on iOS (foreground and when app is closed).
 
 ## 3.6.10
 * fix: added `namespace` on plugin.
