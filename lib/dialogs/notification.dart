@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:inngage_plugin/models/inngage_properties.dart';
-import 'package:inngage_plugin/services/analytics_service.dart';
-import 'package:inngage_plugin/services/inngage_service.dart';
-import 'package:inngage_plugin/util/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../inngage_plugin.dart';
 
 class InngageNotification {
   static void openCommonNotification(
@@ -30,7 +28,7 @@ class InngageNotification {
     processUTMParameters(data);
 
     try {
-      await InngageService.registerNotification(
+      await InngageSDK.registerNotification(
           notId: notificationId!, appToken: appToken);
     } catch (e) {
       debugPrint(e.toString());

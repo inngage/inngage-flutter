@@ -1,8 +1,16 @@
-## 3.6.11
+## 3.7.2
 * chore: added `hasInngageData` extension getter for `RemoteMessage`.
 
+## 3.7.1
+* fix: Ensure conversion event parameters are properly registered.
+
+## 3.7.0
+* feat: Added new notification handlers for increased flexibility with Firebase Messaging.
+* refactor: SDK reorganized and functions renamed for better readability and alignment with other Inngage SDKs.
+* fix: Fixed push notification reception and click tracking on iOS (foreground and when app is closed).
+
 ## 3.6.10
-* fix: add namespace on plugin.
+* fix: added `namespace` on plugin.
 
 ## 3.6.9
 * fix: fixed build issue by explicitly defining the `namespace` in the module-level `build.gradle`, as required by Android Gradle Plugin 7.0+.

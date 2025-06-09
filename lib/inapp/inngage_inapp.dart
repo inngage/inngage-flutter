@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/dialogs/app_dialog.dart';
-import 'package:inngage_plugin/models/innapp_model.dart';
+import 'package:inngage_plugin/data/model/inapp/innapp_model.dart';
 
 class InngageInApp {
   static bool blockDeepLink = false;

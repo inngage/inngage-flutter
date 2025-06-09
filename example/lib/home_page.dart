@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
                 eventName: 'click me',
                 appToken: InngageProperties.appToken,
                 identifier: InngageProperties.identifier,
+                conversionEvent: true,
               );
               if (result) {
                 const snackBar = SnackBar(

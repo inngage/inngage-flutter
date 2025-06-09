@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'home_page.dart';
 
@@ -15,8 +16,7 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void initFirebaseHandlers() async {
-    final FirebaseMessaging _firebaseMessaging =
-      FirebaseMessaging.instance;
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
     FirebaseMessaging.onBackgroundMessage(_handlerCustomNotificationBackground);
 
@@ -47,21 +47,49 @@ class _MyAppState extends State<MyApp> {
 
     final fcmToken = await _firebaseMessaging.getToken();
 
-    InngageNotificationMessage.registerSubscriber(fcmToken: fcmToken!);
+    InngageSDK.registerSubscriber(fcmToken!);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message){
-      final messageData = message.data;
+    debugPrint(fcmToken);
 
-      if(message.hasInngageData){
-        InngageNotificationMessage.handlerNotificationForeground(remoteMessageData: messageData);
+    const iOS = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
+    const android = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+
+    const settings = InitializationSettings(
+      android: android,
+      iOS: iOS,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (response) {
+        if (response.notificationResponseType ==
+                NotificationResponseType.selectedNotification &&
+            response.payload != null) {
+          InngageSDK.updateStatusMessage(response.payload);
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.hasInngageData) {
+        InngageHandlersNotification.handleForegroundNotification(remoteMessage: message);
       } else {
         _handlerCustomNotificationForeground(message);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if(message.hasInngageData){
-        InngageNotificationMessage.handlerNotificationClick(remoteMessage: message);
+      if (message.hasInngageData) {
+        InngageHandlersNotification.handleClickNotification(
+            remoteMessage: message);
       } else {
         _handlerCustomNotificationClick(message);
       }
@@ -71,7 +99,7 @@ class _MyAppState extends State<MyApp> {
       if (remoteMessage == null) return;
 
       if (remoteMessage.hasInngageData) {
-        InngageNotificationMessage.handlerNotificationClosed(remoteMessage);
+        InngageHandlersNotification.handleTerminatedNotification(remoteMessage: remoteMessage);
       } else {
         _handlerCustomNotificationClick(remoteMessage);
       }
@@ -80,16 +108,20 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> _handlerCustomNotificationBackground(RemoteMessage message) async {
-    await InngageNotificationMessage.handlerNotificationBackground(remoteMessageData: message.data);
+  Future<void> _handlerCustomNotificationBackground(
+      RemoteMessage message) async {
+    await InngageHandlersNotification.handleBackgroundNotification(
+        message.data);
   }
 
-  void _handlerCustomNotificationForeground(RemoteMessage message){
-    debugPrint("Title: ${message.notification!.title} and Body: ${message.notification!.body}");
+  void _handlerCustomNotificationForeground(RemoteMessage message) {
+    debugPrint(
+        "Title: ${message.notification!.title} and Body: ${message.notification!.body}");
   }
 
-  void _handlerCustomNotificationClick(RemoteMessage message){
-    debugPrint("Title: ${message.notification!.title} and Body: ${message.notification!.body}");
+  void _handlerCustomNotificationClick(RemoteMessage message) {
+    debugPrint(
+        "Title: ${message.notification!.title} and Body: ${message.notification!.body}");
   }
 
   void initSdk() async {

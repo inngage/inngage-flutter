@@ -1,4 +1,4 @@
-import 'package:inngage_plugin/models/carrousel_images_model.dart';
+import 'package:inngage_plugin/data/model/inapp/carrousel_images_model.dart';
 
 class RichContent {
   bool? carousel;
