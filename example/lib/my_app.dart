@@ -80,7 +80,8 @@ class _MyAppState extends State<MyApp> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.hasInngageData) {
-        InngageHandlersNotification.handleForegroundNotification(remoteMessage: message);
+        InngageHandlersNotification.handleForegroundNotification(
+            remoteMessage: message);
       } else {
         _handlerCustomNotificationForeground(message);
       }
@@ -99,7 +100,8 @@ class _MyAppState extends State<MyApp> {
       if (remoteMessage == null) return;
 
       if (remoteMessage.hasInngageData) {
-        InngageHandlersNotification.handleTerminatedNotification(remoteMessage: remoteMessage);
+        InngageHandlersNotification.handleTerminatedNotification(
+            remoteMessage: remoteMessage);
       } else {
         _handlerCustomNotificationClick(remoteMessage);
       }
