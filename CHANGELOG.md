@@ -1,3 +1,6 @@
+## 3.7.2
+* chore: added `hasInngageData` extension getter for `RemoteMessage`.
+
 ## 3.7.1
 * fix: Ensure conversion event parameters are properly registered.
 
