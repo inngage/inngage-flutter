@@ -25,7 +25,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace "com.inngage_plugin_example"
+    namespace "com.inngage_plugin"
 
     compileSdkVersion 31
 
