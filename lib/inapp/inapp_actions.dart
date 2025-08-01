@@ -2,7 +2,7 @@ import 'package:inngage_plugin/inngage_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InngageActions {
-  static void executeAction(String type, String link) {
+  static void executeAction({String? type, String? link}) {
     switch (type) {
       case "":
         break;
@@ -10,11 +10,11 @@ class InngageActions {
         if (InngageInApp.blockDeepLink) {
           InngageInApp.deepLinkCallback(link);
         } else {
-          _deep(link);
+          _deep(link!);
         }
         break;
       case "inapp":
-        _web(link);
+        _web(link!);
         break;
     }
   }

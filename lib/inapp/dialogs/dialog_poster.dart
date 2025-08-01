@@ -107,8 +107,8 @@ class _DialogPosterState extends State<DialogPoster> {
                               Navigator.of(context).pop();
                               if (widget.inAppModel.bgImgActionType != null) {
                                 InngageActions.executeAction(
-                                    widget.inAppModel.bgImgActionType!,
-                                    widget.inAppModel.bgImgActionLink!);
+                                    type: widget.inAppModel.bgImgActionType!,
+                                    link: widget.inAppModel.bgImgActionLink!);
                               }
                             },
                             child: ClipRRect(

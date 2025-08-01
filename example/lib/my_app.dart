@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'home_page.dart';
 
@@ -14,6 +15,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  final storage = const FlutterSecureStorage();
 
   void initFirebaseHandlers() async {
     final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -36,7 +39,12 @@ class _MyAppState extends State<MyApp> {
       phoneNumber: '5511999999999',
       email: 'user01@inngage.com.br',
       blockDeepLink: false,
-      firebaseListenCallback: (data) => log(data['additional_data']),
+      firebaseListenCallback: (data) async {
+        final notId = data['notId'];
+        if (notId != null) {
+          await storage.write(key: 'conversionNotId', value: notId);
+        }
+      },
       navigatorKey: navigatorKey,
       requestAdvertiserId: false,
       requestGeoLocator: true,
@@ -163,7 +171,8 @@ class _MyAppState extends State<MyApp> {
       phoneNumber: '5511999999999',
       email: 'user01@inngage.com.br',
       blockDeepLink: false,
-      firebaseListenCallback: (data) => log(data['additional_data']),
+      firebaseListenCallback: (data) =>
+          debugPrint('Callback: ${data['notId']}'),
       navigatorKey: navigatorKey,
       inngageWebViewProperties: inngageWebViewProperties,
       requestAdvertiserId: false,
@@ -196,8 +205,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    initFirebaseHandlers();
-    // initSdk();
+    // initFirebaseHandlers();
+    initSdk();
   }
 
   @override

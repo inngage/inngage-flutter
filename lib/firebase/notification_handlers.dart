@@ -7,8 +7,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/firebase/notification_utils.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 
-import 'notifications_config.dart';
-
 class InngageHandlersNotification {
   static Future<void> handleForegroundNotification({
     required RemoteMessage remoteMessage,
@@ -100,12 +98,14 @@ class InngageHandlersNotification {
       Map<String, dynamic> data) async {
     try {
       final rawData = data['additional_data'];
+      final rawMetadata = data['inngageData'];
       final parsed = json.decode(rawData);
       final inapp = parsed['inapp_message'] == true;
 
       if (inapp) {
         const storage = FlutterSecureStorage();
         await storage.write(key: "inapp", value: rawData);
+        await storage.write(key: "metadata", value: rawMetadata);
       }
     } catch (e) {
       debugPrint('handleBackgroundNotification error: $e');
