@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.inngage_plugin"
+    namespace "com.inngage_plugin_example"
 
     compileSdkVersion 34
 
