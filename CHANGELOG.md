@@ -1,3 +1,13 @@
+## 3.7.2
+* fix: Corrected the UTM key name in the event sent to GA.
+* build: Removed the package attribute from `AndroidManifest.xml` to support AGP 8.x+, and updated the namespace in `build.gradle`.
+
+Some dependencies may require updating the Dart SDK and Flutter SDK. Internal tests were performed using Dart 3.6.1 and Flutter 3.27.2:
+* uuid: 4.5.1
+* meta: 1.12.0
+* shared_preferences: 2.3.2
+* win32: 5.10.0
+
 ## 3.7.1
 * fix: Ensure conversion event parameters are properly registered.
 
