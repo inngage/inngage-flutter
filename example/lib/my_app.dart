@@ -87,11 +87,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      final messageData = message.data;
-      final hasInngageData = messageData.containsKey("inngageData") ||
-          messageData["provider"] == "inngage";
-
-      if (hasInngageData) {
+      if (message.hasInngageData) {
         InngageHandlersNotification.handleForegroundNotification(
             remoteMessage: message);
       } else {
@@ -100,11 +96,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      final messageData = message.data;
-      final hasInngageData = messageData.containsKey("inngageData") ||
-          messageData["provider"] == "inngage";
-
-      if (hasInngageData) {
+      if (message.hasInngageData) {
         InngageHandlersNotification.handleClickNotification(
             remoteMessage: message);
       } else {
@@ -115,11 +107,7 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.instance.getInitialMessage().then((remoteMessage) {
       if (remoteMessage == null) return;
 
-      final messageData = remoteMessage.data;
-      final hasInngageData = messageData.containsKey("inngageData") ||
-          messageData["provider"] == "inngage";
-
-      if (hasInngageData) {
+      if (remoteMessage.hasInngageData) {
         InngageHandlersNotification.handleTerminatedNotification(
             remoteMessage: remoteMessage);
       } else {
