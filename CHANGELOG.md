@@ -1,3 +1,6 @@
+## 3.7.3
+* update: ``firebase_core`` to version 4.2.1, ``firebase_analytics`` to version 12.0.4 and ``firebase_messaging`` to version 16.0.4.
+
 ## 3.7.2
 * fix: Corrected the UTM key name in the event sent to GA.
 * build: Removed the package attribute from `AndroidManifest.xml` to support AGP 8.x+, and updated the namespace in `build.gradle`.
