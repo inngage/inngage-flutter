@@ -80,13 +80,11 @@ class InngageNotification {
       final utmTerm = data['inn_utm_term']?.toString();
 
       Map<String, String> utmData = {
-        if (utmSource != null && utmSource.isNotEmpty)
-          "inn_utm_source": utmSource,
+        if (utmSource != null && utmSource.isNotEmpty) "utm_source": utmSource,
         if (utmCampaign != null && utmCampaign.isNotEmpty)
-          "inn_utm_campaign": utmCampaign,
-        if (utmMedium != null && utmMedium.isNotEmpty)
-          "inn_utm_medium": utmMedium,
-        if (utmTerm != null && utmTerm.isNotEmpty) "inn_utm_term": utmTerm
+          "utm_campaign": utmCampaign,
+        if (utmMedium != null && utmMedium.isNotEmpty) "utm_medium": utmMedium,
+        if (utmTerm != null && utmTerm.isNotEmpty) "utm_term": utmTerm
       };
 
       if (utmData.isNotEmpty) {

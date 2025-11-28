@@ -26,7 +26,8 @@ class CustomTextButton extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 if (actionLink != null) {
-                  InngageActions.executeAction(actionType!, actionLink!);
+                  InngageActions.executeAction(
+                      type: actionType!, link: actionLink!);
                 }
               },
               style: ButtonStyle(

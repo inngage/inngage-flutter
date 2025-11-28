@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
@@ -24,11 +27,14 @@ class _HomePageState extends State<HomePage> {
         child: ElevatedButton(
           onPressed: () async {
             try {
+              final conversionNotId =
+                  await storage.read(key: 'conversionNotId');
               final result = await InngageEvent.sendEvent(
                 eventName: 'click me',
                 appToken: InngageProperties.appToken,
                 identifier: InngageProperties.identifier,
                 conversionEvent: true,
+                conversionNotId: conversionNotId ?? '',
               );
               if (result) {
                 const snackBar = SnackBar(
