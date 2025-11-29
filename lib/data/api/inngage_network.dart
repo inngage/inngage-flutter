@@ -30,10 +30,15 @@ class InngageNetwork
 
   @override
   Future<void> sendNotification(String notId, String appToken) async {
-    final payload = notificationRequestToJson(NotificationRequest(
-      notificationRequest:
-          Notification(appToken: appToken, id: notId, notId: notId),
-    ));
+    final payload = notificationRequestToJson(
+      NotificationRequest(
+        notificationRequest: Notification(
+          appToken: appToken,
+          id: notId,
+          notId: notId,
+        ),
+      ),
+    );
     logger.i(payload);
     await _postRequest('$version/notification/', payload);
   }
@@ -41,7 +46,9 @@ class InngageNetwork
   @override
   Future<void> subscription(SubscriptionRequest subscription) async {
     await _postRequest(
-        '$version/subscription/', subscriptionToJson(subscription));
+      '$version/subscription/',
+      subscriptionToJson(subscription),
+    );
   }
 
   Future<void> _postRequest(String endpoint, String payload) async {
@@ -58,8 +65,7 @@ class InngageNetwork
       if (response.statusCode != HttpStatus.ok) {
         throw HttpException('Unexpected response: ${response.statusCode}');
       }
-      debugPrint('PAYLOAD: $payload');
-      debugPrint('RESPONSE: ${response.body}');
+
       logger.d('PAYLOAD: $payload');
       logger.d('RESPONSE: ${response.body}');
     } on http.ClientException catch (e) {
