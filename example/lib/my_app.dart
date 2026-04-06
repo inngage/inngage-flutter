@@ -1,10 +1,14 @@
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 import 'home_page.dart';
+
+String get kAppToken => dotenv.env['APP_TOKEN'] ?? '';
+String get kIdentifier => dotenv.env['IDENTIFIER'] ?? '';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -26,7 +30,7 @@ class _MyAppState extends State<MyApp> {
     InngageEvent.setDebugMode(true);
 
     await InngageSDK.subscribe(
-      appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
+      appToken: kAppToken,
       customFields: {
         "nome": "User 01",
         "dt_nascimento": "01/09/1970",
@@ -35,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         "ultimo_abastecimento": "10/09/2018",
         "total_abastecido": "290,00"
       },
-      friendlyIdentifier: "moura.bsaulo@gmail.com",
+      friendlyIdentifier: kIdentifier,
       phoneNumber: '5511999999999',
       email: 'user01@inngage.com.br',
       blockDeepLink: false,
@@ -158,7 +162,7 @@ class _MyAppState extends State<MyApp> {
       withZoom: true,
     );
     await InngageSDK.subscribe(
-      appToken: '4d5c17ab9ae4ea7f5c989dc50c41bd7e',
+      appToken: kAppToken,
       customFields: {
         "nome": "User 01",
         "dt_nascimento": "01/09/1970",
@@ -167,7 +171,7 @@ class _MyAppState extends State<MyApp> {
         "ultimo_abastecimento": "10/09/2018",
         "total_abastecido": "290,00"
       },
-      friendlyIdentifier: "moura.bsaulo@gmail.com",
+      friendlyIdentifier: kIdentifier,
       phoneNumber: '5511999999999',
       email: 'user01@inngage.com.br',
       blockDeepLink: false,
@@ -184,7 +188,7 @@ class _MyAppState extends State<MyApp> {
     InngageEvent.setUserPhone("5511999999999");
     await InngageEvent.sendEvent(
       eventName: 'MyOtherEventWithoutEventValues',
-      appToken: InngageProperties.appToken,
+      appToken: kAppToken,
       identifier: InngageProperties.identifier,
       eventValues: {
         'location': '12312312312',
@@ -192,8 +196,8 @@ class _MyAppState extends State<MyApp> {
     );
     await InngageEvent.sendEvent(
       eventName: 'send_test',
-      appToken: InngageProperties.appToken,
-      identifier: InngageProperties.identifier,
+      appToken: kAppToken,
+      identifier: kIdentifier,
     );
     InngageInApp.blockDeepLink = true;
     InngageInApp.deepLinkCallback = (link) {
