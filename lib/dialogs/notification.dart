@@ -120,24 +120,35 @@ class InngageNotification {
                 onPageFinished: (String url) {},
                 onWebResourceError: (WebResourceError error) {},
                 onNavigationRequest: (NavigationRequest request) {
-                  if (request.url.startsWith(url)) {
-                    return NavigationDecision.prevent;
-                  }
                   return NavigationDecision.navigate;
                 },
               ),
             )
             ..loadRequest(Uri.parse(url));
 
+          String baseUrl = getBaseUrl(url);
+
           return Scaffold(
               appBar: AppBar(
-                title: InngageProperties.inngageWebViewProperties.appBarText,
+                title: Text(
+                  baseUrl,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               body: WebViewWidget(
                 controller: controller,
               ));
         }),
       );
+    }
+  }
+
+  static String getBaseUrl(String url) {
+    try {
+      final uri = Uri.parse(url);
+      return '${uri.scheme}://${uri.host}/';
+    } catch (e) {
+      return url;
     }
   }
 }
