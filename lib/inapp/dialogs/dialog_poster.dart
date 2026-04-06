@@ -105,7 +105,8 @@ class _DialogPosterState extends State<DialogPoster> {
                           InkWell(
                             onTap: () {
                               Navigator.of(context).pop();
-                              if (widget.inAppModel.bgImgActionType != null) {
+                              if (widget.inAppModel.bgImgActionType != null &&
+                                  widget.inAppModel.bgImgActionLink != null) {
                                 InngageActions.executeAction(
                                     type: widget.inAppModel.bgImgActionType!,
                                     link: widget.inAppModel.bgImgActionLink!);
@@ -174,8 +175,8 @@ class _DialogPosterState extends State<DialogPoster> {
           text: widget.inAppModel.btnLeftTxt,
           actionLink: widget.inAppModel.btnLeftActionLink,
           actionType: widget.inAppModel.btnLeftActionType,
-          textColor: widget.inAppModel.btnLeftTxtColor!,
-          bgColor: widget.inAppModel.btnLeftBgColor!,
+          textColor: widget.inAppModel.btnLeftTxtColor ?? "#000",
+          bgColor: widget.inAppModel.btnLeftBgColor ?? "#FFFFFF",
         ),
         _shouldAddSizedBox(
                 widget.inAppModel.btnLeftTxt, widget.inAppModel.btnRightTxt)
@@ -185,8 +186,8 @@ class _DialogPosterState extends State<DialogPoster> {
           text: widget.inAppModel.btnRightTxt,
           actionLink: widget.inAppModel.btnRightActionLink,
           actionType: widget.inAppModel.btnRightActionType,
-          textColor: widget.inAppModel.btnRightTxtColor!,
-          bgColor: widget.inAppModel.btnRightBgColor!,
+          textColor: widget.inAppModel.btnRightTxtColor ?? "#000",
+          bgColor: widget.inAppModel.btnRightBgColor ?? "#FFFFFF",
         ),
       ]),
     );

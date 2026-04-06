@@ -25,7 +25,7 @@ class CustomTextButton extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                if (actionLink != null) {
+                if (actionLink != null && actionType != null) {
                   InngageActions.executeAction(
                       type: actionType!, link: actionLink!);
                 }
@@ -35,7 +35,7 @@ class CustomTextButton extends StatelessWidget {
                     WidgetStateProperty.all(HexColor.fromHex(bgColor)),
               ),
               child: Text(
-                text!,
+                text ?? '',
                 style: TextStyle(
                   color: HexColor.fromHex(textColor),
                 ),

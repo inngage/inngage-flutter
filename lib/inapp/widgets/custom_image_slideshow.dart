@@ -33,6 +33,7 @@ class CustomImageSlideshow extends StatelessWidget {
         children: images.map((imageData) {
           return GestureDetector(
             onTap: () async {
+              if (imageData.urlImg == null || imageData.urlImg!.isEmpty) return;
               Navigator.pop(context);
               await InngageUtils.launchURL(imageData.urlImg!);
             },
