@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:inngage_plugin/firebase/notification_utils.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 
@@ -41,6 +43,27 @@ class InngageHandlersNotification {
         NotificationDetails details;
 
         if (Platform.isAndroid) {
+          final String? imageUrl = notification.android?.imageUrl;
+          Uint8List? imageBytes;
+
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            try {
+              final response = await http.get(Uri.parse(imageUrl));
+              if (response.statusCode == 200) {
+                imageBytes = response.bodyBytes;
+              }
+            } catch (e) {
+              debugPrint('Failed to download notification image: $e');
+            }
+          }
+
+          final styleInformation = imageBytes != null
+              ? BigPictureStyleInformation(
+                  ByteArrayAndroidBitmap(imageBytes),
+                  largeIcon: ByteArrayAndroidBitmap(imageBytes),
+                )
+              : null;
+
           final androidDetails = AndroidNotificationDetails(
             'high_importance_channel',
             'your channel name',
@@ -48,6 +71,7 @@ class InngageHandlersNotification {
             importance: Importance.max,
             priority: Priority.high,
             color: backgroundColor ?? Colors.blue,
+            styleInformation: styleInformation,
           );
           details = NotificationDetails(android: androidDetails);
         } else if (Platform.isIOS) {
