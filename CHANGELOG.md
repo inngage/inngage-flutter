@@ -1,3 +1,14 @@
+## 3.8.0
+### SDK
+#### Added: 
+- Implemented a new iOS Notification Service Extension in Swift to support richer push notification handling on sample application.
+#### Fixed:
+- Fixed an issue where push notifications with images were not displayed correctly in foreground on Android.
+- Fixed duplicate push notifications stacking on screen.
+- Fixed an issue where the WebView page was not loading when triggered by push notification click.
+#### Changed
+- Improved in-app message data handling for more reliable payload processing.
+
 ## 3.7.3
 * update: ``firebase_core`` to version 4.2.1, ``firebase_analytics`` to version 12.0.4 and ``firebase_messaging`` to version 16.0.4.
 
@@ -55,7 +66,7 @@ Some dependencies may require updating the Dart SDK and Flutter SDK. Internal te
 * feature: added support for email and phoneNumber in the ``addUserData`` method.
 * refactor: removed deprecated field and non-functional method.
 * refactor: revised handling of UTM data. 
-* update: ``device_local_plus`` to version 10.1.2, ``package_local_plus`` to version 8.0.2 and ``devicelocale`` to version 0.8.0.
+* update: ``device_info_plus`` to version 10.1.2, ``package_info_plus`` to version 8.0.2 and ``devicelocale`` to version 0.8.0.
 
 ## 3.5.2
 * chore: removing deprecated dependencies. 
