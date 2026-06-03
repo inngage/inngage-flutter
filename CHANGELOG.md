@@ -1,5 +1,27 @@
+## 3.8.1
+#### Changed:
+- Migrated all dependency constraints from caret (`^`) notation to explicit version ranges (`>=min <=max`) to provide greater flexibility for consumers of the SDK, allowing compatibility across multiple major and minor versions. Affected packages:
+  - `device_info_plus`: `^10.1.2` → `>=10.1.2 <=13.1.0`
+  - `firebase_core`: `^4.2.1` → `>=4.2.1 <=4.10.0`
+  - `firebase_analytics`: `^12.0.4` → `>=12.0.4 <=12.4.2`
+  - `firebase_messaging`: `^16.0.4` → `>=16.0.4 <=16.3.0`
+  - `flutter_local_notifications`: `^18.0.1` → `>=18.0.1 <=21.0.0`
+  - `url_launcher`: `^6.3.1` → `>=6.3.1 <=6.3.2`
+  - `webview_flutter`: `^4.8.0` → `>=4.8.0 <=4.13.1`
+  - `devicelocale`: `^0.8.0` → `>=0.8.0 <=0.9.0`
+  - `geolocator`: `^12.0.0` → `>=12.0.0 <=14.0.2`
+  - `uuid`: `^4.5.1` → `>=4.4.1 <=4.5.3`
+  - `shared_preferences`: `^2.3.2` → `>=2.3.2 <=2.5.5`
+  - `package_info_plus`: `^8.0.2` → `>=8.0.2 <=10.1.0`
+  - `advertising_id`: `^2.6.0` → `>=2.6.0 <=2.7.1`
+  - `meta`: `^1.12.0` → `>=1.15.0 <=1.18.2`
+  - `http`: `^1.2.1` → `>=1.2.1 <=1.6.0`
+  - `logger`: `^2.3.0` → `>=2.3.0 <=2.7.0`
+  - `flutter_image_slideshow`: `^0.1.6` → `>=0.1.3 <=0.1.6`
+  - `flutter_secure_storage`: `^9.2.2` → `>=9.2.2 <=10.3.1`
+  - `win32`: `^5.10.0` → `>=5.10.0 <=6.3.0`
+
 ## 3.8.0
-### SDK
 #### Added: 
 - Implemented a new iOS Notification Service Extension in Swift to support richer push notification handling on sample application.
 #### Fixed:
