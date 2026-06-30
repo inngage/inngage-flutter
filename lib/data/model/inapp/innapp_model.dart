@@ -21,30 +21,35 @@ class InAppModel {
   String? btnRightBgColor;
   String? btnRightActionType;
   String? btnRightActionLink;
+  String? btnTypeActionLink;
+  String? btnActionLink;
   String? dotColor;
 
-  InAppModel(
-      {this.inappMessage,
-      this.title,
-      this.titleFontColor,
-      this.body,
-      this.bodyFontColor,
-      this.backgroundColor,
-      this.backgroundImg,
-      this.bgImgActionType,
-      this.bgImgActionLink,
-      this.richContent,
-      this.btnLeftTxt,
-      this.btnLeftTxtColor,
-      this.btnLeftBgColor,
-      this.btnLeftActionType,
-      this.btnLeftActionLink,
-      this.btnRightTxt,
-      this.btnRightTxtColor,
-      this.btnRightBgColor,
-      this.btnRightActionType,
-      this.btnRightActionLink,
-      this.dotColor});
+  InAppModel({
+    this.inappMessage,
+    this.title,
+    this.titleFontColor,
+    this.body,
+    this.bodyFontColor,
+    this.backgroundColor,
+    this.backgroundImg,
+    this.bgImgActionType,
+    this.bgImgActionLink,
+    this.richContent,
+    this.btnLeftTxt,
+    this.btnLeftTxtColor,
+    this.btnLeftBgColor,
+    this.btnLeftActionType,
+    this.btnLeftActionLink,
+    this.btnRightTxt,
+    this.btnRightTxtColor,
+    this.btnRightBgColor,
+    this.btnRightActionType,
+    this.btnRightActionLink,
+    this.btnTypeActionLink,
+    this.btnActionLink,
+    this.dotColor,
+  });
 
   InAppModel.fromJson(Map<String, dynamic> json) {
     inappMessage = json['inapp_message'];
@@ -59,6 +64,7 @@ class InAppModel {
     richContent = json['rich_content'] != null
         ? RichContent.fromJson(json['rich_content'])
         : null;
+    // Buttons
     btnLeftTxt = json['btn_left_txt'];
     btnLeftTxtColor = json['btn_left_txt_color'];
     btnLeftBgColor = json['btn_left_bg_color'];
@@ -67,8 +73,10 @@ class InAppModel {
     btnRightTxt = json['btn_right_txt'];
     btnRightTxtColor = json['btn_right_txt_color'];
     btnRightBgColor = json['btn_right_bg_color'];
-    btnRightActionType = json['btn_right_action-type'];
+    btnRightActionType = json['btn_right_action_type'];
     btnRightActionLink = json['btn_right_action_link'];
+    btnTypeActionLink = json['btn_type_action_link'];
+    btnActionLink = json['btn_action_link'];
     dotColor = json['dot_color'];
   }
 
@@ -81,6 +89,8 @@ class InAppModel {
     data['body_font_color'] = bodyFontColor;
     data['background_color'] = backgroundColor;
     data['background_img'] = backgroundImg;
+    data['bg_img_action_type'] = bgImgActionType;
+    data['bg_img_action_link'] = bgImgActionLink;
     if (richContent != null) {
       data['rich_content'] = richContent!.toJson();
     }
@@ -92,8 +102,10 @@ class InAppModel {
     data['btn_right_txt'] = btnRightTxt;
     data['btn_right_txt_color'] = btnRightTxtColor;
     data['btn_right_bg_color'] = btnRightBgColor;
-    data['btn_right_action-type'] = btnRightActionType;
+    data['btn_right_action_type'] = btnRightActionType;
     data['btn_right_action_link'] = btnRightActionLink;
+    data['btn_type_action_link'] = btnTypeActionLink;
+    data['btn_action_link'] = btnActionLink;
     data['dot_color'] = dotColor;
     return data;
   }

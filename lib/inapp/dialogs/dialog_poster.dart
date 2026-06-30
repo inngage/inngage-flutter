@@ -59,31 +59,7 @@ class _DialogPosterState extends State<DialogPoster> {
             ),
             backgroundColor:
                 HexColor.fromHex(widget.inAppModel.backgroundColor ?? "#000"),
-            child: Container(
-              width: deviceWidth * .9,
-              padding: EdgeInsets.zero,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CustomImageSlideshow(inAppModel: widget.inAppModel),
-                  CustomText(
-                    text: widget.inAppModel.title,
-                    fontSize: 18.0,
-                    fontColor: widget.inAppModel.titleFontColor,
-                    isBold: true,
-                  ),
-                  const SizedBox(height: 10),
-                  CustomText(
-                    text: widget.inAppModel.body,
-                    fontSize: 16.0,
-                    fontColor: widget.inAppModel.bodyFontColor,
-                  ),
-                  buildButtonsRow(context),
-                ],
-              ),
-            ),
+            child: buildCardContainer(context, deviceWidth),
           )
         : widthImage != null && heightImage != null
             ? Dialog(
@@ -167,6 +143,44 @@ class _DialogPosterState extends State<DialogPoster> {
               );
   }
 
+  Widget buildCardContainer(BuildContext context, double deviceWidth) {
+    final cardContent = Container(
+      width: deviceWidth * .9,
+      padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          CustomImageSlideshow(inAppModel: widget.inAppModel),
+          CustomText(
+            text: widget.inAppModel.title,
+            fontSize: 18.0,
+            fontColor: widget.inAppModel.titleFontColor,
+            isBold: true,
+          ),
+          const SizedBox(height: 10),
+          CustomText(
+            text: widget.inAppModel.body,
+            fontSize: 16.0,
+            fontColor: widget.inAppModel.bodyFontColor,
+          ),
+          buildButtonsRow(context),
+        ],
+      ),
+    );
+
+    if (!_hasCardAction()) {
+      return cardContent;
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _executeCardAction(context),
+      child: cardContent,
+    );
+  }
+
   Widget buildButtonsRow(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -191,6 +205,23 @@ class _DialogPosterState extends State<DialogPoster> {
         ),
       ]),
     );
+  }
+
+  bool _hasCardAction() {
+    return _isNotEmpty(widget.inAppModel.btnTypeActionLink) &&
+        _isNotEmpty(widget.inAppModel.btnActionLink);
+  }
+
+  void _executeCardAction(BuildContext context) {
+    Navigator.of(context).pop();
+    InngageActions.executeAction(
+      type: widget.inAppModel.btnTypeActionLink!,
+      link: widget.inAppModel.btnActionLink!,
+    );
+  }
+
+  bool _isNotEmpty(String? value) {
+    return value != null && value.trim().isNotEmpty;
   }
 
   bool _shouldAddSizedBox(String? btnLeftTxt, String? btnRightTxt) {

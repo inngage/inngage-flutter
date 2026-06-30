@@ -24,9 +24,11 @@ class InngageHandlersNotification {
           final inapp = parsed['inapp_message'] == true;
 
           if (inapp) {
+            debugPrint('INAPP PAYLOAD: $rawData');
             const storage = FlutterSecureStorage();
             await storage.write(key: "inapp", value: rawData);
             final model = InAppModel.fromJson(parsed);
+            debugPrint('INAPP MODEL: ${json.encode(model.toJson())}');
             InngageDialog.showInAppDialog(model);
           }
         } catch (e) {
@@ -127,9 +129,12 @@ class InngageHandlersNotification {
       final inapp = parsed['inapp_message'] == true;
 
       if (inapp) {
+        debugPrint('INAPP PAYLOAD: $rawData');
         const storage = FlutterSecureStorage();
         await storage.write(key: "inapp", value: rawData);
         await storage.write(key: "metadata", value: rawMetadata);
+        final model = InAppModel.fromJson(parsed);
+        debugPrint('INAPP MODEL: ${json.encode(model.toJson())}');
       }
     } catch (e) {
       debugPrint('handleBackgroundNotification error: $e');
