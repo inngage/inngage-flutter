@@ -2,8 +2,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 
-import '../shared/inngage_properties.dart';
-
 Future<void> requestPermissions() async {
   await FirebaseMessaging.instance.requestPermission(
     alert: true,
