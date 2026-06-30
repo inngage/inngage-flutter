@@ -199,7 +199,7 @@ class _MyAppState extends State<MyApp> {
       appToken: kAppToken,
       identifier: kIdentifier,
     );
-    InngageInApp.blockDeepLink = true;
+    InngageInApp.blockDeepLink = false;
     InngageInApp.deepLinkCallback = (link) {
       log('link:' + link);
     };
