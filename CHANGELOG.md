@@ -1,3 +1,7 @@
+## 3.8.2
+#### Fixed: 
+- Click redirection for the in-app message button and card.
+
 ## 3.8.1
 #### Changed:
 - Migrated all dependency constraints from caret (`^`) notation to explicit version ranges (`>=min <=max`) to provide greater flexibility for consumers of the SDK, allowing compatibility across multiple major and minor versions. Affected packages:
