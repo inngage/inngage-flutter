@@ -16,6 +16,16 @@ class InngageHandlersNotification {
   }) async {
     try {
       final Map<String, dynamic> data = remoteMessage.data;
+
+      // Mensagens que não vêm da Inngage (ex: pushes enviados diretamente
+      // pelo backend do app consumidor) não devem ser tratadas aqui. O app
+      // consumidor já possui seu próprio pipeline de exibição de notificação
+      // em foreground; processá-las aqui duplica a notificação exibida ao
+      // usuário.
+      if (data['provider'] != 'inngage') {
+        return;
+      }
+
       final rawData = data['additional_data'];
 
       if (rawData != null) {
