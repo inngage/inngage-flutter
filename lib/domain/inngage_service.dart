@@ -21,6 +21,10 @@ class InngageService {
   });
 
   Future<void> registerSubscriber(String? registration) async {
+    if (registration != null && registration.isNotEmpty) {
+      InngageProperties.registration = registration;
+    }
+
     final request = RegisterSubscriberRequest(
       appInstalledIn: DateTime.now(),
       appUpdatedIn: DateTime.now(),
@@ -55,17 +59,19 @@ class InngageService {
     await notificationService.sendNotification(notId, appToken);
   }
 
-  Future<void> registerEvent(
+  Future<bool> registerEvent(
     String registration,
     String eventName,
     Map<String, dynamic> eventValues,
     bool conversionEvent,
     double conversionValue,
-    String conversionNotId,
-  ) async {
+    String conversionNotId, {
+    String? appToken,
+    String? identifier,
+  }) async {
     final eventRequest = NewEventRequest(
-      appToken: InngageProperties.appToken,
-      identifier: InngageProperties.identifier,
+      appToken: appToken ?? InngageProperties.appToken,
+      identifier: identifier ?? InngageProperties.identifier,
       registration: registration,
       eventName: eventName,
       eventValues: eventValues,
@@ -74,6 +80,6 @@ class InngageService {
       conversionValue: conversionValue,
     );
 
-    await eventService.sendEvent(Event(newEventRequest: eventRequest));
+    return eventService.sendEvent(Event(newEventRequest: eventRequest));
   }
 }

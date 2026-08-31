@@ -133,21 +133,25 @@ class InngageSDK extends ChangeNotifier {
     );
   }
 
-  static Future<void> registerEvent({
+  static Future<bool> registerEvent({
     required String registration,
     required String eventName,
     required Map<String, dynamic> eventValues,
+    String? appToken,
+    String? identifier,
     bool? conversionEvent,
     double? conversionValue,
     String? conversionNotId,
   }) async {
-    await InngageProperties.inngageService.registerEvent(
+    return InngageProperties.inngageService.registerEvent(
       registration,
       eventName,
       eventValues,
       conversionEvent ?? false,
       conversionValue ?? 0,
       conversionNotId ?? '',
+      appToken: appToken,
+      identifier: identifier,
     );
   }
 }

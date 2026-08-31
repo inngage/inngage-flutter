@@ -8,7 +8,7 @@ class EventServiceImpl implements EventService {
   EventServiceImpl(this.network);
 
   @override
-  Future<void> sendEvent(Event event) {
+  Future<bool> sendEvent(Event event) {
     return network.sendEvent(event);
   }
 }

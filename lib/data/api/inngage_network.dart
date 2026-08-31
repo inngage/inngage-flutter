@@ -27,8 +27,8 @@ class InngageNetwork
   }) : _keyAuthorization = keyAuthorizationProvider ?? (() => keyAuthorization);
 
   @override
-  Future<void> sendEvent(Event event) async {
-    await _postRequest('$version/events/newEvent/', eventToJson(event));
+  Future<bool> sendEvent(Event event) async {
+    return _postRequest('$version/events/newEvent/', eventToJson(event));
   }
 
   @override
@@ -47,7 +47,10 @@ class InngageNetwork
         '$version/subscription/', subscriptionToJson(subscription));
   }
 
-  Future<void> _postRequest(String endpoint, String payload) async {
+  /// Returns `true` when the API responded with 200 OK. Network/client errors
+  /// are logged (not thrown) and reported as `false` so callers that care about
+  /// delivery can react, while fire-and-forget callers can ignore the result.
+  Future<bool> _postRequest(String endpoint, String payload) async {
     try {
       final url = Uri.https(AppConstants.baseUrl, endpoint);
       final keyAuthorization = _keyAuthorization();
@@ -64,10 +67,13 @@ class InngageNetwork
       }
       logger.d('PAYLOAD: $payload');
       logger.d('RESPONSE: ${response.body}');
+      return true;
     } on http.ClientException catch (e) {
       logger.e('Client error: ${e.message}');
+      return false;
     } catch (e) {
       logger.e('Unexpected error: $e');
+      return false;
     }
   }
 }
