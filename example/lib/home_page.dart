@@ -26,32 +26,28 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            try {
-              final conversionNotId =
-                  await storage.read(key: 'conversionNotId');
-              final result = await InngageEvent.sendEvent(
-                eventName: 'click me',
-                appToken: InngageProperties.appToken,
-                identifier: InngageProperties.identifier,
-                conversionEvent: true,
-                conversionNotId: conversionNotId ?? '',
-              );
-              if (result) {
-                const snackBar = SnackBar(
-                  content: Text('Evento enviado com successo'),
-                  backgroundColor: Colors.green,
-                );
+            final conversionNotId = await storage.read(key: 'conversionNotId');
+            final result = await InngageEvent.sendEvent(
+              eventName: 'click me',
+              appToken: InngageProperties.appToken,
+              identifier: InngageProperties.identifier,
+              conversionEvent: true,
+              conversionNotId: conversionNotId ?? '',
+            );
 
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-            } on InngageException catch (_) {
-              const snackBar = SnackBar(
-                content: Text('Houve um erro tente novamente'),
-                backgroundColor: Colors.red,
-              );
+            if (!context.mounted) return;
 
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
+            final snackBar = result
+                ? const SnackBar(
+                    content: Text('Evento enviado com successo'),
+                    backgroundColor: Colors.green,
+                  )
+                : const SnackBar(
+                    content: Text('Houve um erro tente novamente'),
+                    backgroundColor: Colors.red,
+                  );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           },
           child: const Text('Enviar evento'),
         ),
