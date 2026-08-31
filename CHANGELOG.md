@@ -1,3 +1,27 @@
+## 3.9.0
+#### Fixed:
+- Request/response payloads (which may contain PII such as e-mail, phone number and custom fields) are no longer printed unconditionally to the console. All SDK logging below error level is now gated on `InngageSDK.setDebugMode(true)`; errors are always logged.
+- `InngageUtils.setKeyAuthorization` now takes effect even when called after the SDK's HTTP client has been created. Previously the authorization key was captured once at startup and later changes were silently ignored.
+- `InngageSDK.subscribe`'s `firebaseListenCallback` no longer throws a `TypeError` when the callback is typed (e.g. `void Function(Map<String, dynamic>)`); any single-argument callback signature is now accepted.
+
+#### Changed:
+- `InngageEvent.sendEvent` no longer requires `appToken`: when omitted, the token configured via `InngageSDK.subscribe` is used. Passing it explicitly still works and takes precedence.
+- `InngageEvent.sendEvent` now returns `false` when the API call fails (HTTP error or no connectivity). Previously network errors were swallowed and the method always returned `true`. If your app branches on the result, error paths that never triggered before may now run.
+- `InngageInApp.deepLinkCallback` is now typed as `void Function(String? link)` instead of the untyped `Function`. Untyped closures (`(link) { ... }`) keep working unchanged; closures explicitly typed as non-nullable (`(String link) { ... }`) or taking no arguments must be updated:
+  ```dart
+  // Before (3.8.x)
+  InngageInApp.deepLinkCallback = (String link) { ... };
+  // After (3.9.0)
+  InngageInApp.deepLinkCallback = (String? link) { ... };
+  ```
+
+#### Deprecated:
+- `InngageSDK.notificationController`: this stream never emitted any events, so no working integration depends on it. It will be removed in 4.0, together with `InngageSDK` extending `ChangeNotifier` (which likewise never notified listeners) and the `InngageSDK().inngageProperties` instance field (access the all-static `InngageProperties` directly).
+
+#### Removed:
+- Dead code: `lib/models/inngage_properties.dart` (fully commented-out duplicate of `shared/inngage_properties.dart`).
+- Unused `win32` dependency.
+
 ## 3.8.2
 #### Fixed: 
 - Click redirection for the in-app message button and card.
