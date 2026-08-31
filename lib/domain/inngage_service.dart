@@ -1,6 +1,7 @@
 // domain/services/inngage_service.dart
 import 'dart:io';
 import 'package:devicelocale/devicelocale.dart';
+import '../core/constants.dart';
 import '../data/model/inngage/event_request.dart';
 import '../data/model/inngage/subscription_request.dart';
 import '../../shared/inngage_properties.dart';
@@ -32,7 +33,7 @@ class InngageService {
       customField: InngageProperties.customFields,
       appVersion: await InngageUtils.getVersionApp(),
       deviceModel: await InngageUtils.getDeviceModel(),
-      sdk: '3.7.0',
+      sdk: AppConstants.sdkVersion,
       phoneNumber: InngageProperties.phoneNumber,
       email: InngageProperties.email,
       deviceManufacturer: await InngageUtils.getDeviceManufacturer(),
