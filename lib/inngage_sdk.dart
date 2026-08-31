@@ -103,8 +103,11 @@ class InngageSDK extends ChangeNotifier {
       InngageProperties.inngageWebViewProperties = inngageWebViewProperties;
     }
     if (firebaseListenCallback != null) {
+      // Function.apply accepts any single-argument callback signature, unlike
+      // a hard cast to `void Function(dynamic)`, which throws at subscribe
+      // time for callbacks typed as `void Function(Map<String, dynamic>)`.
       InngageNotificationMessage.onNotificationClick =
-          firebaseListenCallback as void Function(dynamic);
+          (data) => Function.apply(firebaseListenCallback, [data]);
     }
   }
 
