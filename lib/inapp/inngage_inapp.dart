@@ -7,7 +7,7 @@ import 'package:inngage_plugin/data/model/inapp/innapp_model.dart';
 
 class InngageInApp {
   static bool blockDeepLink = false;
-  static Function deepLinkCallback = () {};
+  static void Function(String? link) deepLinkCallback = (_) {};
 
   static show() async {
     const storage = FlutterSecureStorage();

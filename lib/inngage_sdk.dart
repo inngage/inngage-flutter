@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:inngage_plugin/firebase/notification_utils.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
 
+// Still extends ChangeNotifier only for backward compatibility: nothing ever
+// calls notifyListeners(), so listeners never fire. Will stop extending it
+// in 4.0.
 class InngageSDK extends ChangeNotifier {
   InngageSDK._internal();
   factory InngageSDK() => _singleton;
@@ -13,9 +16,14 @@ class InngageSDK extends ChangeNotifier {
   static final InngageSDK _singleton = InngageSDK._internal();
 
   static FirebaseApp? defaultApp;
+
+  @Deprecated('Never emitted any events and will be removed in 4.0. '
+      'Use InngageSDK.subscribe\'s firebaseListenCallback instead.')
   static final StreamController<RemoteMessage> notificationController =
       StreamController<RemoteMessage>.broadcast();
 
+  @Deprecated('InngageProperties is an all-static class; access it directly. '
+      'This instance field will be removed in 4.0.')
   final InngageProperties inngageProperties = InngageProperties();
 
   static void setDebugMode(bool value) {
