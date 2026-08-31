@@ -9,6 +9,23 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+// Força todos os módulos (app + plugins) a usarem a NDK já instalada, evitando
+// que o default do Flutter (28.2.x) dispare um download que não cabe no disco.
+subprojects {
+    def forceNdk = { p ->
+        if (p.hasProperty('android')) {
+            p.android {
+                ndkVersion "27.1.12297006"
+            }
+        }
+    }
+    if (project.state.executed) {
+        forceNdk(project)
+    } else {
+        afterEvaluate { p -> forceNdk(p) }
+    }
+}
+
 subprojects {
     project.evaluationDependsOn(':app')
 }

@@ -28,9 +28,6 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   upgrader: ^11.3.1
 
-  #AppsFlyer
-  appsflyer_sdk: ^6.15.0
-
   #.env
   flutter_dotenv: ^6.0.0
 
@@ -40,6 +37,15 @@ dependencies:
   inngage_plugin:
     path: ../
   cupertino_icons: ^1.0.2
+
+# Força a versão migrada (v2 embedding) de advertising_id: a 2.6.0, puxada
+# transitivamente pela SDK, usa a API Registrar removida e não compila.
+dependency_overrides:
+  advertising_id: 2.7.1
+  # firebase_core 4.10.0's native Android code writes 14 FirebaseOptions fields,
+  # but platform_interface 7.1.0 reads 15 (recaptchaSiteKey). Pin to 7.0.1 to
+  # match the native pigeon and avoid a RangeError on Firebase.initializeApp.
+  firebase_core_platform_interface: 7.0.1
 
 dev_dependencies:
   flutter_test:
