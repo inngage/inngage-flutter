@@ -13,14 +13,18 @@ import '../../domain/services/notification_service.dart';
 class InngageNetwork
     implements SubscriptionService, NotificationService, EventService {
   final Logger logger;
-  final String keyAuthorization;
   final String version;
+
+  /// Read at request time so keys set after construction (e.g. via
+  /// [InngageUtils.setKeyAuthorization]) are picked up.
+  final String Function() _keyAuthorization;
 
   InngageNetwork({
     required this.logger,
-    required this.keyAuthorization,
+    String keyAuthorization = '',
+    String Function()? keyAuthorizationProvider,
     this.version = 'v1',
-  });
+  }) : _keyAuthorization = keyAuthorizationProvider ?? (() => keyAuthorization);
 
   @override
   Future<void> sendEvent(Event event) async {
@@ -46,6 +50,7 @@ class InngageNetwork
   Future<void> _postRequest(String endpoint, String payload) async {
     try {
       final url = Uri.https(AppConstants.baseUrl, endpoint);
+      final keyAuthorization = _keyAuthorization();
       final headers = {
         'Content-Type': 'application/json; charset=UTF-8',
         if (keyAuthorization.isNotEmpty)

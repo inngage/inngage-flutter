@@ -31,7 +31,9 @@ class InngageProperties {
   static bool getDebugMode() => debugMode;
 
   static final InngageNetwork network = InngageNetwork(
-    keyAuthorization: keyAuthorization,
+    // Read lazily so keys set after startup (InngageUtils.setKeyAuthorization)
+    // are honored on every request.
+    keyAuthorizationProvider: () => keyAuthorization,
     logger: Logger(
       filter: _InngageLogFilter(),
       printer: PrettyPrinter(
