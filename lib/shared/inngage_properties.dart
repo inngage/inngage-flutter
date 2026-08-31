@@ -33,6 +33,7 @@ class InngageProperties {
   static final InngageNetwork network = InngageNetwork(
     keyAuthorization: keyAuthorization,
     logger: Logger(
+      filter: _InngageLogFilter(),
       printer: PrettyPrinter(
         methodCount: 0,
         errorMethodCount: 5,
@@ -46,4 +47,13 @@ class InngageProperties {
       subscriptionService: SubscriptionServiceImpl(network),
       notificationService: NotificationServiceImpl(network),
       eventService: EventServiceImpl(network));
+}
+
+/// Errors are always logged; anything below error level (request/response
+/// payloads, which may contain PII) is only logged when
+/// [InngageProperties.debugMode] is enabled.
+class _InngageLogFilter extends LogFilter {
+  @override
+  bool shouldLog(LogEvent event) =>
+      InngageProperties.debugMode || event.level.value >= Level.error.value;
 }

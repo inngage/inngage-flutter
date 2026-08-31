@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
@@ -58,8 +57,6 @@ class InngageNetwork
       if (response.statusCode != HttpStatus.ok) {
         throw HttpException('Unexpected response: ${response.statusCode}');
       }
-      debugPrint('PAYLOAD: $payload');
-      debugPrint('RESPONSE: ${response.body}');
       logger.d('PAYLOAD: $payload');
       logger.d('RESPONSE: ${response.body}');
     } on http.ClientException catch (e) {
