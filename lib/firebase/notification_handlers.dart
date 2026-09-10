@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:inngage_plugin/firebase/notification_utils.dart';
 import 'package:inngage_plugin/inngage_plugin.dart';
@@ -16,25 +15,6 @@ class InngageHandlersNotification {
   }) async {
     try {
       final Map<String, dynamic> data = remoteMessage.data;
-      final rawData = data['additional_data'];
-
-      if (rawData != null) {
-        try {
-          final parsed = json.decode(rawData);
-          final inapp = parsed['inapp_message'] == true;
-
-          if (inapp) {
-            debugPrint('INAPP PAYLOAD: $rawData');
-            const storage = FlutterSecureStorage();
-            await storage.write(key: "inapp", value: rawData);
-            final model = InAppModel.fromJson(parsed);
-            debugPrint('INAPP MODEL: ${json.encode(model.toJson())}');
-            InngageDialog.showInAppDialog(model);
-          }
-        } catch (e) {
-          debugPrint('Failed to parse additional_data or handle inapp: $e');
-        }
-      }
 
       final notification = remoteMessage.notification;
 
@@ -120,24 +100,9 @@ class InngageHandlersNotification {
     }
   }
 
+  /// Since 4.0.0 In-App messages are no longer delivered through push
+  /// payloads (see `InngageInApp.show`), so background data messages need no
+  /// processing. Kept as a no-op so existing background handlers keep working.
   static Future<void> handleBackgroundNotification(
-      Map<String, dynamic> data) async {
-    try {
-      final rawData = data['additional_data'];
-      final rawMetadata = data['inngageData'];
-      final parsed = json.decode(rawData);
-      final inapp = parsed['inapp_message'] == true;
-
-      if (inapp) {
-        debugPrint('INAPP PAYLOAD: $rawData');
-        const storage = FlutterSecureStorage();
-        await storage.write(key: "inapp", value: rawData);
-        await storage.write(key: "metadata", value: rawMetadata);
-        final model = InAppModel.fromJson(parsed);
-        debugPrint('INAPP MODEL: ${json.encode(model.toJson())}');
-      }
-    } catch (e) {
-      debugPrint('handleBackgroundNotification error: $e');
-    }
-  }
+      Map<String, dynamic> data) async {}
 }
