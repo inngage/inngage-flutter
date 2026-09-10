@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
-const MethodChannel _channel =  MethodChannel('flutter_native_dialog');
+const MethodChannel _channel = MethodChannel('flutter_native_dialog');
 
 class FlutterNativeDialog {
   static const String defaultPositiveButtonText = "OK";
@@ -24,8 +24,7 @@ class FlutterNativeDialog {
       {
         "title": title,
         "message": message,
-        "positiveButtonText":
-            positiveButtonText ?? defaultPositiveButtonText,
+        "positiveButtonText": positiveButtonText ?? defaultPositiveButtonText,
       },
     );
   }
@@ -57,7 +56,8 @@ class FlutterNativeDialog {
   }
 
   @visibleForTesting
-  static void setMockCallHandler(Future<dynamic> Function(MethodCall call) handler) {
+  static void setMockCallHandler(
+      Future<dynamic> Function(MethodCall call) handler) {
     //_channel.setMockMethodCallHandler(handler);
   }
 }

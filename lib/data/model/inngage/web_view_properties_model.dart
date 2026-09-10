@@ -22,4 +22,3 @@ class InngageWebViewProperties {
   bool withJavascript;
   Widget? customLoading;
 }
-
