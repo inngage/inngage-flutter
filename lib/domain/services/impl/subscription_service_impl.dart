@@ -8,7 +8,7 @@ class SubscriptionServiceImpl implements SubscriptionService {
   SubscriptionServiceImpl(this.network);
 
   @override
-  Future<void> subscription(SubscriptionRequest subscription) {
+  Future<Map<String, dynamic>?> subscription(SubscriptionRequest subscription) {
     return network.subscription(subscription);
   }
 }
