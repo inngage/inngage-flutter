@@ -61,6 +61,11 @@ class InngageSDK extends ChangeNotifier {
       }
     }
 
+    // The push-based In-App flow (< 4.0.0) persisted payloads under these
+    // keys; clear them so nothing stale survives an SDK upgrade.
+    await InngageProperties.inngageService.inAppLocalStore
+        .clearLegacyInAppKeys();
+
     InngageUtils.requestAdvertiserId = requestAdvertiserId;
     await _configureProperties(
       appToken: appToken,
