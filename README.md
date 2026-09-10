@@ -77,3 +77,31 @@ inngage_plugin:3.2.0
 ```
 
 Call `subscribe()` on a `InngageSDK` to request it.
+
+## In-App Messages
+
+Since 4.0.0 In-App messages no longer arrive through push payloads. The SDK
+fetches them on demand from the Inngage API (`/v4/message/objectMessage`) when
+your app asks for one — for example after the splash screen, on the login
+screen, or on any specific route:
+
+```dart
+await InngageInApp.show(
+  context: context, // optional: defaults to the navigatorKey passed to subscribe
+  handledBySdk: true, // SDK executes deep links / browser / in-app browser
+  onMetadata: (metadata) {
+    // "metadata" actions deliver key-value pairs to the app, with no navigation
+  },
+);
+```
+
+If there is no In-App message to display, nothing is rendered and the call
+returns silently.
+
+> **Important:** the In-App flow depends on the `app_id` and the device
+> registration token persisted from the subscription. Make sure
+> `InngageSDK.subscribe` + the subscriber registration have completed at least
+> once before calling `InngageInApp.show`.
+
+To handle every action yourself instead of letting the SDK navigate, pass
+`handledBySdk: false` and an `onAction` callback receiving the `InAppV2Action`.
