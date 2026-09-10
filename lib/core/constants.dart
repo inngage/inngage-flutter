@@ -3,5 +3,5 @@ class AppConstants {
 
   /// SDK version reported to the Inngage API on subscriber registration.
   /// Keep in sync with `version:` in pubspec.yaml.
-  static const sdkVersion = '3.9.0';
+  static const sdkVersion = '4.0.0';
 }

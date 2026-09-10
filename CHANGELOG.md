@@ -1,3 +1,25 @@
+## 4.0.0
+#### BREAKING CHANGES — In-App Messages rewritten (pull-based, decoupled from push)
+In-App messages no longer arrive inside FCM push payloads. The SDK now fetches
+them on demand from `POST /v4/message/objectMessage` and renders the returned
+message (banner for a single slide, carousel with dot indicator for two or
+more). Push notifications themselves are unchanged and still use Firebase.
+
+- **New public API:** `InngageInApp.show({context, handledBySdk, onAction, onMetadata})` — call it wherever the app wants an In-App message to appear (after the splash screen, on login, on a specific route…). When there is no message to display, nothing is rendered. With `handledBySdk: true` (default) the SDK executes the actions (`deeplink`/`deep_link`, `weblink` in the external browser, `in_app_url`/`inapp` in an in-app browser, unknown → dismiss); `metadata` actions are delivered to `onMetadata`. With `handledBySdk: false` every action is delivered to `onAction`.
+- **Prerequisite:** the subscription must have completed at least once before the first `InngageInApp.show` call. The subscription response is now parsed and its `app_id` is persisted, together with the device registration token — both are required by `/objectMessage` (plus a persisted `firstAccess` flag, sent as `true` until the first successful fetch).
+- **New public models:** `InAppMessageV2`, `InAppV2Style`, `InAppV2Media`, `InAppV2CarouselItem`, `InAppV2Content`, `InAppV2Actions`, `InAppV2Button`, `InAppV2ButtonStyle`, `InAppV2Action`, `InAppV2ActionType` and `ObjectMessageRequest` — mirroring the cross-SDK `/objectMessage` contract.
+
+#### Removed:
+- `InAppModel`, `RichContent` and `CarrouselImagesModel` (replaced by the models above).
+- `InngageInAppWidget` (in-app messages are no longer queued for display on app resume; call `InngageInApp.show` on demand instead).
+- `InngageDialog.showInAppDialog` and the `dialogs/app_dialog.dart` export.
+- `InngageInApp.blockDeepLink` and `InngageInApp.deepLinkCallback` (use `InngageProperties.blockDeepLink` plus the `onAction` callback of `InngageInApp.show`).
+- The `inapp_message` handling inside the FCM notification handlers. `InngageHandlersNotification.handleBackgroundNotification` is kept as a no-op for backward compatibility of existing background handlers.
+- The `"inapp"`/`"metadata"` secure-storage keys used by the old flow are cleared on `InngageSDK.subscribe`.
+
+#### Changed:
+- `SubscriptionService.subscription` now returns the API response body (`Map<String, dynamic>?`) instead of `void`, so the `app_id` can be extracted.
+
 ## 3.9.0
 #### Fixed:
 - Request/response payloads (which may contain PII such as e-mail, phone number and custom fields) are no longer printed unconditionally to the console. All SDK logging below error level is now gated on `InngageSDK.setDebugMode(true)`; errors are always logged.
