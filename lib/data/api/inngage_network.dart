@@ -1,17 +1,24 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 import '../../core/constants.dart';
+import '../model/inapp/object_message_request.dart';
 import '../model/inngage/event_request.dart';
 import '../model/inngage/notification_request.dart';
 import '../model/inngage/subscription_request.dart';
 import '../../domain/services/event_service.dart';
+import '../../domain/services/inapp_message_service.dart';
 import '../../domain/services/subscription_service.dart';
 import '../../domain/services/notification_service.dart';
 
 class InngageNetwork
-    implements SubscriptionService, NotificationService, EventService {
+    implements
+        SubscriptionService,
+        NotificationService,
+        EventService,
+        InAppMessageService {
   final Logger logger;
   final String version;
 
@@ -42,9 +49,19 @@ class InngageNetwork
   }
 
   @override
-  Future<void> subscription(SubscriptionRequest subscription) async {
-    await _postRequest(
+  Future<Map<String, dynamic>?> subscription(
+      SubscriptionRequest subscription) async {
+    return _postRequestForJson(
         '$version/subscription/', subscriptionToJson(subscription));
+  }
+
+  /// In-App v2 endpoint; versioned as v4 by the contract, independently of
+  /// [version] (which the v1 endpoints use).
+  @override
+  Future<Map<String, dynamic>?> getObjectMessage(
+      ObjectMessageRequest request) async {
+    return _postRequestForJson(
+        'v4/message/objectMessage', json.encode(request.toJson()));
   }
 
   /// Returns `true` when the API responded with 200 OK. Network/client errors
@@ -74,6 +91,47 @@ class InngageNetwork
     } catch (e) {
       logger.e('Unexpected error: $e');
       return false;
+    }
+  }
+
+  /// Key under which a non-JSON (or non-object) 200 body is returned by
+  /// [_postRequestForJson] so callers can still inspect it.
+  static const rawBodyKey = '_rawBody';
+
+  /// Like [_postRequest], but returns the decoded response body on 200 OK.
+  /// Never throws: failures are logged and reported as `null`.
+  Future<Map<String, dynamic>?> _postRequestForJson(
+      String endpoint, String payload) async {
+    try {
+      final url = Uri.https(AppConstants.baseUrl, endpoint);
+      final keyAuthorization = _keyAuthorization();
+      final headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        if (keyAuthorization.isNotEmpty)
+          'Authorization': 'key=$keyAuthorization',
+      };
+
+      final response = await http.post(url, headers: headers, body: payload);
+
+      if (response.statusCode != HttpStatus.ok) {
+        throw HttpException('Unexpected response: ${response.statusCode}');
+      }
+      logger.d('PAYLOAD: $payload');
+      logger.d('RESPONSE: ${response.body}');
+
+      try {
+        final decoded = json.decode(response.body);
+        if (decoded is Map<String, dynamic>) return decoded;
+      } catch (_) {
+        // Fall through to the raw-body wrapper below.
+      }
+      return {rawBodyKey: response.body};
+    } on http.ClientException catch (e) {
+      logger.e('Client error: ${e.message}');
+      return null;
+    } catch (e) {
+      logger.e('Unexpected error: $e');
+      return null;
     }
   }
 }
