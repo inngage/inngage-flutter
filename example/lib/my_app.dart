@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,6 +19,10 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void initSdk() async {
+    // Enable debug logging before the subscription so its payload/response
+    // (including the app_id used by the In-App flow) shows up in the logs.
+    InngageSDK.setDebugMode(true);
+
     final inngageWebViewProperties = InngageWebViewProperties(
       appBarColor: Colors.pink,
       appBarText: const Text('AppTitle'),
@@ -72,10 +75,6 @@ class _MyAppState extends State<MyApp> {
       appToken: kAppToken,
       identifier: kIdentifier,
     );
-    InngageInApp.blockDeepLink = false;
-    InngageInApp.deepLinkCallback = (link) {
-      log('link:${link ?? ''}');
-    };
   }
 
   /// Registers the subscriber (sends the FCM token to Inngage) and binds every
@@ -125,7 +124,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      home: const InngageInAppWidget(child: HomePage()),
+      home: const HomePage(),
     );
   }
 }
