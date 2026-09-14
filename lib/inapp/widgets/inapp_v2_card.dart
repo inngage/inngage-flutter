@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 import '../../data/model/inapp/inapp_message_v2.dart';
+import '../../data/model/inapp/inapp_scratch_v2.dart';
 import '../../data/model/inapp/inapp_wheel_v2.dart';
 import 'inapp_v2_colors.dart';
+import 'inapp_v2_scratch_card.dart';
 import 'inapp_v2_slide.dart';
 import 'inapp_v2_wheel_card.dart';
 
 /// The In-App message dialog card. Renders a banner when the message has a
 /// single slide, a carousel (with dot indicator) when it has two or more,
-/// and the fortune-wheel flow for `type: "Wheel"` messages.
+/// the fortune-wheel flow for `type: "Wheel"` and the scratch-card flow for
+/// `type: "Scratch"` messages.
 class InAppV2Card extends StatelessWidget {
   static const double _carouselHeight = 360;
 
@@ -17,6 +20,7 @@ class InAppV2Card extends StatelessWidget {
   final ValueChanged<InAppV2Action> onActionTriggered;
   final void Function(Map<String, String> lead)? onLeadCaptured;
   final void Function(InAppV2WheelSlice slice)? onWheelResult;
+  final void Function(InAppV2ScratchPrize prize)? onScratchResult;
 
   const InAppV2Card({
     super.key,
@@ -24,6 +28,7 @@ class InAppV2Card extends StatelessWidget {
     required this.onActionTriggered,
     this.onLeadCaptured,
     this.onWheelResult,
+    this.onScratchResult,
   });
 
   Alignment get _alignment {
@@ -89,6 +94,14 @@ class InAppV2Card extends StatelessWidget {
         message: message,
         onLeadCaptured: onLeadCaptured,
         onWheelResult: onWheelResult,
+      );
+    }
+
+    if (message.isScratch) {
+      return InAppV2ScratchCard(
+        message: message,
+        onLeadCaptured: onLeadCaptured,
+        onScratchResult: onScratchResult,
       );
     }
 
