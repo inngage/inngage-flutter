@@ -2,21 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 import '../../data/model/inapp/inapp_message_v2.dart';
+import '../../data/model/inapp/inapp_wheel_v2.dart';
 import 'inapp_v2_colors.dart';
 import 'inapp_v2_slide.dart';
+import 'inapp_v2_wheel_card.dart';
 
 /// The In-App message dialog card. Renders a banner when the message has a
-/// single slide and a carousel (with dot indicator) when it has two or more.
+/// single slide, a carousel (with dot indicator) when it has two or more,
+/// and the fortune-wheel flow for `type: "Wheel"` messages.
 class InAppV2Card extends StatelessWidget {
   static const double _carouselHeight = 360;
 
   final InAppMessageV2 message;
   final ValueChanged<InAppV2Action> onActionTriggered;
+  final void Function(Map<String, String> lead)? onLeadCaptured;
+  final void Function(InAppV2WheelSlice slice)? onWheelResult;
 
   const InAppV2Card({
     super.key,
     required this.message,
     required this.onActionTriggered,
+    this.onLeadCaptured,
+    this.onWheelResult,
   });
 
   Alignment get _alignment {
@@ -77,6 +84,14 @@ class InAppV2Card extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, List<InAppV2CarouselItem> items) {
+    if (message.isWheel) {
+      return InAppV2WheelCard(
+        message: message,
+        onLeadCaptured: onLeadCaptured,
+        onWheelResult: onWheelResult,
+      );
+    }
+
     if (items.isEmpty) {
       // Background-image-only message: give the image room to show and let
       // a tap anywhere dismiss it.

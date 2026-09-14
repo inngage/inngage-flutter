@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/model/inapp/inapp_message_v2.dart';
+import '../data/model/inapp/inapp_wheel_v2.dart';
 import '../shared/inngage_properties.dart';
 import 'inapp_actions.dart';
 import 'widgets/inapp_v2_card.dart';
@@ -23,11 +24,18 @@ class InngageInApp {
   /// actions itself (deep links, browser, in-app browser); `metadata` actions
   /// are always delivered to [onMetadata]. With [handledBySdk] `false`, every
   /// triggered action is delivered to [onAction] instead.
+  ///
+  /// For `type: "Wheel"` messages, [onLeadCaptured] receives the values
+  /// submitted in the lead-capture form (keyed by field label) and
+  /// [onWheelResult] receives the drawn slice (`isWin`/`code`) after the
+  /// spin — the SDK does not send either to the API.
   static Future<void> show({
     BuildContext? context,
     bool handledBySdk = true,
     void Function(InAppV2Action action)? onAction,
     void Function(Map<String, String> metadata)? onMetadata,
+    void Function(Map<String, String> lead)? onLeadCaptured,
+    void Function(InAppV2WheelSlice slice)? onWheelResult,
   }) async {
     final message = await InngageProperties.inngageService.fetchInAppMessage();
     if (message == null || !message.hasRenderableContent) return;
@@ -45,6 +53,8 @@ class InngageInApp {
       context: dialogContext,
       builder: (_) => InAppV2Card(
         message: message,
+        onLeadCaptured: onLeadCaptured,
+        onWheelResult: onWheelResult,
         onActionTriggered: (action) => InngageInAppActions.execute(
           action,
           handledBySdk: handledBySdk,
