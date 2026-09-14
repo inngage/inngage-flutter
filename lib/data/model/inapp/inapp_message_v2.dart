@@ -2,6 +2,7 @@
 // contract shared by all Inngage SDKs. Class names follow the Android SDK
 // reference names used in the contract documentation.
 
+import 'inapp_scratch_v2.dart';
 import 'inapp_wheel_v2.dart';
 
 /// Resolved action type for [InAppV2Action.type]. Raw values are normalized to
@@ -244,12 +245,13 @@ class InAppMessageV2 {
   final InAppV2Style style;
   final InAppV2Media media;
 
-  // "Wheel"-type fields (absent on Banner/Message payloads).
+  // Gamified-type fields (absent on Banner/Message payloads).
   final String icon;
   final bool hideBrand;
   final InAppV2Content? content;
   final InAppV2LeadCapture leadCapture;
   final InAppV2WheelConfig wheel;
+  final InAppV2ScratchConfig scratch;
   final InAppV2ResultConfig result;
 
   const InAppMessageV2({
@@ -262,10 +264,13 @@ class InAppMessageV2 {
     this.content,
     this.leadCapture = const InAppV2LeadCapture(),
     this.wheel = const InAppV2WheelConfig(),
+    this.scratch = const InAppV2ScratchConfig(),
     this.result = const InAppV2ResultConfig(),
   });
 
   bool get isWheel => type.toLowerCase() == 'wheel';
+
+  bool get isScratch => type.toLowerCase() == 'scratch';
 
   /// Resolves the response envelope (`inAppMessage` → `payload` → flat root)
   /// and applies the suppression rules. Returns `null` when there is no
@@ -291,6 +296,7 @@ class InAppMessageV2 {
     final rawContent = json['content'];
     final rawLeadCapture = json['leadCapture'];
     final rawWheel = json['wheel'];
+    final rawScratch = json['scratch'];
     final rawResult = json['result'];
     return InAppMessageV2(
       enabled: json['enabled'] as bool? ?? true,
@@ -312,6 +318,9 @@ class InAppMessageV2 {
       wheel: rawWheel is Map<String, dynamic>
           ? InAppV2WheelConfig.fromJson(rawWheel)
           : const InAppV2WheelConfig(),
+      scratch: rawScratch is Map<String, dynamic>
+          ? InAppV2ScratchConfig.fromJson(rawScratch)
+          : const InAppV2ScratchConfig(),
       result: rawResult is Map<String, dynamic>
           ? InAppV2ResultConfig.fromJson(rawResult)
           : const InAppV2ResultConfig(),
@@ -320,10 +329,12 @@ class InAppMessageV2 {
 
   /// Minimum validation before rendering. Banner/Message: enabled, non-empty
   /// type, and at least one slide with image/title/body — or a style
-  /// background image. Wheel: enabled and at least one slice.
+  /// background image. Wheel: enabled and at least one slice. Scratch:
+  /// enabled and at least one prize.
   bool get hasRenderableContent {
     if (!enabled || type.isEmpty) return false;
     if (isWheel) return wheel.slices.isNotEmpty;
+    if (isScratch) return scratch.prizes.isNotEmpty;
     final hasSlide = media.items.any((item) => item.hasRenderableContent);
     final hasBackgroundImage = (style.backgroundImage ?? '').isNotEmpty;
     return hasSlide || hasBackgroundImage;
