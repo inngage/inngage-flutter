@@ -2,6 +2,8 @@
 // contract shared by all Inngage SDKs. Class names follow the Android SDK
 // reference names used in the contract documentation.
 
+import 'inapp_wheel_v2.dart';
+
 /// Resolved action type for [InAppV2Action.type]. Raw values are normalized to
 /// lowercase before mapping; unknown values fall back to [dismiss].
 enum InAppV2ActionType {
@@ -242,12 +244,28 @@ class InAppMessageV2 {
   final InAppV2Style style;
   final InAppV2Media media;
 
+  // "Wheel"-type fields (absent on Banner/Message payloads).
+  final String icon;
+  final bool hideBrand;
+  final InAppV2Content? content;
+  final InAppV2LeadCapture leadCapture;
+  final InAppV2WheelConfig wheel;
+  final InAppV2ResultConfig result;
+
   const InAppMessageV2({
     this.enabled = true,
     this.type = 'Banner',
     this.style = const InAppV2Style(),
     this.media = const InAppV2Media(),
+    this.icon = '',
+    this.hideBrand = false,
+    this.content,
+    this.leadCapture = const InAppV2LeadCapture(),
+    this.wheel = const InAppV2WheelConfig(),
+    this.result = const InAppV2ResultConfig(),
   });
+
+  bool get isWheel => type.toLowerCase() == 'wheel';
 
   /// Resolves the response envelope (`inAppMessage` → `payload` → flat root)
   /// and applies the suppression rules. Returns `null` when there is no
@@ -270,6 +288,10 @@ class InAppMessageV2 {
   factory InAppMessageV2.fromJson(Map<String, dynamic> json) {
     final rawStyle = json['style'];
     final rawMedia = json['media'];
+    final rawContent = json['content'];
+    final rawLeadCapture = json['leadCapture'];
+    final rawWheel = json['wheel'];
+    final rawResult = json['result'];
     return InAppMessageV2(
       enabled: json['enabled'] as bool? ?? true,
       type: json['type'] as String? ?? 'Banner',
@@ -279,13 +301,29 @@ class InAppMessageV2 {
       media: rawMedia is Map<String, dynamic>
           ? InAppV2Media.fromJson(rawMedia)
           : const InAppV2Media(),
+      icon: json['icon'] as String? ?? '',
+      hideBrand: json['hideBrand'] as bool? ?? false,
+      content: rawContent is Map<String, dynamic>
+          ? InAppV2Content.fromJson(rawContent)
+          : null,
+      leadCapture: rawLeadCapture is Map<String, dynamic>
+          ? InAppV2LeadCapture.fromJson(rawLeadCapture)
+          : const InAppV2LeadCapture(),
+      wheel: rawWheel is Map<String, dynamic>
+          ? InAppV2WheelConfig.fromJson(rawWheel)
+          : const InAppV2WheelConfig(),
+      result: rawResult is Map<String, dynamic>
+          ? InAppV2ResultConfig.fromJson(rawResult)
+          : const InAppV2ResultConfig(),
     );
   }
 
-  /// Minimum validation before rendering: enabled, non-empty type, and at
-  /// least one slide with image/title/body — or a style background image.
+  /// Minimum validation before rendering. Banner/Message: enabled, non-empty
+  /// type, and at least one slide with image/title/body — or a style
+  /// background image. Wheel: enabled and at least one slice.
   bool get hasRenderableContent {
     if (!enabled || type.isEmpty) return false;
+    if (isWheel) return wheel.slices.isNotEmpty;
     final hasSlide = media.items.any((item) => item.hasRenderableContent);
     final hasBackgroundImage = (style.backgroundImage ?? '').isNotEmpty;
     return hasSlide || hasBackgroundImage;
