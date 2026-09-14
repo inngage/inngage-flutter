@@ -105,3 +105,19 @@ returns silently.
 
 To handle every action yourself instead of letting the SDK navigate, pass
 `handledBySdk: false` and an `onAction` callback receiving the `InAppV2Action`.
+
+### Wheel (roleta)
+
+Campaigns with `type: "Wheel"` render a fortune wheel: an optional
+lead-capture form (before or after the spin), a weighted draw that happens
+before the animation, and a win/lose result panel with a copy-to-clipboard
+coupon. The SDK delivers the captured lead and the drawn slice to the app —
+nothing is sent to the API:
+
+```dart
+await InngageInApp.show(
+  context: context,
+  onLeadCaptured: (lead) => print('lead: $lead'),        // {label: value}
+  onWheelResult: (slice) => print('${slice.label} win=${slice.isWin}'),
+);
+```
