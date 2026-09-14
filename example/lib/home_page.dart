@@ -14,6 +14,83 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final storage = const FlutterSecureStorage();
 
+  /// Renders the "Scratch" (raspadinha) demand JSON locally: weighted draw
+  /// happens before the cover, scratching past revealPercent shows the
+  /// win/lose result panel (gradient) with the coupon.
+  void _showScratchDemo(BuildContext context) {
+    final message = InAppMessageV2.fromJson({
+      'type': 'Scratch',
+      'icon': 'https://storage.googleapis.com/inn-app-icons/380.png',
+      'hideBrand': false,
+      'style': {
+        'position': 'center',
+        'backgroundColor': '#ffffff',
+        'backgroundImage': null,
+        'borderColor': '#e5e7eb',
+        'shadow': true,
+        'titleColor': '#111827',
+        'bodyColor': '#4B5563',
+      },
+      'content': {
+        'title': 'Raspe e ganhe!',
+        'body': 'Descubra seu prêmio secreto.',
+      },
+      'leadCapture': {
+        'enabled': true,
+        'position': 'before',
+        'fields': [
+          {'type': 'email', 'label': 'Seu e-mail'}
+        ],
+        'button': {
+          'text': 'Continuar',
+          'style': {
+            'backgroundColor': '#7C3AED',
+            'textColor': '#FFFFFF',
+            'hoverColor': '#6D28D9',
+          },
+        },
+        'consentText':
+            'Ao continuar você concorda com nossos Termos & Condições.',
+        'consentColor': '#9CA3AF',
+        'unlockText': 'Cadastre-se para liberar seu cupom 🎁',
+      },
+      'scratch': {
+        'coverColor': '#9CA3AF',
+        'instruction': 'Raspe aqui ✨',
+        'revealPercent': 65,
+        'prizes': [
+          {'label': '15% OFF', 'code': 'RASPA15', 'weight': 3},
+          {'label': 'Frete grátis', 'code': 'FRETERASPA', 'weight': 2},
+          {'label': 'Quase!', 'code': null, 'weight': 5},
+        ],
+      },
+      'result': {
+        'winTitle': 'Você ganhou',
+        'loseTitle': 'Não foi dessa vez!',
+        'body': 'Use o cupom no checkout.',
+        'winEmoji': '🎁',
+        'loseEmoji': '🙂',
+        'style': {
+          'gradient': true,
+          'bgFrom': '#FEF3C7',
+          'bgTo': '#FDE68A',
+          'textColor': '#92400E',
+        },
+      },
+    });
+
+    showDialog(
+      context: context,
+      builder: (_) => InAppV2Card(
+        message: message,
+        onActionTriggered: (_) {},
+        onLeadCaptured: (lead) => debugPrint('Scratch lead: $lead'),
+        onScratchResult: (prize) => debugPrint(
+            'Scratch result: ${prize.label} win=${prize.isWin} code=${prize.code}'),
+      ),
+    );
+  }
+
   /// Renders the "Wheel" (roleta) demand JSON locally: lead capture before
   /// the spin, weighted draw, and the win/lose result panel with coupon.
   void _showWheelDemo(BuildContext context) {
@@ -278,6 +355,11 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () => _showWheelDemo(context),
               child: const Text('Demo Roleta (Wheel)'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _showScratchDemo(context),
+              child: const Text('Demo Raspadinha (Scratch)'),
             ),
           ],
         ),
