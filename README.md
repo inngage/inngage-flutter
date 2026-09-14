@@ -106,6 +106,14 @@ returns silently.
 To handle every action yourself instead of letting the SDK navigate, pass
 `handledBySdk: false` and an `onAction` callback receiving the `InAppV2Action`.
 
+### Scratch (raspadinha)
+
+Campaigns with `type: "Scratch"` render a scratch card: the weighted draw
+happens before the cover is shown, so the revealed prize is already the
+result. Scratching past `revealPercent` completes the reveal and shows the
+win/lose panel with a copy-to-clipboard coupon. The drawn prize is delivered
+to the app via `onScratchResult` — nothing is sent to the API.
+
 ### Wheel (roleta)
 
 Campaigns with `type: "Wheel"` render a fortune wheel: an optional
