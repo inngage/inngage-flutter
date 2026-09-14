@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:inngage_plugin/data/model/inapp/inapp_message_v2.dart';
 import 'package:inngage_plugin/data/model/inapp/inapp_wheel_v2.dart';
 import 'package:inngage_plugin/inapp/widgets/inapp_v2_card.dart';
-import 'package:inngage_plugin/inapp/widgets/inapp_v2_wheel_card.dart';
+import 'package:inngage_plugin/inapp/widgets/inapp_v2_lead_panel.dart';
 
 /// Builds a Wheel message. With [allWinning] every slice has a coupon and
 /// with `false` none has, making the (random) draw deterministic for result
@@ -95,7 +95,7 @@ Future<void> _spin(WidgetTester tester) async {
 }
 
 void main() {
-  tearDown(() => InAppV2WheelCard.renderLeadCapture = false);
+  tearDown(() => InAppV2LeadPanel.renderLeadCapture = false);
 
   testWidgets(
       'lead capture is not rendered while the kill switch is off (default)',
@@ -109,7 +109,7 @@ void main() {
 
   testWidgets('before flow: form gates the wheel and validates the e-mail',
       (tester) async {
-    InAppV2WheelCard.renderLeadCapture = true;
+    InAppV2LeadPanel.renderLeadCapture = true;
     final leads = <Map<String, String>>[];
     await _openWheel(tester, _wheelMessage(), onLeadCaptured: leads.add);
 
@@ -168,7 +168,7 @@ void main() {
 
   testWidgets('after flow: winning coupon stays locked until sign-up',
       (tester) async {
-    InAppV2WheelCard.renderLeadCapture = true;
+    InAppV2LeadPanel.renderLeadCapture = true;
     final results = <InAppV2WheelSlice>[];
     await _openWheel(
       tester,
