@@ -14,6 +14,97 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final storage = const FlutterSecureStorage();
 
+  /// Renders the "Wheel" (roleta) demand JSON locally: lead capture before
+  /// the spin, weighted draw, and the win/lose result panel with coupon.
+  void _showWheelDemo(BuildContext context) {
+    final message = InAppMessageV2.fromJson({
+      'type': 'Wheel',
+      'icon': 'https://storage.googleapis.com/inn-app-icons/380.png',
+      'hideBrand': false,
+      'style': {
+        'position': 'center',
+        'backgroundColor': '#ffffff',
+        'backgroundImage': null,
+        'borderColor': '#e5e7eb',
+        'shadow': true,
+        'titleColor': '#111827',
+        'bodyColor': '#4B5563',
+      },
+      'content': {
+        'title': 'Gire a roleta da sorte',
+        'body': 'Um giro por visita. Boa sorte!',
+      },
+      'leadCapture': {
+        'enabled': true,
+        'position': 'before',
+        'fields': [
+          {'type': 'email', 'label': 'Seu e-mail'}
+        ],
+        'button': {
+          'text': 'Liberar meu giro',
+          'style': {
+            'backgroundColor': '#7C3AED',
+            'textColor': '#FFFFFF',
+            'hoverColor': '#6D28D9',
+          },
+        },
+        'consentText':
+            'Ao continuar você concorda com nossos Termos & Condições.',
+        'consentColor': '#9CA3AF',
+        'unlockText': 'Cadastre-se para liberar seu cupom 🎁',
+      },
+      'wheel': {
+        'buttonText': 'Girar 🎡',
+        'button': {'backgroundColor': '#7C3AED', 'textColor': '#FFFFFF'},
+        'slices': [
+          {
+            'label': '10% OFF',
+            'color': '#7C3AED',
+            'code': 'GIRO10',
+            'weight': 3
+          },
+          {
+            'label': 'Frete grátis',
+            'color': '#F59E0B',
+            'code': 'FRETE0',
+            'weight': 2
+          },
+          {'label': 'Quase!', 'color': '#9CA3AF', 'code': null, 'weight': 4},
+          {
+            'label': '25% OFF',
+            'color': '#10B981',
+            'code': 'GIRO25',
+            'weight': 1
+          },
+        ],
+      },
+      'result': {
+        'winTitle': 'Parabéns! 🎉',
+        'loseTitle': 'Foi por pouco!',
+        'body': 'Apresente o cupom no checkout.',
+        'winEmoji': '🎁',
+        'loseEmoji': '🙂',
+        'style': {
+          'gradient': false,
+          'bgFrom': '#FFFFFF',
+          'bgTo': '#F5F3FF',
+          'textColor': '#111827',
+        },
+      },
+    });
+
+    showDialog(
+      context: context,
+      builder: (_) => InAppV2Card(
+        message: message,
+        onActionTriggered: (_) {},
+        onLeadCaptured: (lead) => debugPrint('Wheel lead: $lead'),
+        onWheelResult: (slice) => debugPrint(
+            'Wheel result: ${slice.label} win=${slice.isWin} code=${slice.code}'),
+      ),
+    );
+  }
+
   /// Renders a locally-built In-App v2 message so every click behavior
   /// (weblink, in_app_url, deeplink, metadata, dismiss) and the carousel can
   /// be exercised without depending on a backend campaign.
@@ -182,6 +273,11 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () => _showLocalDemo(context),
               child: const Text('Demo local (todas as ações)'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _showWheelDemo(context),
+              child: const Text('Demo Roleta (Wheel)'),
             ),
           ],
         ),
