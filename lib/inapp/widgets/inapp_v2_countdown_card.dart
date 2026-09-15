@@ -16,6 +16,10 @@ class InAppV2CountdownCard extends StatefulWidget {
   final InAppMessageV2 message;
   final ValueChanged<InAppV2Action> onActionTriggered;
 
+  /// Click-tracking hook; receives where the user clicked (`button`,
+  /// `button_up` or `button_down`).
+  final void Function(String clickSource)? onClickTracked;
+
   /// Time source, injectable for deterministic tests.
   final DateTime Function() clock;
 
@@ -23,6 +27,7 @@ class InAppV2CountdownCard extends StatefulWidget {
     super.key,
     required this.message,
     required this.onActionTriggered,
+    this.onClickTracked,
     this.clock = DateTime.now,
   });
 
@@ -65,7 +70,10 @@ class _InAppV2CountdownCardState extends State<InAppV2CountdownCard> {
     }
   }
 
-  void _onButtonPressed(InAppV2Button button) {
+  void _onButtonPressed(InAppV2Button button, int index) {
+    final total = message.buttons.length;
+    widget.onClickTracked?.call(
+        total == 1 ? 'button' : (index == 0 ? 'button_up' : 'button_down'));
     Navigator.of(context).pop();
     widget.onActionTriggered(button.action ?? const InAppV2Action());
   }
@@ -114,7 +122,7 @@ class _InAppV2CountdownCardState extends State<InAppV2CountdownCard> {
                 width: double.infinity,
                 child: InAppV2ActionButton(
                   button: message.buttons[i],
-                  onPressed: () => _onButtonPressed(message.buttons[i]),
+                  onPressed: () => _onButtonPressed(message.buttons[i], i),
                 ),
               ),
             ],

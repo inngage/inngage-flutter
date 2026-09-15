@@ -24,6 +24,10 @@ class InAppV2Card extends StatelessWidget {
   final void Function(InAppV2WheelSlice slice)? onWheelResult;
   final void Function(InAppV2ScratchPrize prize)? onScratchResult;
 
+  /// Click-tracking hook, wired by `InngageInApp.show`; receives where the
+  /// user clicked (`card`, `button`, `button_up` or `button_down`).
+  final void Function(String clickSource)? onClickTracked;
+
   const InAppV2Card({
     super.key,
     required this.message,
@@ -31,6 +35,7 @@ class InAppV2Card extends StatelessWidget {
     this.onLeadCaptured,
     this.onWheelResult,
     this.onScratchResult,
+    this.onClickTracked,
   });
 
   Alignment get _alignment {
@@ -111,6 +116,7 @@ class InAppV2Card extends StatelessWidget {
       return InAppV2CountdownCard(
         message: message,
         onActionTriggered: onActionTriggered,
+        onClickTracked: onClickTracked,
       );
     }
 
@@ -130,6 +136,7 @@ class InAppV2Card extends StatelessWidget {
         style: message.style,
         mediaPosition: message.media.position,
         onActionTriggered: onActionTriggered,
+        onClickTracked: onClickTracked,
       );
     }
 
@@ -146,6 +153,7 @@ class InAppV2Card extends StatelessWidget {
               style: message.style,
               mediaPosition: message.media.position,
               onActionTriggered: onActionTriggered,
+              onClickTracked: onClickTracked,
             ),
           ),
       ],
