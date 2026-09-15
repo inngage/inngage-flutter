@@ -232,6 +232,23 @@ void main() {
     });
   });
 
+  group('notId', () {
+    test('parses notId (production) and not_id (fallback)', () {
+      expect(
+        InAppMessageV2.fromJson({'type': 'Banner', 'notId': 'abc123'}).notId,
+        'abc123',
+      );
+      expect(
+        InAppMessageV2.fromJson({'type': 'Banner', 'not_id': 'abc123'}).notId,
+        'abc123',
+      );
+    });
+
+    test('defaults to empty when absent', () {
+      expect(InAppMessageV2.fromJson({'type': 'Banner'}).notId, '');
+    });
+  });
+
   test('parses the full production example from the contract', () {
     final message = InAppMessageV2.fromResponse({
       'type': 'Banner',

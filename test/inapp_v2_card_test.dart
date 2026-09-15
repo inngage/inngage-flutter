@@ -31,8 +31,9 @@ InAppMessageV2 _message(int slides) {
 Future<void> _openCard(
   WidgetTester tester,
   InAppMessageV2 message,
-  List<InAppV2Action> triggered,
-) async {
+  List<InAppV2Action> triggered, {
+  List<String>? tracked,
+}) async {
   await tester.pumpWidget(
     MaterialApp(
       home: Builder(
@@ -42,6 +43,7 @@ Future<void> _openCard(
             builder: (_) => InAppV2Card(
               message: message,
               onActionTriggered: triggered.add,
+              onClickTracked: tracked?.add,
             ),
           ),
           child: const Text('open'),
@@ -109,5 +111,76 @@ void main() {
     expect(find.text('Toque em mim'), findsNothing);
     expect(triggered.single.type, InAppV2ActionType.deepLink);
     expect(triggered.single.url, 'myapp://home');
+  });
+
+  testWidgets('tracks a single button click as "button"', (tester) async {
+    final tracked = <String>[];
+    await _openCard(tester, _message(1), [], tracked: tracked);
+
+    await tester.tap(find.text('Botão 1'));
+    await tester.pumpAndSettle();
+
+    expect(tracked, ['button']);
+  });
+
+  testWidgets('tracks a background click as "card"', (tester) async {
+    final tracked = <String>[];
+    final message = InAppMessageV2.fromJson({
+      'type': 'Banner',
+      'media': {
+        'items': [
+          {
+            'content': {'title': 'Toque em mim'},
+            'actions': {
+              'backgroundClick': {'type': 'dismiss'},
+            },
+          },
+        ],
+      },
+    });
+    await _openCard(tester, message, [], tracked: tracked);
+
+    await tester.tap(find.text('Toque em mim'));
+    await tester.pumpAndSettle();
+
+    expect(tracked, ['card']);
+  });
+
+  testWidgets('tracks two buttons as "button_up" and "button_down"',
+      (tester) async {
+    InAppMessageV2 twoButtons() => InAppMessageV2.fromJson({
+          'type': 'Banner',
+          'media': {
+            'items': [
+              {
+                'content': {'title': 'Escolha'},
+                'actions': {
+                  'buttons': [
+                    {
+                      'text': 'Primeiro',
+                      'action': {'type': 'dismiss'}
+                    },
+                    {
+                      'text': 'Segundo',
+                      'action': {'type': 'dismiss'}
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        });
+
+    final tracked = <String>[];
+    await _openCard(tester, twoButtons(), [], tracked: tracked);
+    await tester.tap(find.text('Primeiro'));
+    await tester.pumpAndSettle();
+    expect(tracked, ['button_up']);
+
+    tracked.clear();
+    await _openCard(tester, twoButtons(), [], tracked: tracked);
+    await tester.tap(find.text('Segundo'));
+    await tester.pumpAndSettle();
+    expect(tracked, ['button_down']);
   });
 }
