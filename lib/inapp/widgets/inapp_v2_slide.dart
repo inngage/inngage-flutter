@@ -14,15 +14,22 @@ class InAppV2Slide extends StatelessWidget {
   /// Called after the dialog is popped by a tap on a button/background.
   final ValueChanged<InAppV2Action> onActionTriggered;
 
+  /// Click-tracking hook; receives where the user clicked (`card`, `button`,
+  /// `button_up` or `button_down`).
+  final void Function(String clickSource)? onClickTracked;
+
   const InAppV2Slide({
     super.key,
     required this.item,
     required this.style,
     required this.mediaPosition,
     required this.onActionTriggered,
+    this.onClickTracked,
   });
 
-  void _trigger(BuildContext context, InAppV2Action? action) {
+  void _trigger(
+      BuildContext context, InAppV2Action? action, String clickSource) {
+    onClickTracked?.call(clickSource);
     Navigator.of(context).pop();
     onActionTriggered(action ?? const InAppV2Action());
   }
@@ -91,7 +98,7 @@ class InAppV2Slide extends StatelessWidget {
         if (backgroundClick != null)
           GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => _trigger(context, backgroundClick),
+            onTap: () => _trigger(context, backgroundClick, 'card'),
             child: slideBody,
           )
         else
@@ -108,12 +115,18 @@ class InAppV2Slide extends StatelessWidget {
   }
 
   Widget _buildButtons(BuildContext context) {
-    final buttons = item.actions.buttons
-        .map((button) => InAppV2ActionButton(
-              button: button,
-              onPressed: () => _trigger(context, button.action),
-            ))
-        .toList();
+    final all = item.actions.buttons;
+    final buttons = [
+      for (var i = 0; i < all.length; i++)
+        InAppV2ActionButton(
+          button: all[i],
+          onPressed: () => _trigger(
+            context,
+            all[i].action,
+            all.length == 1 ? 'button' : (i == 0 ? 'button_up' : 'button_down'),
+          ),
+        ),
+    ];
 
     if (buttons.length <= 2) {
       return Row(

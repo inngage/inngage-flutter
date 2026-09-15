@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../data/model/inapp/inapp_message_v2.dart';
@@ -52,6 +54,12 @@ class InngageInApp {
       return;
     }
 
+    // Impression/click tracking is automatic and fire-and-forget; both are
+    // skipped when the payload carries no notId.
+    final service = InngageProperties.inngageService;
+    final notId = message.notId;
+    unawaited(service.trackInAppImpression(notId));
+
     await showDialog(
       context: dialogContext,
       builder: (_) => InAppV2Card(
@@ -59,6 +67,8 @@ class InngageInApp {
         onLeadCaptured: onLeadCaptured,
         onWheelResult: onWheelResult,
         onScratchResult: onScratchResult,
+        onClickTracked: (clickSource) =>
+            unawaited(service.trackInAppClick(notId, clickSource)),
         onActionTriggered: (action) => InngageInAppActions.execute(
           action,
           handledBySdk: handledBySdk,
