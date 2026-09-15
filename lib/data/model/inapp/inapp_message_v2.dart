@@ -2,6 +2,7 @@
 // contract shared by all Inngage SDKs. Class names follow the Android SDK
 // reference names used in the contract documentation.
 
+import 'inapp_countdown_v2.dart';
 import 'inapp_scratch_v2.dart';
 import 'inapp_wheel_v2.dart';
 
@@ -252,7 +253,11 @@ class InAppMessageV2 {
   final InAppV2LeadCapture leadCapture;
   final InAppV2WheelConfig wheel;
   final InAppV2ScratchConfig scratch;
+  final InAppV2CountdownConfig countdown;
   final InAppV2ResultConfig result;
+
+  /// Root-level action buttons (used by the Countdown type).
+  final List<InAppV2Button> buttons;
 
   const InAppMessageV2({
     this.enabled = true,
@@ -265,12 +270,16 @@ class InAppMessageV2 {
     this.leadCapture = const InAppV2LeadCapture(),
     this.wheel = const InAppV2WheelConfig(),
     this.scratch = const InAppV2ScratchConfig(),
+    this.countdown = const InAppV2CountdownConfig(),
     this.result = const InAppV2ResultConfig(),
+    this.buttons = const [],
   });
 
   bool get isWheel => type.toLowerCase() == 'wheel';
 
   bool get isScratch => type.toLowerCase() == 'scratch';
+
+  bool get isCountdown => type.toLowerCase() == 'countdown';
 
   /// Resolves the response envelope (`inAppMessage` → `payload` → flat root)
   /// and applies the suppression rules. Returns `null` when there is no
@@ -297,7 +306,9 @@ class InAppMessageV2 {
     final rawLeadCapture = json['leadCapture'];
     final rawWheel = json['wheel'];
     final rawScratch = json['scratch'];
+    final rawCountdown = json['countdown'];
     final rawResult = json['result'];
+    final rawButtons = json['buttons'];
     return InAppMessageV2(
       enabled: json['enabled'] as bool? ?? true,
       type: json['type'] as String? ?? 'Banner',
@@ -321,6 +332,15 @@ class InAppMessageV2 {
       scratch: rawScratch is Map<String, dynamic>
           ? InAppV2ScratchConfig.fromJson(rawScratch)
           : const InAppV2ScratchConfig(),
+      countdown: rawCountdown is Map<String, dynamic>
+          ? InAppV2CountdownConfig.fromJson(rawCountdown)
+          : const InAppV2CountdownConfig(),
+      buttons: rawButtons is List
+          ? rawButtons
+              .whereType<Map<String, dynamic>>()
+              .map(InAppV2Button.fromJson)
+              .toList()
+          : const [],
       result: rawResult is Map<String, dynamic>
           ? InAppV2ResultConfig.fromJson(rawResult)
           : const InAppV2ResultConfig(),
@@ -330,11 +350,16 @@ class InAppMessageV2 {
   /// Minimum validation before rendering. Banner/Message: enabled, non-empty
   /// type, and at least one slide with image/title/body — or a style
   /// background image. Wheel: enabled and at least one slice. Scratch:
-  /// enabled and at least one prize.
+  /// enabled and at least one prize. Countdown: enabled and a valid deadline
+  /// still in the future (an already-expired campaign is not shown).
   bool get hasRenderableContent {
     if (!enabled || type.isEmpty) return false;
     if (isWheel) return wheel.slices.isNotEmpty;
     if (isScratch) return scratch.prizes.isNotEmpty;
+    if (isCountdown) {
+      final endDate = countdown.endDate;
+      return endDate != null && endDate.isAfter(DateTime.now());
+    }
     final hasSlide = media.items.any((item) => item.hasRenderableContent);
     final hasBackgroundImage = (style.backgroundImage ?? '').isNotEmpty;
     return hasSlide || hasBackgroundImage;

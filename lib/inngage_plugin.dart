@@ -10,6 +10,7 @@ export 'firebase/notification_handlers.dart';
 export 'firebase/notifications_config.dart';
 export 'domain/analytics_service.dart';
 export 'data/model/inapp/inapp_message_v2.dart';
+export 'data/model/inapp/inapp_countdown_v2.dart';
 export 'data/model/inapp/inapp_scratch_v2.dart';
 export 'data/model/inapp/inapp_wheel_v2.dart';
 export 'data/model/inapp/object_message_request.dart';
