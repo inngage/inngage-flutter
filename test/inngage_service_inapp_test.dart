@@ -43,12 +43,28 @@ class _InMemoryLocalStore extends InAppLocalStore {
 class _FakeInAppMessageService implements InAppMessageService {
   Map<String, dynamic>? response;
   final List<ObjectMessageRequest> requests = [];
+  final List<String> impressions = [];
+
+  /// Recorded as `'<notId>|<clickSource>'`.
+  final List<String> clicks = [];
 
   @override
   Future<Map<String, dynamic>?> getObjectMessage(
       ObjectMessageRequest request) async {
     requests.add(request);
     return response;
+  }
+
+  @override
+  Future<bool> trackInAppImpression(String notId) async {
+    impressions.add(notId);
+    return true;
+  }
+
+  @override
+  Future<bool> trackInAppClick(String notId, String clickSource) async {
+    clicks.add('$notId|$clickSource');
+    return true;
   }
 }
 
@@ -185,6 +201,23 @@ void main() {
       inAppService.response = {'status': 'ok'};
 
       expect(await service.fetchInAppMessage(), isNull);
+    });
+  });
+
+  group('tracking wrappers', () {
+    test('delegate to the service with the given notId and source', () async {
+      expect(await service.trackInAppImpression('abc123'), isTrue);
+      expect(inAppService.impressions, ['abc123']);
+
+      expect(await service.trackInAppClick('abc123', 'button_up'), isTrue);
+      expect(inAppService.clicks, ['abc123|button_up']);
+    });
+
+    test('are no-ops without a notId', () async {
+      expect(await service.trackInAppImpression(''), isFalse);
+      expect(await service.trackInAppClick('', 'card'), isFalse);
+      expect(inAppService.impressions, isEmpty);
+      expect(inAppService.clicks, isEmpty);
     });
   });
 

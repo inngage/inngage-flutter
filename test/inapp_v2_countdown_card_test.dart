@@ -37,6 +37,7 @@ Future<void> _openCountdown(
   InAppMessageV2 message,
   DateTime Function() clock, {
   List<InAppV2Action>? triggered,
+  List<String>? tracked,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -50,6 +51,7 @@ Future<void> _openCountdown(
                   message: message,
                   clock: clock,
                   onActionTriggered: (action) => triggered?.add(action),
+                  onClickTracked: tracked?.add,
                 ),
               ),
             ),
@@ -136,6 +138,19 @@ void main() {
     expect(find.text('Fique de olho nas próximas!'), findsOneWidget);
     expect(find.text('SEG'), findsNothing);
     expect(find.text('Aproveitar agora'), findsNothing);
+  });
+
+  testWidgets('single button click is tracked as "button"', (tester) async {
+    final tracked = <String>[];
+    final endDate = _base.add(const Duration(hours: 2));
+    await _openCountdown(
+        tester, _countdownMessage(endDate: endDate), () => _base,
+        tracked: tracked);
+
+    await tester.tap(find.text('Aproveitar agora'));
+    await tester.pumpAndSettle();
+
+    expect(tracked, ['button']);
   });
 
   testWidgets('brand footer follows hideBrand', (tester) async {
