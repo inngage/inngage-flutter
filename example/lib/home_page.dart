@@ -14,6 +14,64 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final storage = const FlutterSecureStorage();
 
+  /// Renders the "Countdown" demand JSON locally. The endDate is generated
+  /// relative to now so the demo never starts already expired.
+  void _showCountdownDemo(BuildContext context) {
+    final endDate = DateTime.now()
+        .add(const Duration(days: 1, hours: 1, minutes: 57, seconds: 9));
+    final message = InAppMessageV2.fromJson({
+      'type': 'Countdown',
+      'icon': 'https://storage.googleapis.com/inn-app-icons/380.png',
+      'hideBrand': false,
+      'style': {
+        'position': 'center',
+        'backgroundColor': '#ffffff',
+        'backgroundImage': null,
+        'borderColor': '#e5e7eb',
+        'shadow': true,
+        'titleColor': '#111827',
+        'bodyColor': '#4B5563',
+      },
+      'content': {
+        'title': 'A oferta termina em:',
+        'body': 'Últimas horas com 30% OFF em todo o site.',
+      },
+      'countdown': {
+        'endDate': endDate.toIso8601String(),
+        'boxColor': '#111827',
+        'digitColor': '#FFFFFF',
+        'expiredTitle': 'Oferta encerrada',
+        'expiredBody': 'Fique de olho nas próximas!',
+      },
+      'buttons': [
+        {
+          'text': 'Aproveitar agora',
+          'style': {
+            'backgroundColor': '#7C3AED',
+            'textColor': '#FFFFFF',
+            'hoverColor': '#6D28D9',
+          },
+          'action': {
+            'type': 'weblink',
+            'url': 'https://www.inngage.com.br',
+            'target': '_blank',
+          },
+        },
+      ],
+    });
+
+    showDialog(
+      context: context,
+      builder: (_) => InAppV2Card(
+        message: message,
+        onActionTriggered: (action) {
+          debugPrint('Countdown action: ${action.type} url=${action.url}');
+          InngageInAppActions.execute(action, handledBySdk: true);
+        },
+      ),
+    );
+  }
+
   /// Renders the "Scratch" (raspadinha) demand JSON locally: weighted draw
   /// happens before the cover, scratching past revealPercent shows the
   /// win/lose result panel (gradient) with the coupon.
@@ -360,6 +418,11 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () => _showScratchDemo(context),
               child: const Text('Demo Raspadinha (Scratch)'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _showCountdownDemo(context),
+              child: const Text('Demo Contagem (Countdown)'),
             ),
           ],
         ),
