@@ -106,6 +106,14 @@ returns silently.
 To handle every action yourself instead of letting the SDK navigate, pass
 `handledBySdk: false` and an `onAction` callback receiving the `InAppV2Action`.
 
+### Countdown
+
+Campaigns with `type: "Countdown"` render a ticking deadline card
+(days/hours/minutes/seconds boxes) toward `countdown.endDate`, with action
+buttons that behave like banner buttons. Already-expired campaigns are not
+rendered; if the deadline is reached while the card is open, it switches to
+the expired title/body.
+
 ### Scratch (raspadinha)
 
 Campaigns with `type: "Scratch"` render a scratch card: the weighted draw
