@@ -11,4 +11,14 @@ class InAppMessageServiceImpl implements InAppMessageService {
   Future<Map<String, dynamic>?> getObjectMessage(ObjectMessageRequest request) {
     return network.getObjectMessage(request);
   }
+
+  @override
+  Future<bool> trackInAppImpression(String notId) {
+    return network.trackInAppImpression(notId);
+  }
+
+  @override
+  Future<bool> trackInAppClick(String notId, String clickSource) {
+    return network.trackInAppClick(notId, clickSource);
+  }
 }

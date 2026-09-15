@@ -243,6 +243,10 @@ class InAppV2Style {
 class InAppMessageV2 {
   final bool enabled;
   final String type;
+
+  /// Campaign message-log id, used by the impression/click tracking GETs.
+  /// Empty when the backend does not send it — tracking is then skipped.
+  final String notId;
   final InAppV2Style style;
   final InAppV2Media media;
 
@@ -262,6 +266,7 @@ class InAppMessageV2 {
   const InAppMessageV2({
     this.enabled = true,
     this.type = 'Banner',
+    this.notId = '',
     this.style = const InAppV2Style(),
     this.media = const InAppV2Media(),
     this.icon = '',
@@ -312,6 +317,7 @@ class InAppMessageV2 {
     return InAppMessageV2(
       enabled: json['enabled'] as bool? ?? true,
       type: json['type'] as String? ?? 'Banner',
+      notId: json['notId'] as String? ?? json['not_id'] as String? ?? '',
       style: rawStyle is Map<String, dynamic>
           ? InAppV2Style.fromJson(rawStyle)
           : const InAppV2Style(),
