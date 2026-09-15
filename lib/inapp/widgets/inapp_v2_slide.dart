@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/model/inapp/inapp_message_v2.dart';
+import 'inapp_v2_action_button.dart';
 import 'inapp_v2_colors.dart';
 
 /// A single In-App slide: image, title/body and action buttons. Used both as
@@ -108,7 +109,7 @@ class InAppV2Slide extends StatelessWidget {
 
   Widget _buildButtons(BuildContext context) {
     final buttons = item.actions.buttons
-        .map((button) => _InAppV2ButtonWidget(
+        .map((button) => InAppV2ActionButton(
               button: button,
               onPressed: () => _trigger(context, button.action),
             ))
@@ -132,29 +133,6 @@ class InAppV2Slide extends StatelessWidget {
           SizedBox(width: double.infinity, child: buttons[i]),
         ],
       ],
-    );
-  }
-}
-
-class _InAppV2ButtonWidget extends StatelessWidget {
-  final InAppV2Button button;
-  final VoidCallback onPressed;
-
-  const _InAppV2ButtonWidget({required this.button, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor:
-            inAppColorOr(button.style.backgroundColor, Colors.black),
-        foregroundColor: inAppColorOr(button.style.textColor, Colors.white),
-        overlayColor: button.style.hoverColor.isEmpty
-            ? null
-            : inAppColorOr(button.style.hoverColor, Colors.transparent),
-      ),
-      onPressed: onPressed,
-      child: Text(button.text, textAlign: TextAlign.center),
     );
   }
 }
