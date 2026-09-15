@@ -110,6 +110,19 @@ class InngageService {
     return InAppMessageV2.fromResponse(response);
   }
 
+  /// Counts an In-App display. No-op (returns `false`) without a [notId].
+  Future<bool> trackInAppImpression(String notId) async {
+    if (notId.isEmpty) return false;
+    return inAppMessageService.trackInAppImpression(notId);
+  }
+
+  /// Counts an In-App click at [clickSource] (`card`, `button`, `button_up`
+  /// or `button_down`). No-op (returns `false`) without a [notId].
+  Future<bool> trackInAppClick(String notId, String clickSource) async {
+    if (notId.isEmpty) return false;
+    return inAppMessageService.trackInAppClick(notId, clickSource);
+  }
+
   /// The subscription response carries the app id in the `app_id` field —
   /// in production it arrives as `appId`, nested in
   /// `registerSubscriberResponse`, so both spellings are accepted (an int,
