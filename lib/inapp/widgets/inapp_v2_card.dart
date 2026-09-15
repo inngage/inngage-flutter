@@ -5,14 +5,16 @@ import '../../data/model/inapp/inapp_message_v2.dart';
 import '../../data/model/inapp/inapp_scratch_v2.dart';
 import '../../data/model/inapp/inapp_wheel_v2.dart';
 import 'inapp_v2_colors.dart';
+import 'inapp_v2_countdown_card.dart';
 import 'inapp_v2_scratch_card.dart';
 import 'inapp_v2_slide.dart';
 import 'inapp_v2_wheel_card.dart';
 
 /// The In-App message dialog card. Renders a banner when the message has a
 /// single slide, a carousel (with dot indicator) when it has two or more,
-/// the fortune-wheel flow for `type: "Wheel"` and the scratch-card flow for
-/// `type: "Scratch"` messages.
+/// the fortune-wheel flow for `type: "Wheel"`, the scratch-card flow for
+/// `type: "Scratch"` and the ticking-deadline card for `type: "Countdown"`
+/// messages.
 class InAppV2Card extends StatelessWidget {
   static const double _carouselHeight = 360;
 
@@ -102,6 +104,13 @@ class InAppV2Card extends StatelessWidget {
         message: message,
         onLeadCaptured: onLeadCaptured,
         onScratchResult: onScratchResult,
+      );
+    }
+
+    if (message.isCountdown) {
+      return InAppV2CountdownCard(
+        message: message,
+        onActionTriggered: onActionTriggered,
       );
     }
 
