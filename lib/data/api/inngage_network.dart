@@ -64,27 +64,33 @@ class InngageNetwork
         'v4/message/objectMessage', json.encode(request.toJson()));
   }
 
-  /// Counts an In-App display. The API tells impression and click apart by
-  /// the presence of the `url` parameter.
+  /// Counts an In-App display. Without `url`/`btn_id` the API records the
+  /// event as an opening.
   @override
   Future<bool> trackInAppImpression(String notId) {
-    return _getRequest('$version/notification/', {
-      'id': notId,
-      'channel_id': '${ObjectMessageRequest.inAppChannelId}',
-    });
+    return _postRequest(
+        'v4/message/notification', json.encode(_notificationCallback(notId)));
   }
 
-  /// Counts an In-App click. [clickSource] says where the user clicked
-  /// (`card`, `button`, `button_up` or `button_down`); `redirect=false` keeps
-  /// the API from answering with a 302.
+  /// Counts an In-App click. The origin ([clickSource]: `card`, `button`,
+  /// `button_up` or `button_down`) goes in `btn_id` — the field the API
+  /// provides for clicks without a link (its `url` field only accepts
+  /// absolute URLs) — and causes no redirect.
   @override
   Future<bool> trackInAppClick(String notId, String clickSource) {
-    return _getRequest('$version/notification/', {
-      'id': notId,
-      'channel_id': '${ObjectMessageRequest.inAppChannelId}',
-      'url': clickSource,
-      'redirect': 'false',
-    });
+    return _postRequest('v4/message/notification',
+        json.encode(_notificationCallback(notId, btnId: clickSource)));
+  }
+
+  /// The API requires `channel_id` as a string and rejects it as a number.
+  Map<String, dynamic> _notificationCallback(String notId, {String? btnId}) {
+    return {
+      'notificationRequest': {
+        'id': notId,
+        'channel_id': '${ObjectMessageRequest.inAppChannelId}',
+        if (btnId != null) 'btn_id': btnId,
+      },
+    };
   }
 
   /// Returns `true` when the API responded with 200 OK. Network/client errors
@@ -120,36 +126,6 @@ class InngageNetwork
   /// Key under which a non-JSON (or non-object) 200 body is returned by
   /// [_postRequestForJson] so callers can still inspect it.
   static const rawBodyKey = '_rawBody';
-
-  /// GET counterpart of [_postRequest]: `true` on 200 OK, `false` on any
-  /// failure (logged, never thrown). Query parameters are URL-encoded by
-  /// [Uri.https].
-  Future<bool> _getRequest(
-      String endpoint, Map<String, String> queryParameters) async {
-    try {
-      final url = Uri.https(AppConstants.baseUrl, endpoint, queryParameters);
-      final keyAuthorization = _keyAuthorization();
-      final headers = {
-        if (keyAuthorization.isNotEmpty)
-          'Authorization': 'key=$keyAuthorization',
-      };
-
-      final response = await http.get(url, headers: headers);
-
-      if (response.statusCode != HttpStatus.ok) {
-        throw HttpException('Unexpected response: ${response.statusCode}');
-      }
-      logger.d('GET: $url');
-      logger.d('RESPONSE: ${response.body}');
-      return true;
-    } on http.ClientException catch (e) {
-      logger.e('Client error: ${e.message}');
-      return false;
-    } catch (e) {
-      logger.e('Unexpected error: $e');
-      return false;
-    }
-  }
 
   /// Like [_postRequest], but returns the decoded response body on 200 OK.
   /// Never throws: failures are logged and reported as `null`.
