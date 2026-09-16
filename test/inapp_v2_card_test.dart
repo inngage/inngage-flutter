@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inngage_plugin/data/model/inapp/inapp_message_v2.dart';
 import 'package:inngage_plugin/inapp/widgets/inapp_v2_card.dart';
+import 'package:inngage_plugin/inapp/widgets/inapp_v2_carousel.dart';
 
 InAppMessageV2 _message(int slides) {
   return InAppMessageV2.fromJson({
@@ -63,14 +63,55 @@ void main() {
     expect(find.text('Slide 1'), findsOneWidget);
     expect(find.text('Corpo 1'), findsOneWidget);
     expect(find.text('Botão 1'), findsOneWidget);
-    expect(find.byType(ImageSlideshow), findsNothing);
+    expect(find.byType(InAppV2Carousel), findsNothing);
   });
 
   testWidgets('renders two or more slides as a carousel', (tester) async {
     await _openCard(tester, _message(2), []);
 
-    expect(find.byType(ImageSlideshow), findsOneWidget);
+    expect(find.byType(InAppV2Carousel), findsOneWidget);
     expect(find.text('Slide 1'), findsOneWidget);
+  });
+
+  testWidgets('carousel height adapts to the current slide content',
+      (tester) async {
+    // Slide 1 is short (title only); slide 2 is tall (long body + button).
+    final message = InAppMessageV2.fromJson({
+      'type': 'Banner',
+      'media': {
+        'items': [
+          {
+            'content': {'title': 'Curto'}
+          },
+          {
+            'content': {
+              'title': 'Longo',
+              'body': List.filled(30, 'linha de texto').join('\n'),
+            },
+            'actions': {
+              'buttons': [
+                {
+                  'text': 'Comprar',
+                  'action': {'type': 'dismiss'}
+                }
+              ],
+            },
+          },
+        ],
+      },
+    });
+    await _openCard(tester, message, []);
+    await tester.pumpAndSettle();
+
+    final pageView = find.byType(PageView);
+    final shortHeight = tester.getSize(pageView).height;
+
+    await tester.drag(pageView, const Offset(-400, 0));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Longo'), findsOneWidget);
+    final tallHeight = tester.getSize(pageView).height;
+    expect(tallHeight, greaterThan(shortHeight));
   });
 
   testWidgets('button tap closes the dialog and triggers its action',

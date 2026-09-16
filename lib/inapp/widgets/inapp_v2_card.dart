@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 import '../../data/model/inapp/inapp_message_v2.dart';
 import '../../data/model/inapp/inapp_scratch_v2.dart';
 import '../../data/model/inapp/inapp_wheel_v2.dart';
+import 'inapp_v2_carousel.dart';
 import 'inapp_v2_colors.dart';
 import 'inapp_v2_countdown_card.dart';
 import 'inapp_v2_scratch_card.dart';
@@ -16,8 +16,6 @@ import 'inapp_v2_wheel_card.dart';
 /// `type: "Scratch"` and the ticking-deadline card for `type: "Countdown"`
 /// messages.
 class InAppV2Card extends StatelessWidget {
-  static const double _carouselHeight = 360;
-
   final InAppMessageV2 message;
   final ValueChanged<InAppV2Action> onActionTriggered;
   final void Function(Map<String, String> lead)? onLeadCaptured;
@@ -140,21 +138,16 @@ class InAppV2Card extends StatelessWidget {
       );
     }
 
-    return ImageSlideshow(
-      height: _carouselHeight,
-      isLoop: false,
-      indicatorColor: inAppColorOr(message.style.titleColor, Colors.black87),
-      indicatorBackgroundColor: Colors.black26,
+    return InAppV2Carousel(
+      activeDotColor: inAppColorOr(message.style.titleColor, Colors.black87),
       children: [
         for (final item in items)
-          SingleChildScrollView(
-            child: InAppV2Slide(
-              item: item,
-              style: message.style,
-              mediaPosition: message.media.position,
-              onActionTriggered: onActionTriggered,
-              onClickTracked: onClickTracked,
-            ),
+          InAppV2Slide(
+            item: item,
+            style: message.style,
+            mediaPosition: message.media.position,
+            onActionTriggered: onActionTriggered,
+            onClickTracked: onClickTracked,
           ),
       ],
     );
