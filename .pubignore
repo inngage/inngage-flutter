@@ -2,3 +2,9 @@ example/ios/Runner/GoogleService-Info.plist
 example/android/app/google-services.json
 example/lib/firebase_options.dart
 inngage_plugin.iml
+
+# .pubignore overrides the root .gitignore for pub, so generated/local dirs
+# must be repeated here (build/ holds SwiftPM checkouts with third-party keys).
+build/
+.claude/
+CLAUDE.md
