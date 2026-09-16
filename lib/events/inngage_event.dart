@@ -16,8 +16,8 @@ class InngageEvent {
     double? conversionValue,
     String? conversionNotId,
   }) async {
-    final resolvedAppToken =
-        appToken ?? (InngageProperties.appToken.isNotEmpty
+    final resolvedAppToken = appToken ??
+        (InngageProperties.appToken.isNotEmpty
             ? InngageProperties.appToken
             : null);
     if (resolvedAppToken == null) {
