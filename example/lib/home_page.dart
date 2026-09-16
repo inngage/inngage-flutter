@@ -346,6 +346,20 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    // Screen-entry integration (the way a real app calls it on login/home):
+    // the SDK fetches /objectMessage internally and renders only when a
+    // message comes back — an empty response renders nothing. The delay
+    // gives the startup subscription time to finish on a first install;
+    // in production, call InngageInApp.show once the subscription completed.
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      InngageInApp.show(
+        context: context,
+        onMetadata: (metadata) =>
+            debugPrint('In-App metadata (auto): $metadata'),
+      );
+    });
   }
 
   @override
