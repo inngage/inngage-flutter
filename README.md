@@ -78,6 +78,30 @@ inngage_plugin:3.2.0
 
 Call `subscribe()` on a `InngageSDK` to request it.
 
+## Custom fields
+
+The custom fields passed to `InngageSDK.subscribe` (or set later with
+`InngageEvent.setCustomFields`) are sent on the next subscriber registration.
+To write them to the Inngage API right away, with no session side effects (no
+device update, no event), use `addCustomField`:
+
+```dart
+final ok = await InngageSDK.addCustomField(
+  customField: {'plano': 'premium', 'pontos': 1250},
+  identifier: 'user@gmail.com', // optional: defaults to the subscribed one
+  email: 'user@gmail.com',       // optional
+  phoneNumber: '5511999998888',  // optional, digits only with country code
+  identity: {'vtex': '7a3c9f1e'}, // optional external ids
+);
+```
+
+Field names must exist in the app's custom-field catalog on the Inngage
+platform; unknown names are ignored by the API. On success the fields are
+merged into `InngageProperties.customFields`.
+
+After a successful registration the SDK also keeps the subscriber id returned
+by the API in `InngageProperties.subscriberId`.
+
 ## In-App Messages
 
 Since 4.0.0 In-App messages no longer arrive through push payloads. The SDK
