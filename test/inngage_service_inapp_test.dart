@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:inngage_plugin/data/api/inngage_network.dart';
 import 'package:inngage_plugin/data/local/inapp_local_store.dart';
 import 'package:inngage_plugin/data/model/inapp/object_message_request.dart';
+import 'package:inngage_plugin/data/model/inngage/add_custom_field_request.dart';
 import 'package:inngage_plugin/data/model/inngage/event_request.dart';
 import 'package:inngage_plugin/data/model/inngage/subscription_request.dart';
 import 'package:inngage_plugin/domain/inngage_service.dart';
@@ -19,6 +20,7 @@ class _InMemoryLocalStore extends InAppLocalStore {
   Future<void> saveSubscription({
     required int appId,
     required String registration,
+    String? subscriberId,
   }) async {
     this.appId = appId;
     this.registration = registration;
@@ -71,6 +73,10 @@ class _FakeInAppMessageService implements InAppMessageService {
 class _UnusedSubscriptionService implements SubscriptionService {
   @override
   Future<Map<String, dynamic>?> subscription(SubscriptionRequest _) async =>
+      null;
+
+  @override
+  Future<Map<String, dynamic>?> addCustomField(AddCustomFieldRequest _) async =>
       null;
 }
 
