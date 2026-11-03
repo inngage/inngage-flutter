@@ -7,7 +7,11 @@
 
 #### New: `InngageSDK.addCustomField`
 - `InngageSDK.addCustomField({customField, identifier?, email?, phoneNumber?, identity?})` → `Future<bool>` posts to `POST /v4/subscription/addCustomField`, which writes custom fields (and optionally contact and external identities such as `{'vtex': '...'}`) with **no session side effects**: no device is touched and no event is emitted. On success the fields are merged into `InngageProperties.customFields`. The device registration token is sent along when available so the API can claim an anonymous subscriber for the identifier. New public model: `AddCustomFieldRequest`.
-- `InngageEvent.setCustomFields` and `InngageUtils.addUserData` are unchanged: they still only update the local state sent on the next registration.
+- `addCustomField` also updates the SDK's current `identifier`, `email` and `phoneNumber` when they are passed, so it fully replaces `InngageUtils.addUserData`.
+- `InngageEvent.setCustomFields` is unchanged: it still only updates the local state sent on the next registration.
+
+#### Deprecated:
+- `InngageUtils.addUserData` — use `InngageSDK.addCustomField`, which persists the same data (identifier, contact, custom fields) on the API immediately instead of only updating local state. `addUserData` keeps working unchanged in 4.x and will be removed in 5.0.
 
 #### Subscription payload aligned with the v4 contract
 - `platform` is sent lowercase (`android`/`ios`); the v4 API classifies unrecognized values as platform "Others", which never receives push.
