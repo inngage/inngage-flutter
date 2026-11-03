@@ -87,8 +87,8 @@ device update, no event), use `addCustomField`:
 
 ```dart
 final ok = await InngageSDK.addCustomField(
+  identifier: 'user@gmail.com', // required: e-mail, CPF, customer id…
   customField: {'plano': 'premium', 'pontos': 1250},
-  identifier: 'user@gmail.com', // optional: defaults to the subscribed one
   email: 'user@gmail.com',       // optional
   phoneNumber: '5511999998888',  // optional, digits only with country code
   identity: {'vtex': '7a3c9f1e'}, // optional external ids
@@ -97,9 +97,11 @@ final ok = await InngageSDK.addCustomField(
 
 Field names must exist in the app's custom-field catalog on the Inngage
 platform; unknown names are ignored by the API. On success the fields are
-merged into `InngageProperties.customFields`, and `identifier`, `email` and
-`phoneNumber` (when given) become the SDK's current values, so the next
-subscriber registration carries the same data.
+merged into `InngageProperties.customFields`, and `identifier` (plus `email`
+and `phoneNumber`, when given) become the SDK's current values, so the next
+subscriber registration carries the same data. `identifier` is required on
+purpose: the anonymous subscriber registered before login is keyed by a
+device uuid, and fields must never silently land there.
 
 `addCustomField` replaces `InngageUtils.addUserData`, which is now deprecated:
 `addUserData` only updated the local state (identifier, contact, custom
