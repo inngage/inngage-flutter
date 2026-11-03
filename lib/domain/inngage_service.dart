@@ -1,14 +1,14 @@
 // domain/services/inngage_service.dart
-import 'dart:io';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:flutter/foundation.dart';
 import '../core/constants.dart';
-import '../data/api/inngage_network.dart';
 import '../data/local/inapp_local_store.dart';
 import '../data/model/inapp/inapp_message_v2.dart';
 import '../data/model/inapp/object_message_request.dart';
+import '../data/model/inngage/add_custom_field_request.dart';
 import '../data/model/inngage/event_request.dart';
 import '../data/model/inngage/subscription_request.dart';
+import '../data/model/inngage/subscription_response.dart';
 import '../../shared/inngage_properties.dart';
 import '../shared/inngage_utils.dart';
 import 'services/event_service.dart';
@@ -50,31 +50,118 @@ class InngageService {
       identifier: InngageProperties.identifier,
       osLanguage: (await Devicelocale.preferredLanguages)?.first ?? "",
       osLocale: await Devicelocale.currentLocale,
+      osName: InngageUtils.getOsName(),
       osVersion: await InngageUtils.getDeviceOS(),
       registration: registration,
       uuid: await InngageUtils.getUniqueId(),
-      platform: Platform.isAndroid ? 'Android' : 'iOS',
+      platform: InngageUtils.getPlatformName(),
       advertiserId: await InngageUtils.getAdvertisingId(),
       idfa: await InngageUtils.getAdvertisingId(),
       lat: InngageProperties.latitude,
       long: InngageProperties.longitude,
+      optIn: await InngageUtils.getPushOptIn(),
     );
 
     final response = await subscriptionService.subscription(
       SubscriptionRequest(registerSubscriberRequest: request),
     );
+    await persistSubscriptionResponse(response);
+  }
 
-    // The In-App /objectMessage flow needs the app_id returned by the
-    // subscription plus the registration token, both persisted across
-    // sessions.
-    final appId = extractAppId(response);
+  /// Persists what the In-App `/objectMessage` flow needs from a subscription
+  /// response — the `appId` plus the registration token, both kept across
+  /// sessions — and the `subscriberId` (exposed via
+  /// [InngageProperties.subscriberId]). A `null`/unparseable response leaves
+  /// the stored values untouched.
+  @visibleForTesting
+  Future<SubscriptionResponse> persistSubscriptionResponse(
+      Map<String, dynamic>? response) async {
+    final parsed = SubscriptionResponse.fromJson(response);
+
+    final subscriberId = parsed.subscriberId;
+    if (subscriberId != null) {
+      InngageProperties.subscriberId = subscriberId;
+    }
+
+    final appId = parsed.appId;
     final effectiveRegistration = InngageProperties.registration;
     if (appId != null && effectiveRegistration.isNotEmpty) {
       await inAppLocalStore.saveSubscription(
         appId: appId,
         registration: effectiveRegistration,
+        subscriberId: subscriberId,
       );
     }
+    return parsed;
+  }
+
+  /// Writes [customField] (and optionally contact/identities) to the
+  /// subscriber identified by [identifier] (defaults to
+  /// [InngageProperties.identifier]) through `/v4/subscription/addCustomField`,
+  /// which has no session side effects.
+  ///
+  /// On success the fields are merged into [InngageProperties.customFields]
+  /// (and [email]/[phoneNumber], when given, into their properties) so the
+  /// next subscriber registration carries the same data. Returns `false`
+  /// without calling the API when [customField] is empty or no identifier is
+  /// available, and when the API does not answer 2xx.
+  Future<bool> addCustomField({
+    required Map<String, dynamic> customField,
+    String? identifier,
+    String? email,
+    String? phoneNumber,
+    Map<String, String>? identity,
+  }) async {
+    final resolvedIdentifier =
+        (identifier != null && identifier.trim().isNotEmpty)
+            ? identifier.trim()
+            : InngageProperties.identifier;
+
+    if (customField.isEmpty) {
+      debugPrint('Inngage: addCustomField skipped — customField is empty.');
+      return false;
+    }
+    if (resolvedIdentifier.isEmpty) {
+      debugPrint('Inngage: addCustomField skipped — no identifier available. '
+          'Pass one or configure it via InngageSDK.subscribe.');
+      return false;
+    }
+    if (InngageProperties.appToken.isEmpty) {
+      debugPrint('Inngage: addCustomField skipped — no appToken configured. '
+          'Call InngageSDK.subscribe first.');
+      return false;
+    }
+
+    final registration = InngageProperties.registration;
+    final response = await subscriptionService.addCustomField(
+      AddCustomFieldRequest(
+        appToken: InngageProperties.appToken,
+        identifier: resolvedIdentifier,
+        customField: customField,
+        email: email,
+        phoneNumber: phoneNumber,
+        identity: identity,
+        registration: registration.isEmpty ? null : registration,
+      ),
+    );
+    if (response == null) return false;
+
+    InngageProperties.customFields = {
+      ...InngageProperties.customFields,
+      ...customField,
+    };
+    if (identifier != null && identifier.trim().isNotEmpty) {
+      InngageProperties.identifier = resolvedIdentifier;
+    }
+    if (email != null && email.isNotEmpty) InngageProperties.email = email;
+    if (phoneNumber != null && phoneNumber.isNotEmpty) {
+      InngageProperties.phoneNumber = phoneNumber;
+    }
+
+    // The response carries the appId at its root; keep the In-App store in
+    // sync in case the subscription never completed on this install.
+    await persistSubscriptionResponse(response);
+    return true;
   }
 
   /// Fetches the In-App message to display right now, or `null` when there is
@@ -123,34 +210,10 @@ class InngageService {
     return inAppMessageService.trackInAppClick(notId, clickSource);
   }
 
-  /// The subscription response carries the app id in the `app_id` field —
-  /// in production it arrives as `appId`, nested in
-  /// `registerSubscriberResponse`, so both spellings are accepted (an int,
-  /// possibly serialized as string). As a fallback it is also searched in
-  /// nested objects and in a plain-text body.
+  /// See [SubscriptionResponse.extractAppId].
   @visibleForTesting
-  static int? extractAppId(Map<String, dynamic>? response) {
-    if (response == null) return null;
-
-    final direct = response['app_id'] ?? response['appId'];
-    if (direct is int) return direct;
-    if (direct is String) return int.tryParse(direct);
-
-    for (final value in response.values) {
-      if (value is Map<String, dynamic>) {
-        final nested = extractAppId(value);
-        if (nested != null) return nested;
-      }
-    }
-
-    final rawBody = response[InngageNetwork.rawBodyKey];
-    if (rawBody is String) {
-      final match = RegExp(r'app_?id\D{0,10}(\d+)', caseSensitive: false)
-          .firstMatch(rawBody);
-      if (match != null) return int.tryParse(match.group(1)!);
-    }
-    return null;
-  }
+  static int? extractAppId(Map<String, dynamic>? response) =>
+      SubscriptionResponse.extractAppId(response);
 
   Future<void> registerNotification(
       {required String notId, required String appToken}) async {
