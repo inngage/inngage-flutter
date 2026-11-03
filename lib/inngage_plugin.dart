@@ -1,6 +1,8 @@
 export 'data/exceptions/exceptions.dart';
 export 'data/model/inngage/notification_request.dart';
 export 'data/model/inngage/subscription_request.dart';
+export 'data/model/inngage/subscription_response.dart';
+export 'data/model/inngage/add_custom_field_request.dart';
 export 'util/constants.dart';
 export 'util/flutter_native_dialog.dart';
 export 'dialogs/notification.dart';

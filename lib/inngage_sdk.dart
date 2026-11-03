@@ -136,6 +136,34 @@ class InngageSDK extends ChangeNotifier {
     await InngageProperties.inngageService.registerSubscriber(registration);
   }
 
+  /// Writes custom fields to the subscriber on the Inngage API right away
+  /// (`POST /v4/subscription/addCustomField`), with no session side effects:
+  /// no device is touched and no event is emitted.
+  ///
+  /// [identifier] defaults to the one configured via [subscribe]. Field names
+  /// must exist in the app's custom-field catalog on the Inngage platform;
+  /// unknown names are silently ignored by the API. [identity] maps external
+  /// system ids, e.g. `{'vtex': '7a3c9f1e'}`.
+  ///
+  /// On success the fields are merged into `InngageProperties.customFields`.
+  /// Returns `false` when nothing was sent or the API did not accept the
+  /// request (failures are logged, never thrown).
+  static Future<bool> addCustomField({
+    required Map<String, dynamic> customField,
+    String? identifier,
+    String? email,
+    String? phoneNumber,
+    Map<String, String>? identity,
+  }) {
+    return InngageProperties.inngageService.addCustomField(
+      customField: customField,
+      identifier: identifier,
+      email: email,
+      phoneNumber: phoneNumber,
+      identity: identity,
+    );
+  }
+
   static Future<void> registerNotification({
     required String notId,
     required String appToken,
