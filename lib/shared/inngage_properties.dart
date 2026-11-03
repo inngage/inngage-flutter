@@ -23,6 +23,12 @@ class InngageProperties {
   static String phoneNumber = '';
   static String email = '';
   static String registration = '';
+
+  /// Id of the subscriber as returned by the last successful subscription
+  /// (`subscriberId`, or `toSubscriberId` on a device transfer). Read-only
+  /// for host apps: it is set by the SDK and may change across calls (login,
+  /// user switch).
+  static String subscriberId = '';
   static String latitude = '';
   static String longitude = '';
   static String attributionId = '';
