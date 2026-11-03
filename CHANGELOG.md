@@ -1,3 +1,24 @@
+## 4.1.0
+#### Subscription moved to the v4 API
+- The subscriber registration now posts to `POST /v4/subscription/` (fixed path, with the trailing slash the API requires). Events and push-notification callbacks keep using the `version` parameter of `InngageNetwork` (v1).
+- The v4 API answers **201 Created** on a new subscriber; the HTTP layer now treats any 2xx as success (it previously accepted 200 only, which would have dropped the first subscription of every install and left the In-App flow without its `appId`).
+- The `appId` returned in `registerSubscriberResponse` keeps feeding the In-App `/objectMessage` flow, and the response is now also parsed into the new public `SubscriptionResponse` model (`statusDescription`, `appId`, `subscriberId`, `fromSubscriberId`, `toSubscriberId`).
+- The `subscriberId` of the last successful subscription (or `toSubscriberId` on a `deviceTransferred` action) is persisted and exposed read-only via `InngageProperties.subscriberId`.
+
+#### New: `InngageSDK.addCustomField`
+- `InngageSDK.addCustomField({customField, identifier?, email?, phoneNumber?, identity?})` → `Future<bool>` posts to `POST /v4/subscription/addCustomField`, which writes custom fields (and optionally contact and external identities such as `{'vtex': '...'}`) with **no session side effects**: no device is touched and no event is emitted. On success the fields are merged into `InngageProperties.customFields`. The device registration token is sent along when available so the API can claim an anonymous subscriber for the identifier. New public model: `AddCustomFieldRequest`.
+- `InngageEvent.setCustomFields` and `InngageUtils.addUserData` are unchanged: they still only update the local state sent on the next registration.
+
+#### Subscription payload aligned with the v4 contract
+- `platform` is sent lowercase (`android`/`ios`); the v4 API classifies unrecognized values as platform "Others", which never receives push.
+- New fields: `os_name` and `opt_in` (the real push-permission state, `"1"`/`"0"`; omitted when it cannot be determined).
+- `phone` is now sent as `phone_number` (its canonical name; the alias is still accepted by the API).
+- Keys whose value is `null`, blank, `"null"` or `"undefined"` are omitted from the body instead of being sent as `null`, as the v4 checklist asks.
+
+#### Changed:
+- `SubscriptionService` gained `addCustomField`; `InAppLocalStore.saveSubscription` gained an optional `subscriberId`.
+- `InngageNetwork` accepts an optional `http.Client` (used by the new network tests).
+
 ## 4.0.0
 #### BREAKING CHANGES — In-App Messages rewritten (pull-based, decoupled from push)
 In-App messages no longer arrive inside FCM push payloads. The SDK now fetches
