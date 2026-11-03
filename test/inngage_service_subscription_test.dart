@@ -179,25 +179,49 @@ void main() {
 
   group('addCustomField — validation', () {
     test('rejects an empty customField without calling the API', () async {
-      final ok = await service.addCustomField(customField: const {});
+      final ok = await service.addCustomField(
+        identifier: 'maria@exemplo.com',
+        customField: const {},
+      );
 
       expect(ok, isFalse);
       expect(subscriptionService.addCustomFieldRequests, isEmpty);
     });
 
-    test('rejects a missing identifier without calling the API', () async {
-      InngageProperties.identifier = '';
+    test('rejects a blank identifier without calling the API', () async {
+      for (final identifier in ['', '   ']) {
+        final ok = await service.addCustomField(
+          identifier: identifier,
+          customField: {'a': 1},
+        );
 
-      final ok = await service.addCustomField(customField: {'a': 1});
+        expect(ok, isFalse, reason: 'identifier "$identifier"');
+      }
+      expect(subscriptionService.addCustomFieldRequests, isEmpty);
+    });
+
+    test('never falls back to the configured (possibly anonymous) identifier',
+        () async {
+      InngageProperties.identifier = 'ce089bdd-3544-48f4-b436-b783387e7ad7';
+
+      final ok = await service.addCustomField(
+        identifier: '',
+        customField: {'a': 1},
+      );
 
       expect(ok, isFalse);
       expect(subscriptionService.addCustomFieldRequests, isEmpty);
+      expect(
+          InngageProperties.identifier, 'ce089bdd-3544-48f4-b436-b783387e7ad7');
     });
 
     test('rejects a missing appToken without calling the API', () async {
       InngageProperties.appToken = '';
 
-      final ok = await service.addCustomField(customField: {'a': 1});
+      final ok = await service.addCustomField(
+        identifier: 'maria@exemplo.com',
+        customField: {'a': 1},
+      );
 
       expect(ok, isFalse);
       expect(subscriptionService.addCustomFieldRequests, isEmpty);
@@ -205,10 +229,14 @@ void main() {
   });
 
   group('addCustomField — request contents', () {
-    test('builds the request from the configured properties', () async {
+    test('builds the request from the arguments and the configured properties',
+        () async {
       subscriptionService.addCustomFieldResponse = {'status': '1', 'appId': 3};
 
-      await service.addCustomField(customField: {'plano': 'premium'});
+      await service.addCustomField(
+        identifier: 'maria@exemplo.com',
+        customField: {'plano': 'premium'},
+      );
 
       final request = subscriptionService.addCustomFieldRequests.single;
       expect(request.appToken, 'token');
@@ -220,12 +248,12 @@ void main() {
       expect(request.identity, isNull);
     });
 
-    test('an explicit identifier overrides the configured one', () async {
+    test('trims the identifier and forwards contact and identity', () async {
       subscriptionService.addCustomFieldResponse = {'status': '1'};
 
       await service.addCustomField(
-        customField: {'plano': 'premium'},
         identifier: '  joao@exemplo.com ',
+        customField: {'plano': 'premium'},
         email: 'joao@exemplo.com',
         phoneNumber: '5511999998888',
         identity: {'vtex': '7a3c9f1e'},
@@ -242,7 +270,10 @@ void main() {
       InngageProperties.registration = '';
       subscriptionService.addCustomFieldResponse = {'status': '1'};
 
-      await service.addCustomField(customField: {'plano': 'premium'});
+      await service.addCustomField(
+        identifier: 'maria@exemplo.com',
+        customField: {'plano': 'premium'},
+      );
 
       expect(subscriptionService.addCustomFieldRequests.single.registration,
           isNull);
@@ -256,8 +287,8 @@ void main() {
       subscriptionService.addCustomFieldResponse = {'status': '1', 'appId': 3};
 
       final ok = await service.addCustomField(
-        customField: {'plano': 'premium', 'pontos': 1250},
         identifier: 'maria@exemplo.com',
+        customField: {'plano': 'premium', 'pontos': 1250},
         email: 'maria@exemplo.com',
         phoneNumber: '5511999998888',
       );
@@ -270,6 +301,19 @@ void main() {
       expect(InngageProperties.phoneNumber, '5511999998888');
     });
 
+    test('replaces the anonymous identifier with the given one on success',
+        () async {
+      InngageProperties.identifier = 'ce089bdd-3544-48f4-b436-b783387e7ad7';
+      subscriptionService.addCustomFieldResponse = {'status': '1'};
+
+      await service.addCustomField(
+        identifier: 'joao@exemplo.com',
+        customField: {'plano': 'premium'},
+      );
+
+      expect(InngageProperties.identifier, 'joao@exemplo.com');
+    });
+
     test('persists the appId from the response for the In-App flow', () async {
       subscriptionService.addCustomFieldResponse = {
         'status': '1',
@@ -277,7 +321,10 @@ void main() {
         'appId': 3,
       };
 
-      await service.addCustomField(customField: {'plano': 'premium'});
+      await service.addCustomField(
+        identifier: 'maria@exemplo.com',
+        customField: {'plano': 'premium'},
+      );
 
       expect(store.appId, 3);
       expect(store.registration, 'fcm-token');
@@ -288,12 +335,14 @@ void main() {
       subscriptionService.addCustomFieldResponse = null;
 
       final ok = await service.addCustomField(
+        identifier: 'joao@exemplo.com',
         customField: {'plano': 'premium'},
-        email: 'maria@exemplo.com',
+        email: 'joao@exemplo.com',
       );
 
       expect(ok, isFalse);
       expect(InngageProperties.customFields, {'nome': 'Maria'});
+      expect(InngageProperties.identifier, 'maria@exemplo.com');
       expect(InngageProperties.email, '');
       expect(store.saves, 0);
     });

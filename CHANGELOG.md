@@ -6,8 +6,7 @@
 - The `subscriberId` of the last successful subscription (or `toSubscriberId` on a `deviceTransferred` action) is persisted and exposed read-only via `InngageProperties.subscriberId`.
 
 #### New: `InngageSDK.addCustomField`
-- `InngageSDK.addCustomField({customField, identifier?, email?, phoneNumber?, identity?})` → `Future<bool>` posts to `POST /v4/subscription/addCustomField`, which writes custom fields (and optionally contact and external identities such as `{'vtex': '...'}`) with **no session side effects**: no device is touched and no event is emitted. On success the fields are merged into `InngageProperties.customFields`. The device registration token is sent along when available so the API can claim an anonymous subscriber for the identifier. New public model: `AddCustomFieldRequest`.
-- `addCustomField` also updates the SDK's current `identifier`, `email` and `phoneNumber` when they are passed, so it fully replaces `InngageUtils.addUserData`.
+- `InngageSDK.addCustomField({identifier, customField, email?, phoneNumber?, identity?})` → `Future<bool>` posts to `POST /v4/subscription/addCustomField`, which writes custom fields (and optionally contact and external identities such as `{'vtex': '...'}`) with **no session side effects**: no device is touched and no event is emitted. `identifier` is required (the API requires it, and a fallback to the anonymous device uuid would silently write the fields on the wrong subscriber). On success the fields are merged into `InngageProperties.customFields` and `identifier`, `email` and `phoneNumber` become the SDK's current values, so it fully replaces `InngageUtils.addUserData`. The device registration token is sent along when available so the API can claim an anonymous subscriber for the identifier. New public model: `AddCustomFieldRequest`.
 - `InngageEvent.setCustomFields` is unchanged: it still only updates the local state sent on the next registration.
 
 #### Deprecated:

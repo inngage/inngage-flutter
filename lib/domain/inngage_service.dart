@@ -96,34 +96,34 @@ class InngageService {
   }
 
   /// Writes [customField] (and optionally contact/identities) to the
-  /// subscriber identified by [identifier] (defaults to
-  /// [InngageProperties.identifier]) through `/v4/subscription/addCustomField`,
-  /// which has no session side effects.
+  /// subscriber identified by [identifier] through
+  /// `/v4/subscription/addCustomField`, which has no session side effects.
   ///
-  /// On success the fields are merged into [InngageProperties.customFields]
-  /// (and [email]/[phoneNumber], when given, into their properties) so the
-  /// next subscriber registration carries the same data. Returns `false`
-  /// without calling the API when [customField] is empty or no identifier is
-  /// available, and when the API does not answer 2xx.
+  /// [identifier] is the person's business identifier (e-mail, CPF, customer
+  /// id). It is required so the fields never silently land on the anonymous
+  /// (device-uuid) subscriber that `subscribe` registers before login.
+  ///
+  /// On success [identifier] becomes [InngageProperties.identifier], the
+  /// fields are merged into [InngageProperties.customFields] and
+  /// [email]/[phoneNumber], when given, update their properties, so the next
+  /// subscriber registration carries the same data. Returns `false` without
+  /// calling the API when [customField] or [identifier] is empty, and when
+  /// the API does not answer 2xx.
   Future<bool> addCustomField({
+    required String identifier,
     required Map<String, dynamic> customField,
-    String? identifier,
     String? email,
     String? phoneNumber,
     Map<String, String>? identity,
   }) async {
-    final resolvedIdentifier =
-        (identifier != null && identifier.trim().isNotEmpty)
-            ? identifier.trim()
-            : InngageProperties.identifier;
+    final resolvedIdentifier = identifier.trim();
 
     if (customField.isEmpty) {
       debugPrint('Inngage: addCustomField skipped — customField is empty.');
       return false;
     }
     if (resolvedIdentifier.isEmpty) {
-      debugPrint('Inngage: addCustomField skipped — no identifier available. '
-          'Pass one or configure it via InngageSDK.subscribe.');
+      debugPrint('Inngage: addCustomField skipped — identifier is empty.');
       return false;
     }
     if (InngageProperties.appToken.isEmpty) {
@@ -150,9 +150,7 @@ class InngageService {
       ...InngageProperties.customFields,
       ...customField,
     };
-    if (identifier != null && identifier.trim().isNotEmpty) {
-      InngageProperties.identifier = resolvedIdentifier;
-    }
+    InngageProperties.identifier = resolvedIdentifier;
     if (email != null && email.isNotEmpty) InngageProperties.email = email;
     if (phoneNumber != null && phoneNumber.isNotEmpty) {
       InngageProperties.phoneNumber = phoneNumber;

@@ -140,11 +140,13 @@ class InngageSDK extends ChangeNotifier {
   /// (`POST /v4/subscription/addCustomField`), with no session side effects:
   /// no device is touched and no event is emitted.
   ///
-  /// [identifier] defaults to the one configured via [subscribe]; when given,
-  /// it also becomes the SDK's current identifier (this is the replacement
-  /// for the deprecated `InngageUtils.addUserData`). Field names must exist in
-  /// the app's custom-field catalog on the Inngage platform; unknown names are
-  /// silently ignored by the API. [identity] maps external system ids, e.g.
+  /// [identifier] is the person's business identifier (e-mail, CPF, customer
+  /// id) and is required: without it the fields would silently land on the
+  /// anonymous device subscriber. On success it also becomes the SDK's
+  /// current identifier (this is the replacement for the deprecated
+  /// `InngageUtils.addUserData`). Field names must exist in the app's
+  /// custom-field catalog on the Inngage platform; unknown names are silently
+  /// ignored by the API. [identity] maps external system ids, e.g.
   /// `{'vtex': '7a3c9f1e'}`.
   ///
   /// On success the fields are merged into `InngageProperties.customFields`
@@ -153,15 +155,15 @@ class InngageSDK extends ChangeNotifier {
   /// nothing was sent or the API did not accept the request (failures are
   /// logged, never thrown).
   static Future<bool> addCustomField({
+    required String identifier,
     required Map<String, dynamic> customField,
-    String? identifier,
     String? email,
     String? phoneNumber,
     Map<String, String>? identity,
   }) {
     return InngageProperties.inngageService.addCustomField(
-      customField: customField,
       identifier: identifier,
+      customField: customField,
       email: email,
       phoneNumber: phoneNumber,
       identity: identity,
