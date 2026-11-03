@@ -14,8 +14,9 @@ funcionando normalmente, em paralelo.
 ## 1. Pré-requisito: a subscription
 
 O fluxo de In-App depende de dois dados que o SDK persiste automaticamente ao
-concluir a **subscription**: o `app_id` (retornado pela API) e o token de
-registro do dispositivo.
+concluir a **subscription** (`POST /v4/subscription/`): o `appId` (retornado
+pela API em `registerSubscriberResponse`) e o token de registro do
+dispositivo.
 
 Portanto, **o `InngageSDK.subscribe(...)` + registro do subscriber precisam
 ter sido executados ao menos uma vez** antes da primeira chamada de In-App —
