@@ -57,6 +57,9 @@ class InngageEvent {
     }
   }
 
+  /// Replaces the local custom fields only. Nothing is sent until the next
+  /// subscriber registration; to persist fields on the API right away use
+  /// [InngageSDK.addCustomField].
   static void setCustomFields({required Map<String, dynamic> customFields}) {
     InngageProperties.customFields = customFields;
   }
