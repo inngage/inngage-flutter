@@ -97,7 +97,15 @@ final ok = await InngageSDK.addCustomField(
 
 Field names must exist in the app's custom-field catalog on the Inngage
 platform; unknown names are ignored by the API. On success the fields are
-merged into `InngageProperties.customFields`.
+merged into `InngageProperties.customFields`, and `identifier`, `email` and
+`phoneNumber` (when given) become the SDK's current values, so the next
+subscriber registration carries the same data.
+
+`addCustomField` replaces `InngageUtils.addUserData`, which is now deprecated:
+`addUserData` only updated the local state (identifier, contact, custom
+fields) and relied on the next registration to send it, while
+`addCustomField` persists the same data on the API immediately. `addUserData`
+keeps working unchanged in 4.x and will be removed in 5.0.
 
 After a successful registration the SDK also keeps the subscriber id returned
 by the API in `InngageProperties.subscriberId`.

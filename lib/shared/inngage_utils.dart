@@ -128,8 +128,15 @@ class InngageUtils {
   }
 
   /// Updates the local user data only. Nothing is sent until the next
-  /// subscriber registration; to persist custom fields on the API right away
-  /// use `InngageSDK.addCustomField`.
+  /// subscriber registration.
+  ///
+  /// Superseded by `InngageSDK.addCustomField`, which sends the identifier,
+  /// contact and custom fields to the API right away (with no session side
+  /// effects) and keeps the local state in sync. Still works unchanged; will
+  /// be removed in 5.0.
+  @Deprecated('Use InngageSDK.addCustomField, which persists the identifier, '
+      'contact and custom fields on the API immediately. '
+      'addUserData only updates local state and will be removed in 5.0.')
   static void addUserData({
     required String? appToken,
     String? identifier,
