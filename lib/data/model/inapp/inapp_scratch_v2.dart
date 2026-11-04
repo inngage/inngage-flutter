@@ -33,11 +33,19 @@ class InAppV2ScratchConfig {
   final int revealPercent;
   final List<InAppV2ScratchPrize> prizes;
 
+  /// "Maximum repetitions" configured in the campaign editor (how many times
+  /// the same user may play). Parsed for completeness only: the SDK draws
+  /// once per display and never re-opens the card by itself, so any limit
+  /// is enforced by the server when it decides whether to deliver the
+  /// campaign again. `null` when absent.
+  final int? maxRepetitions;
+
   const InAppV2ScratchConfig({
     this.coverColor = '#9CA3AF',
     this.instruction = '',
     this.revealPercent = 50,
     this.prizes = const [],
+    this.maxRepetitions,
   });
 
   factory InAppV2ScratchConfig.fromJson(Map<String, dynamic> json) {
@@ -46,6 +54,7 @@ class InAppV2ScratchConfig {
         ? rawPercent
         : int.tryParse(rawPercent?.toString() ?? '') ?? 50;
     final rawPrizes = json['prizes'];
+    final rawMaxRepetitions = json['maxRepetitions'];
     return InAppV2ScratchConfig(
       coverColor: json['coverColor'] as String? ?? '#9CA3AF',
       instruction: json['instruction'] as String? ?? '',
@@ -56,6 +65,9 @@ class InAppV2ScratchConfig {
               .map(InAppV2ScratchPrize.fromJson)
               .toList()
           : const [],
+      maxRepetitions: rawMaxRepetitions is int
+          ? rawMaxRepetitions
+          : int.tryParse(rawMaxRepetitions?.toString() ?? ''),
     );
   }
 }
