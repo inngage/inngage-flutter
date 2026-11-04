@@ -61,6 +61,11 @@ class InngageSDK extends ChangeNotifier {
       }
     }
 
+    // The push-based In-App flow (< 4.0.0) persisted payloads under these
+    // keys; clear them so nothing stale survives an SDK upgrade.
+    await InngageProperties.inngageService.inAppLocalStore
+        .clearLegacyInAppKeys();
+
     InngageUtils.requestAdvertiserId = requestAdvertiserId;
     await _configureProperties(
       appToken: appToken,
@@ -129,6 +134,40 @@ class InngageSDK extends ChangeNotifier {
 
   static Future<void> registerSubscriber(String? registration) async {
     await InngageProperties.inngageService.registerSubscriber(registration);
+  }
+
+  /// Writes custom fields to the subscriber on the Inngage API right away
+  /// (`POST /v4/subscription/addCustomField`), with no session side effects:
+  /// no device is touched and no event is emitted.
+  ///
+  /// [identifier] is the person's business identifier (e-mail, CPF, customer
+  /// id) and is required: without it the fields would silently land on the
+  /// anonymous device subscriber. On success it also becomes the SDK's
+  /// current identifier (this is the replacement for the deprecated
+  /// `InngageUtils.addUserData`). Field names must exist in the app's
+  /// custom-field catalog on the Inngage platform; unknown names are silently
+  /// ignored by the API. [identity] maps external system ids, e.g.
+  /// `{'vtex': '7a3c9f1e'}`.
+  ///
+  /// On success the fields are merged into `InngageProperties.customFields`
+  /// and [email]/[phoneNumber], when given, update their properties, so the
+  /// next subscriber registration carries the same data. Returns `false` when
+  /// nothing was sent or the API did not accept the request (failures are
+  /// logged, never thrown).
+  static Future<bool> addCustomField({
+    required String identifier,
+    required Map<String, dynamic> customField,
+    String? email,
+    String? phoneNumber,
+    Map<String, String>? identity,
+  }) {
+    return InngageProperties.inngageService.addCustomField(
+      identifier: identifier,
+      customField: customField,
+      email: email,
+      phoneNumber: phoneNumber,
+      identity: identity,
+    );
   }
 
   static Future<void> registerNotification({

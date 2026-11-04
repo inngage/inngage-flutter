@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +26,35 @@ class InngageUtils {
     final Uri url0 = Uri.parse(url);
     if (!await launchUrl(url0, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not lauch $url0');
+    }
+  }
+
+  /// Platform name as the v4 subscription expects it: `"android"` or `"ios"`.
+  /// Anything else is classified by the API as "Others" and never receives
+  /// push.
+  static String getPlatformName() => Platform.isIOS ? 'ios' : 'android';
+
+  static String getOsName() => Platform.isIOS ? 'iOS' : 'Android';
+
+  /// Push permission state for the subscription `opt_in` field: `"1"` when
+  /// granted (authorized or provisional), `"0"` when denied, `null` when it
+  /// cannot be determined (e.g. Firebase not initialized), in which case the
+  /// key is omitted and the API keeps the stored value.
+  static Future<String?> getPushOptIn() async {
+    try {
+      final settings =
+          await FirebaseMessaging.instance.getNotificationSettings();
+      switch (settings.authorizationStatus) {
+        case AuthorizationStatus.authorized:
+        case AuthorizationStatus.provisional:
+          return '1';
+        case AuthorizationStatus.denied:
+          return '0';
+        case AuthorizationStatus.notDetermined:
+          return null;
+      }
+    } catch (_) {
+      return null;
     }
   }
 
@@ -97,6 +127,16 @@ class InngageUtils {
     InngageProperties.identifier = identifier;
   }
 
+  /// Updates the local user data only. Nothing is sent until the next
+  /// subscriber registration.
+  ///
+  /// Superseded by `InngageSDK.addCustomField`, which sends the identifier,
+  /// contact and custom fields to the API right away (with no session side
+  /// effects) and keeps the local state in sync. Still works unchanged; will
+  /// be removed in 5.0.
+  @Deprecated('Use InngageSDK.addCustomField, which persists the identifier, '
+      'contact and custom fields on the API immediately. '
+      'addUserData only updates local state and will be removed in 5.0.')
   static void addUserData({
     required String? appToken,
     String? identifier,

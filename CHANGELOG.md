@@ -1,3 +1,53 @@
+## 4.1.0
+#### Subscription moved to the v4 API
+- The subscriber registration now posts to `POST /v4/subscription/` (fixed path, with the trailing slash the API requires). Events and push-notification callbacks keep using the `version` parameter of `InngageNetwork` (v1).
+- The v4 API answers **201 Created** on a new subscriber; the HTTP layer now treats any 2xx as success (it previously accepted 200 only, which would have dropped the first subscription of every install and left the In-App flow without its `appId`).
+- The `appId` returned in `registerSubscriberResponse` keeps feeding the In-App `/objectMessage` flow, and the response is now also parsed into the new public `SubscriptionResponse` model (`statusDescription`, `appId`, `subscriberId`, `fromSubscriberId`, `toSubscriberId`).
+- The `subscriberId` of the last successful subscription (or `toSubscriberId` on a `deviceTransferred` action) is persisted and exposed read-only via `InngageProperties.subscriberId`.
+
+#### New: `InngageSDK.addCustomField`
+- `InngageSDK.addCustomField({identifier, customField, email?, phoneNumber?, identity?})` → `Future<bool>` posts to `POST /v4/subscription/addCustomField`, which writes custom fields (and optionally contact and external identities such as `{'vtex': '...'}`) with **no session side effects**: no device is touched and no event is emitted. `identifier` is required (the API requires it, and a fallback to the anonymous device uuid would silently write the fields on the wrong subscriber). On success the fields are merged into `InngageProperties.customFields` and `identifier`, `email` and `phoneNumber` become the SDK's current values, so it fully replaces `InngageUtils.addUserData`. The device registration token is sent along when available so the API can claim an anonymous subscriber for the identifier. New public model: `AddCustomFieldRequest`.
+- `InngageEvent.setCustomFields` is unchanged: it still only updates the local state sent on the next registration.
+
+#### Deprecated:
+- `InngageUtils.addUserData` — use `InngageSDK.addCustomField`, which persists the same data (identifier, contact, custom fields) on the API immediately instead of only updating local state. `addUserData` keeps working unchanged in 4.x and will be removed in 5.0.
+
+#### Subscription payload aligned with the v4 contract
+- `platform` is sent lowercase (`android`/`ios`); the v4 API classifies unrecognized values as platform "Others", which never receives push.
+- New fields: `os_name` and `opt_in` (the real push-permission state, `"1"`/`"0"`; omitted when it cannot be determined).
+- `phone` is now sent as `phone_number` (its canonical name; the alias is still accepted by the API).
+- Keys whose value is `null`, blank, `"null"` or `"undefined"` are omitted from the body instead of being sent as `null`, as the v4 checklist asks.
+
+#### Changed:
+- `SubscriptionService` gained `addCustomField`; `InAppLocalStore.saveSubscription` gained an optional `subscriberId`.
+- `InngageNetwork` accepts an optional `http.Client` (used by the new network tests).
+
+## 4.0.0
+#### BREAKING CHANGES — In-App Messages rewritten (pull-based, decoupled from push)
+In-App messages no longer arrive inside FCM push payloads. The SDK now fetches
+them on demand from `POST /v4/message/objectMessage` and renders the returned
+message (banner for a single slide, carousel with dot indicator for two or
+more). Push notifications themselves are unchanged and still use Firebase.
+
+- **New public API:** `InngageInApp.show({context, handledBySdk, onAction, onMetadata})` — call it wherever the app wants an In-App message to appear (after the splash screen, on login, on a specific route…). When there is no message to display, nothing is rendered. With `handledBySdk: true` (default) the SDK executes the actions (`deeplink`/`deep_link`, `weblink` in the external browser, `in_app_url`/`inapp` in an in-app browser, unknown → dismiss); `metadata` actions are delivered to `onMetadata`. With `handledBySdk: false` every action is delivered to `onAction`.
+- **Prerequisite:** the subscription must have completed at least once before the first `InngageInApp.show` call. The subscription response is now parsed and its `app_id` is persisted, together with the device registration token — both are required by `/objectMessage` (plus a persisted `firstAccess` flag, sent as `true` until the first successful fetch).
+- **New public models:** `InAppMessageV2`, `InAppV2Style`, `InAppV2Media`, `InAppV2CarouselItem`, `InAppV2Content`, `InAppV2Actions`, `InAppV2Button`, `InAppV2ButtonStyle`, `InAppV2Action`, `InAppV2ActionType` and `ObjectMessageRequest` — mirroring the cross-SDK `/objectMessage` contract.
+- **New "Wheel" (roleta) message type:** `type: "Wheel"` responses render a fortune-wheel flow — optional lead-capture form (`before` gates the spin; `after` locks a winning coupon until sign-up), weighted client-side draw (`drawWeighted`, shared with the future Scratch type), spin animation that lands on the drawn slice (via `flutter_fortune_wheel`), and a win/lose result panel (solid or gradient background) with a copy-to-clipboard coupon. One spin per display. New models: `InAppV2LeadCapture`, `InAppV2LeadField`, `InAppV2WheelConfig`, `InAppV2WheelSlice`, `InAppV2ResultConfig`, `InAppV2ResultStyle`. New `InngageInApp.show` callbacks: `onLeadCaptured` and `onWheelResult` (the SDK delivers both to the app and sends nothing to the API). A "Powered by Inngage" footer is shown unless `hideBrand` is `true`; the `targeting` field is ignored on mobile. The lead-capture step is implemented and tested but currently ships disabled (`InAppV2LeadPanel.renderLeadCapture`, default `false` — flip to honor `leadCapture.enabled` again), and the payload `icon` is parsed but intentionally not rendered.
+- **Automatic In-App impression/click tracking:** every displayed In-App posts a notification callback (`POST /v4/message/notification` with `id=<notId>` and `channel_id: "6"`) recorded as an opening, and clicks on banner/carousel slides (`card` for background clicks; `button`, `button_up`/`button_down` for buttons, including dismiss ones) and on Countdown buttons additionally send the origin in `btn_id` — the field the API provides for clicks without a link (no redirect involved). Tracking is fire-and-forget, uses the `notId` field now parsed from the message root, and is skipped when the payload carries no `notId`. Wheel/Scratch internal interactions (spin, scratch, lead form) are not click-tracked.
+- **New "Countdown" message type:** `type: "Countdown"` responses render a ticking deadline card — DIAS/HORAS/MIN/SEG boxes styled by `countdown.boxColor`/`digitColor`, refreshed every second toward `endDate` (interpreted in the device's local time), plus root-level action `buttons` that go through the same action pipeline as banner buttons (`target` is a web concept and is ignored). An already-expired campaign is not rendered; when the deadline is reached while the card is open, the boxes and buttons give way to `expiredTitle`/`expiredBody`. New model: `InAppV2CountdownConfig`.
+- **New "Scratch" (raspadinha) message type:** `type: "Scratch"` responses render a scratch card (via `scratcher`) — the weighted draw happens BEFORE the cover is shown, so what gets revealed is already the drawn prize; scratching past `revealPercent` finishes the reveal and shows the shared win/lose result panel with the coupon. Same lead-capture flows and callbacks as the Wheel, plus the new `onScratchResult` callback on `InngageInApp.show`. New models: `InAppV2ScratchConfig`, `InAppV2ScratchPrize`.
+
+#### Removed:
+- `InAppModel`, `RichContent` and `CarrouselImagesModel` (replaced by the models above).
+- `InngageInAppWidget` (in-app messages are no longer queued for display on app resume; call `InngageInApp.show` on demand instead).
+- `InngageDialog.showInAppDialog` and the `dialogs/app_dialog.dart` export.
+- `InngageInApp.blockDeepLink` and `InngageInApp.deepLinkCallback` (use `InngageProperties.blockDeepLink` plus the `onAction` callback of `InngageInApp.show`).
+- The `inapp_message` handling inside the FCM notification handlers. `InngageHandlersNotification.handleBackgroundNotification` is kept as a no-op for backward compatibility of existing background handlers.
+- The `"inapp"`/`"metadata"` secure-storage keys used by the old flow are cleared on `InngageSDK.subscribe`.
+
+#### Changed:
+- `SubscriptionService.subscription` now returns the API response body (`Map<String, dynamic>?`) instead of `void`, so the `app_id` can be extracted.
+
 ## 3.9.0
 #### Fixed:
 - Request/response payloads (which may contain PII such as e-mail, phone number and custom fields) are no longer printed unconditionally to the console. All SDK logging below error level is now gated on `InngageSDK.setDebugMode(true)`; errors are always logged.

@@ -2,6 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:inngage_plugin/domain/inngage_service.dart';
 import 'package:inngage_plugin/domain/services/impl/event_service_impl.dart';
+import 'package:inngage_plugin/domain/services/impl/inapp_message_service_impl.dart';
 import 'package:inngage_plugin/domain/services/impl/notification_service_impl.dart';
 import 'package:inngage_plugin/domain/services/impl/subscription_service_impl.dart';
 import 'package:logger/logger.dart';
@@ -22,6 +23,12 @@ class InngageProperties {
   static String phoneNumber = '';
   static String email = '';
   static String registration = '';
+
+  /// Id of the subscriber as returned by the last successful subscription
+  /// (`subscriberId`, or `toSubscriberId` on a device transfer). Read-only
+  /// for host apps: it is set by the SDK and may change across calls (login,
+  /// user switch).
+  static String subscriberId = '';
   static String latitude = '';
   static String longitude = '';
   static String attributionId = '';
@@ -48,7 +55,8 @@ class InngageProperties {
   static final inngageService = InngageService(
       subscriptionService: SubscriptionServiceImpl(network),
       notificationService: NotificationServiceImpl(network),
-      eventService: EventServiceImpl(network));
+      eventService: EventServiceImpl(network),
+      inAppMessageService: InAppMessageServiceImpl(network));
 }
 
 /// Errors are always logged; anything below error level (request/response

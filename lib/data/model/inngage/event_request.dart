@@ -46,7 +46,8 @@ class NewEventRequest {
 
   Map<String, dynamic> eventValues;
 
-  factory NewEventRequest.fromJson(Map<String, dynamic> json) => NewEventRequest(
+  factory NewEventRequest.fromJson(Map<String, dynamic> json) =>
+      NewEventRequest(
         appToken: json["app_token"],
         identifier: json["identifier"],
         eventName: json["event_name"],
