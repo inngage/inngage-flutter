@@ -11,6 +11,14 @@
 
 #### Deprecated:
 - `InngageUtils.addUserData` — use `InngageSDK.addCustomField`, which persists the same data (identifier, contact, custom fields) on the API immediately instead of only updating local state. `addUserData` keeps working unchanged in 4.x and will be removed in 5.0.
+- `InAppMessageV2.hideBrand` — still parsed, but ignored now that the brand footer is gone (see below). Will be removed in 5.0.
+
+#### In-App fixes from the first client feedback
+- **Countdown now renders the payload the campaign editor really saves.** The `/objectMessage` response puts the title/body under `countdown.content` (repeated as root `title`/`body`), splits the deadline into `countdown.endDate` (`"2026-10-20"`) + `countdown.endTime` (`"10:30"`), and puts the box colors under `countdown.style.backgroundColor`/`textColor`. The SDK read only the original contract (root `content`, a joined `endDate`, `boxColor`/`digitColor`), so the card showed the boxes with no texts, the default colors and a deadline at midnight — 10 h early. The parser now accepts both formats (the original contract keeps working): header content resolves `countdown.content` → root `content` → root `title`/`body`; `endDate` + `endTime` are combined in the device's local time (a date-only `endDate` without `endTime` falls on local midnight); `countdown.style` colors take precedence over `boxColor`/`digitColor`. The `expiration` object sent by the editor is ignored.
+- **Countdown expiry panel no longer goes blank.** The editor has no fields for `expiredTitle`/`expiredBody`, so when the deadline was reached with the card open the boxes gave way to an empty panel. Now the boxes and buttons simply disappear and the header title/body stay; the expired texts are still shown when a payload carries them.
+- **"Powered by Inngage" footer removed** from the Wheel, Scratch and Countdown cards (product decision — the campaign API never sends `hideBrand`, so the footer was always shown).
+- `InAppV2ScratchConfig.maxRepetitions` is now parsed (`int?`) from `scratch.maxRepetitions`. It is informational only: the SDK draws once per display, and any play/stock limit is enforced server-side when deciding whether to deliver the campaign again.
+- Docs: the In-App card is always centered (`style.position` `top`/`bottom` are still tolerated but the editor only saves `center`); `backgroundClick` is documented as optional and already handled when present; §4.4 rewritten for the real Countdown payload.
 
 #### Subscription payload aligned with the v4 contract
 - `platform` is sent lowercase (`android`/`ios`); the v4 API classifies unrecognized values as platform "Others", which never receives push.

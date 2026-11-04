@@ -113,8 +113,11 @@ Tocar fora do card também fecha, sem executar ação.
 ## 4. Modelos de In-App
 
 O modelo é definido pelo campo `type` da campanha. Todos compartilham o
-**estilo do card** (`style`): posição na tela (`center`/`top`/`bottom`), cor
-de fundo, imagem de fundo, cor de borda, sombra e cores de título/corpo.
+**estilo do card** (`style`): cor de fundo, imagem de fundo, cor de borda,
+sombra e cores de título/corpo. **O card de In-App é sempre centralizado na
+tela** — as posições do editor valem para o OnSite; o SDK ainda reconhece
+`top`/`bottom` em `style.position` por tolerância, mas o painel grava sempre
+`center`.
 
 ### 4.1 Banner e Carrossel (`type: "Banner"` / `"Message"`)
 
@@ -132,7 +135,7 @@ Cada slide pode ter:
 | Imagem | Exibida acima ou abaixo do texto (`media.position`), com recorte central. |
 | Título e corpo | Textos com as cores do `style`. |
 | Botões (até 2 lado a lado) | Texto, cores próprias e uma ação (seção 3). |
-| Clique de fundo (`backgroundClick`) | Ação disparada ao tocar em qualquer área do slide fora dos botões. |
+| Clique de fundo (`backgroundClick`) | Opcional. Ação disparada ao tocar em qualquer área do slide fora dos botões; só tem efeito quando a campanha envia o campo (o editor ainda não o expõe). |
 
 ### 4.2 Roleta (`type: "Wheel"`)
 
@@ -169,24 +172,39 @@ Cartela de raspar com a **mesma mecânica de sorteio ponderado** da Roleta:
 - Ao raspar o percentual configurado na campanha (`revealPercent`), a
   revelação completa sozinha e o painel de resultado aparece — com suporte a
   fundo **sólido ou gradiente** e cupom com botão de copiar;
-- O prêmio é entregue ao app via `onScratchResult`.
+- O prêmio é entregue ao app via `onScratchResult`;
+- **"Máximo de repetições"** (`scratch.maxRepetitions`) e a **quantidade
+  disponível por prêmio** são controles do servidor: o SDK sorteia uma vez
+  por exibição e não reabre o card sozinho, então apenas lê
+  `maxRepetitions` (disponível em `InAppV2ScratchConfig`) sem aplicá-lo.
 
 ### 4.4 Contagem Regressiva (`type: "Countdown"`)
 
 Card de urgência com prazo:
 
-- Quatro caixas — **DIAS / HORAS / MIN / SEG** — com cores configuráveis,
-  atualizadas a cada segundo até o `endDate` da campanha (interpretado no
-  horário local do dispositivo);
+- **Título e corpo** vêm de `countdown.content` (o servidor também os repete
+  em `title`/`body` na raiz); o SDK aceita ainda `content` na raiz, formato
+  do contrato original;
+- Quatro caixas — **DIAS / HORAS / MIN / SEG** — atualizadas a cada segundo
+  até o prazo da campanha. O prazo vem em `countdown.endDate`
+  (`"2026-10-20"`) + `countdown.endTime` (`"10:30"`), combinados no
+  **horário local do dispositivo**; sem `endTime`, vale a meia-noite da
+  data. O formato unido do contrato original (`"2026-10-20T10:30"`) continua
+  aceito;
+- As cores das caixas vêm de `countdown.style.backgroundColor` (fundo) e
+  `countdown.style.textColor` (dígitos); `boxColor`/`digitColor` do contrato
+  original seguem aceitos como alternativa;
 - Botões de ação abaixo da contagem, com o mesmo comportamento da seção 3;
 - **Campanha já vencida não é exibida**; se o prazo terminar com o card
-  aberto, a contagem e os botões dão lugar ao título/texto de encerramento
-  configurados na campanha.
+  aberto, a contagem e os botões somem e o título/corpo permanecem. Quando a
+  campanha trouxer `countdown.expiredTitle`/`expiredBody` (ainda sem campo no
+  editor), esses textos aparecem no lugar da contagem;
+- O objeto `expiration` enviado pelo painel é ignorado pelo SDK.
 
 ### Recursos comuns aos modelos Roleta, Raspadinha e Contagem
 
-- **Rodapé "Powered by Inngage"** — exibido por padrão; a campanha pode
-  ocultá-lo (`hideBrand`);
+- **Sem rodapé "Powered by Inngage"**: o rodapé foi removido de todos os
+  cards na 4.1.0 (`hideBrand` é lido, mas não tem efeito);
 - **Botão de fechar (X)** no canto superior do card;
 - **Captura de lead** (formulário de e-mail antes ou depois do
   giro/raspagem): o fluxo está implementado no SDK, porém **desativado por
