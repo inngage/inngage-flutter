@@ -252,7 +252,14 @@ class InAppMessageV2 {
 
   // Gamified-type fields (absent on Banner/Message payloads).
   final String icon;
+
+  /// Parsed for backward compatibility only. The "Powered by Inngage" footer
+  /// was removed from every card in 4.1.0 (product decision — the campaign
+  /// API never sends this flag), so the value has no effect.
+  @Deprecated('The brand footer is no longer rendered; the flag is ignored. '
+      'Will be removed in 5.0.')
   final bool hideBrand;
+
   final InAppV2Content? content;
   final InAppV2LeadCapture leadCapture;
   final InAppV2WheelConfig wheel;
@@ -325,6 +332,7 @@ class InAppMessageV2 {
           ? InAppV2Media.fromJson(rawMedia)
           : const InAppV2Media(),
       icon: json['icon'] as String? ?? '',
+      // ignore: deprecated_member_use_from_same_package
       hideBrand: json['hideBrand'] as bool? ?? false,
       content: rawContent is Map<String, dynamic>
           ? InAppV2Content.fromJson(rawContent)

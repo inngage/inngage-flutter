@@ -5,13 +5,9 @@ import 'package:inngage_plugin/inapp/widgets/inapp_v2_countdown_card.dart';
 
 final _base = DateTime(2026, 9, 14, 12, 0, 0);
 
-InAppMessageV2 _countdownMessage({
-  required DateTime endDate,
-  bool hideBrand = false,
-}) {
+InAppMessageV2 _countdownMessage({required DateTime endDate}) {
   return InAppMessageV2.fromJson({
     'type': 'Countdown',
-    'hideBrand': hideBrand,
     'content': {'title': 'A oferta termina em:', 'body': '30% OFF.'},
     'countdown': {
       'endDate': endDate.toIso8601String(),
@@ -153,17 +149,10 @@ void main() {
     expect(tracked, ['button']);
   });
 
-  testWidgets('brand footer follows hideBrand', (tester) async {
+  testWidgets('never renders the "Powered by Inngage" footer', (tester) async {
     final endDate = _base.add(const Duration(hours: 1));
     await _openCountdown(
         tester, _countdownMessage(endDate: endDate), () => _base);
-    expect(find.text('Powered by Inngage'), findsOneWidget);
-  });
-
-  testWidgets('hideBrand true suppresses the footer', (tester) async {
-    final endDate = _base.add(const Duration(hours: 1));
-    await _openCountdown(tester,
-        _countdownMessage(endDate: endDate, hideBrand: true), () => _base);
     expect(find.text('Powered by Inngage'), findsNothing);
   });
 }

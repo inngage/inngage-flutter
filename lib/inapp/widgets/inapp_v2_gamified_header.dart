@@ -61,26 +61,3 @@ class InAppV2GamifiedHeader extends StatelessWidget {
     );
   }
 }
-
-/// "Powered by Inngage" footer, shown unless the payload sets `hideBrand`.
-class InAppV2BrandFooter extends StatelessWidget {
-  final InAppMessageV2 message;
-
-  const InAppV2BrandFooter({super.key, required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    if (message.hideBrand) return const SizedBox(height: 8);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        'Powered by Inngage',
-        style: TextStyle(
-          fontSize: 11,
-          color: inAppColorOr(message.style.bodyColor, Colors.black)
-              .withValues(alpha: 0.5),
-        ),
-      ),
-    );
-  }
-}
