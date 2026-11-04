@@ -85,7 +85,7 @@ class _InAppV2CountdownCardState extends State<InAppV2CountdownCard> {
       children: [
         InAppV2GamifiedHeader(message: message),
         if (_expired) _buildExpiredPanel() else _buildCountdownPanel(),
-        InAppV2BrandFooter(message: message),
+        const SizedBox(height: 8),
       ],
     );
   }

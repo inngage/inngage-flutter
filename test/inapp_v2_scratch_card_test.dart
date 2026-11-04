@@ -191,15 +191,16 @@ void main() {
     expect(find.byIcon(Icons.copy), findsOneWidget);
   });
 
-  testWidgets('brand footer follows hideBrand', (tester) async {
+  testWidgets('never renders the "Powered by Inngage" footer', (tester) async {
     await _openScratch(tester, _scratchMessage(leadEnabled: false));
-    expect(find.text('Powered by Inngage'), findsOneWidget);
+    expect(find.text('Powered by Inngage'), findsNothing);
 
     await tester.tap(find.byIcon(Icons.close));
     await tester.pumpAndSettle();
 
+    // Even a payload that still sends hideBrand: false.
     await _openScratch(
-        tester, _scratchMessage(leadEnabled: false, hideBrand: true));
+        tester, _scratchMessage(leadEnabled: false, hideBrand: false));
     expect(find.text('Powered by Inngage'), findsNothing);
   });
 }
