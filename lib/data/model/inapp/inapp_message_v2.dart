@@ -260,6 +260,9 @@ class InAppMessageV2 {
       'Will be removed in 5.0.')
   final bool hideBrand;
 
+  /// Header title/body of the gamified cards. Resolved from
+  /// `countdown.content` (campaign editor format), then root `content`
+  /// (original contract), then the root `title`/`body` the server appends.
   final InAppV2Content? content;
   final InAppV2LeadCapture leadCapture;
   final InAppV2WheelConfig wheel;
@@ -334,9 +337,7 @@ class InAppMessageV2 {
       icon: json['icon'] as String? ?? '',
       // ignore: deprecated_member_use_from_same_package
       hideBrand: json['hideBrand'] as bool? ?? false,
-      content: rawContent is Map<String, dynamic>
-          ? InAppV2Content.fromJson(rawContent)
-          : null,
+      content: _resolveContent(json, rawContent, rawCountdown),
       leadCapture: rawLeadCapture is Map<String, dynamic>
           ? InAppV2LeadCapture.fromJson(rawLeadCapture)
           : const InAppV2LeadCapture(),
@@ -359,6 +360,35 @@ class InAppMessageV2 {
           ? InAppV2ResultConfig.fromJson(rawResult)
           : const InAppV2ResultConfig(),
     );
+  }
+
+  /// Picks the header content from the first source that carries a non-empty
+  /// title or body: `countdown.content`, root `content`, root `title`/`body`.
+  static InAppV2Content? _resolveContent(
+    Map<String, dynamic> json,
+    dynamic rawContent,
+    dynamic rawCountdown,
+  ) {
+    final candidates = <InAppV2Content>[
+      if (rawCountdown is Map<String, dynamic> &&
+          rawCountdown['content'] is Map<String, dynamic>)
+        InAppV2Content.fromJson(
+            rawCountdown['content'] as Map<String, dynamic>),
+      if (rawContent is Map<String, dynamic>)
+        InAppV2Content.fromJson(rawContent),
+      InAppV2Content(
+        title: json['title'] as String? ?? '',
+        body: json['body'] as String? ?? '',
+      ),
+    ];
+    for (final candidate in candidates) {
+      if (candidate.title.isNotEmpty || candidate.body.isNotEmpty) {
+        return candidate;
+      }
+    }
+    // Keep the original contract's behavior: an explicit (even empty) root
+    // `content` object yields a non-null model; nothing at all yields null.
+    return rawContent is Map<String, dynamic> ? candidates.last : null;
   }
 
   /// Minimum validation before rendering. Banner/Message: enabled, non-empty
