@@ -203,14 +203,16 @@ void main() {
     expect(find.text('Cupom copiado!'), findsOneWidget);
   });
 
-  testWidgets('brand footer follows hideBrand', (tester) async {
+  testWidgets('never renders the "Powered by Inngage" footer', (tester) async {
     await _openWheel(tester, _wheelMessage(leadEnabled: false));
-    expect(find.text('Powered by Inngage'), findsOneWidget);
-  });
+    expect(find.text('Powered by Inngage'), findsNothing);
 
-  testWidgets('hideBrand true suppresses the footer', (tester) async {
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+
+    // Even a payload that still sends hideBrand: false.
     await _openWheel(
-        tester, _wheelMessage(leadEnabled: false, hideBrand: true));
+        tester, _wheelMessage(leadEnabled: false, hideBrand: false));
     expect(find.text('Powered by Inngage'), findsNothing);
   });
 }

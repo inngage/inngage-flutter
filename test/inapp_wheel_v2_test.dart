@@ -79,7 +79,6 @@ void main() {
     expect(message.hasRenderableContent, isTrue);
     expect(
         message.icon, 'https://storage.googleapis.com/inn-app-icons/380.png');
-    expect(message.hideBrand, isFalse);
     expect(message.content!.title, 'Gire a roleta da sorte');
     expect(message.content!.body, 'Um giro por visita. Boa sorte!');
 
@@ -140,7 +139,6 @@ void main() {
     final message = InAppMessageV2.fromJson({'type': 'Wheel'});
 
     expect(message.icon, '');
-    expect(message.hideBrand, isFalse);
     expect(message.content, isNull);
     expect(message.leadCapture.enabled, isFalse);
     expect(message.leadCapture.capturesBeforeSpin, isTrue);

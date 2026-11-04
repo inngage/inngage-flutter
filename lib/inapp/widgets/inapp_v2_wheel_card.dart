@@ -101,7 +101,7 @@ class _InAppV2WheelCardState extends State<InAppV2WheelCard> {
       children: [
         InAppV2GamifiedHeader(message: message),
         _buildStage(),
-        InAppV2BrandFooter(message: message),
+        const SizedBox(height: 8),
       ],
     );
   }

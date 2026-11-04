@@ -102,7 +102,7 @@ class _InAppV2ScratchCardState extends State<InAppV2ScratchCard> {
       children: [
         InAppV2GamifiedHeader(message: message),
         _buildStage(),
-        InAppV2BrandFooter(message: message),
+        const SizedBox(height: 8),
       ],
     );
   }
