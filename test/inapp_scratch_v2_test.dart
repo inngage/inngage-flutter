@@ -129,6 +129,19 @@ void main() {
     expect(message.scratch.instruction, '');
     expect(message.scratch.revealPercent, 50);
     expect(message.scratch.prizes, isEmpty);
+    expect(message.scratch.maxRepetitions, isNull);
+  });
+
+  test('maxRepetitions is parsed from int or string, null otherwise', () {
+    InAppMessageV2 parse(dynamic value) => InAppMessageV2.fromJson({
+          'type': 'Scratch',
+          'scratch': {'maxRepetitions': value},
+        });
+
+    expect(parse(5).scratch.maxRepetitions, 5);
+    expect(parse('3').scratch.maxRepetitions, 3);
+    expect(parse('abc').scratch.maxRepetitions, isNull);
+    expect(parse(null).scratch.maxRepetitions, isNull);
   });
 
   test('revealPercent tolerates strings and clamps to 1-100', () {
