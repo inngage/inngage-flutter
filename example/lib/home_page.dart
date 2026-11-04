@@ -14,35 +14,38 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final storage = const FlutterSecureStorage();
 
-  /// Renders the "Countdown" demand JSON locally. The endDate is generated
+  /// Renders the "Countdown" JSON locally, in the format the campaign editor
+  /// really saves (see doc/IN_APP_MESSAGES.md §4.4): title/body under
+  /// `countdown.content`, the deadline split into `endDate` + `endTime`, and
+  /// the box colors under `countdown.style`. The deadline is generated
   /// relative to now so the demo never starts already expired.
   void _showCountdownDemo(BuildContext context) {
     final endDate = DateTime.now()
         .add(const Duration(days: 1, hours: 1, minutes: 57, seconds: 9));
+    String two(int value) => value.toString().padLeft(2, '0');
     final message = InAppMessageV2.fromJson({
       'type': 'Countdown',
-      'icon': 'https://storage.googleapis.com/inn-app-icons/380.png',
-      'hideBrand': false,
       'style': {
         'position': 'center',
-        'backgroundColor': '#ffffff',
+        'backgroundColor': '#e392fe',
         'backgroundImage': null,
-        'borderColor': '#e5e7eb',
+        'borderColor': '#831100',
         'shadow': true,
-        'titleColor': '#111827',
-        'bodyColor': '#4B5563',
-      },
-      'content': {
-        'title': 'A oferta termina em:',
-        'body': 'Últimas horas com 30% OFF em todo o site.',
+        'titleColor': '#450e59',
+        'bodyColor': '#450e59',
       },
       'countdown': {
-        'endDate': endDate.toIso8601String(),
-        'boxColor': '#111827',
-        'digitColor': '#FFFFFF',
-        'expiredTitle': 'Oferta encerrada',
-        'expiredBody': 'Fique de olho nas próximas!',
+        'content': {
+          'title': 'É uma contagem regressiva',
+          'body': 'TIC TOC, TIC TOC!!',
+        },
+        'endDate': '${endDate.year}-${two(endDate.month)}-${two(endDate.day)}',
+        'endTime': '${two(endDate.hour)}:${two(endDate.minute)}',
+        'style': {'textColor': '#f1c9fe', 'backgroundColor': '#61177c'},
       },
+      'expiration': {'date': '', 'hours': '', 'minutes': ''},
+      'title': 'É uma contagem regressiva',
+      'body': 'TIC TOC, TIC TOC!!',
       'buttons': [
         {
           'text': 'Aproveitar agora',
