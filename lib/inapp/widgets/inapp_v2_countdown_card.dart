@@ -11,7 +11,8 @@ import 'inapp_v2_gamified_header.dart';
 /// The "Countdown" In-App content: four DIAS/HORAS/MIN/SEG boxes ticking
 /// every second toward `countdown.endDate`, plus the root-level action
 /// buttons. When the deadline is reached while the card is open, the boxes
-/// and buttons give way to the expired title/body.
+/// and buttons disappear; the header title/body stay, followed by the
+/// expired title/body when the campaign carries them.
 class InAppV2CountdownCard extends StatefulWidget {
   final InAppMessageV2 message;
   final ValueChanged<InAppV2Action> onActionTriggered;
@@ -135,6 +136,9 @@ class _InAppV2CountdownCardState extends State<InAppV2CountdownCard> {
   Widget _buildExpiredPanel() {
     final style = message.style;
     final countdown = message.countdown;
+    if (countdown.expiredTitle.isEmpty && countdown.expiredBody.isEmpty) {
+      return const SizedBox(height: 8);
+    }
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(

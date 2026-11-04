@@ -5,7 +5,10 @@ import 'package:inngage_plugin/inapp/widgets/inapp_v2_countdown_card.dart';
 
 final _base = DateTime(2026, 9, 14, 12, 0, 0);
 
-InAppMessageV2 _countdownMessage({required DateTime endDate}) {
+InAppMessageV2 _countdownMessage({
+  required DateTime endDate,
+  bool withExpiredTexts = true,
+}) {
   return InAppMessageV2.fromJson({
     'type': 'Countdown',
     'content': {'title': 'A oferta termina em:', 'body': '30% OFF.'},
@@ -13,13 +16,42 @@ InAppMessageV2 _countdownMessage({required DateTime endDate}) {
       'endDate': endDate.toIso8601String(),
       'boxColor': '#111827',
       'digitColor': '#FFFFFF',
-      'expiredTitle': 'Oferta encerrada',
-      'expiredBody': 'Fique de olho nas próximas!',
+      if (withExpiredTexts) 'expiredTitle': 'Oferta encerrada',
+      if (withExpiredTexts) 'expiredBody': 'Fique de olho nas próximas!',
     },
     'buttons': [
       {
         'text': 'Aproveitar agora',
         'style': {'backgroundColor': '#7C3AED', 'textColor': '#FFFFFF'},
+        'action': {'type': 'weblink', 'url': 'https://www.inngage.com.br'},
+      },
+    ],
+  });
+}
+
+String _two(int value) => value.toString().padLeft(2, '0');
+
+/// The editor format: content nested under `countdown`, deadline split into
+/// endDate + endTime, box colors under `countdown.style`, no expired texts.
+InAppMessageV2 _editorCountdownMessage({required DateTime endDate}) {
+  return InAppMessageV2.fromJson({
+    'type': 'Countdown',
+    'style': {'titleColor': '#450e59', 'bodyColor': '#450e59'},
+    'countdown': {
+      'content': {
+        'title': 'É uma contagem regressiva',
+        'body': 'TIC TOC, TIC TOC!!',
+      },
+      'endDate': '${endDate.year}-${_two(endDate.month)}-${_two(endDate.day)}',
+      'endTime': '${_two(endDate.hour)}:${_two(endDate.minute)}',
+      'style': {'textColor': '#f1c9fe', 'backgroundColor': '#61177c'},
+    },
+    'expiration': {'date': '', 'hours': '', 'minutes': ''},
+    'title': 'É uma contagem regressiva',
+    'body': 'TIC TOC, TIC TOC!!',
+    'buttons': [
+      {
+        'text': 'Aproveitar agora',
         'action': {'type': 'weblink', 'url': 'https://www.inngage.com.br'},
       },
     ],
@@ -154,5 +186,51 @@ void main() {
     await _openCountdown(
         tester, _countdownMessage(endDate: endDate), () => _base);
     expect(find.text('Powered by Inngage'), findsNothing);
+  });
+
+  testWidgets('renders title, body and box colors from the editor payload',
+      (tester) async {
+    // 10:30 on the next day → 22 h 30 min ahead of _base (12:00).
+    final endDate = DateTime(_base.year, _base.month, _base.day + 1, 10, 30);
+    await _openCountdown(
+        tester, _editorCountdownMessage(endDate: endDate), () => _base);
+
+    expect(find.text('É uma contagem regressiva'), findsOneWidget);
+    expect(find.text('TIC TOC, TIC TOC!!'), findsOneWidget);
+    expect(find.text('Aproveitar agora'), findsOneWidget);
+    expect(find.text('00'), findsNWidgets(2)); // DIAS and SEG
+    expect(find.text('22'), findsOneWidget);
+    expect(find.text('30'), findsOneWidget);
+
+    final box = tester.widget<Container>(find.ancestor(
+      of: find.text('DIAS'),
+      matching: find.byType(Container),
+    ));
+    expect((box.decoration as BoxDecoration).color, const Color(0xFF61177C));
+    final digits = tester.widget<Text>(find.text('22'));
+    expect(digits.style!.color, const Color(0xFFF1C9FE));
+  });
+
+  testWidgets(
+      'without expired texts, reaching the deadline keeps the header and '
+      'hides boxes and buttons', (tester) async {
+    var fakeNow = _base;
+    final endDate = _base.add(const Duration(seconds: 2));
+    await _openCountdown(
+        tester,
+        _countdownMessage(endDate: endDate, withExpiredTexts: false),
+        () => fakeNow);
+
+    expect(find.text('A oferta termina em:'), findsOneWidget);
+    expect(find.text('SEG'), findsOneWidget);
+
+    fakeNow = fakeNow.add(const Duration(seconds: 3));
+    await tester.pump(const Duration(seconds: 3));
+
+    expect(find.text('A oferta termina em:'), findsOneWidget);
+    expect(find.text('30% OFF.'), findsOneWidget);
+    expect(find.text('SEG'), findsNothing);
+    expect(find.text('Aproveitar agora'), findsNothing);
+    expect(find.text('Oferta encerrada'), findsNothing);
   });
 }
